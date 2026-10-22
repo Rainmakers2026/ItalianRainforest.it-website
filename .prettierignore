@@ -1,0 +1,5 @@
+public/
+data/
+.next/
+node_modules/
+src/lib/geo/territories.ts

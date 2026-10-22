@@ -1,0 +1,310 @@
+@import 'tailwindcss';
+
+/*
+ * Italian Rainforest design tokens.
+ * Shares DNA with Rainmakers (Savoia blue, navy, periwinkle, cyan) but uses a
+ * lighter, editorial + data surface system of its own. Components use tokens only.
+ */
+@theme {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  --color-savoia: #4b61d1; /* primary brand (Rainmakers) — 5.1:1 on white */
+  --color-savoia-700: #3647a8; /* hover / text on tinted surfaces — 7.6:1 */
+  --color-savoia-100: #e4e8fa;
+  --color-savoia-50: #f1f3fd;
+  --color-periwinkle: #7b92e8;
+  --color-navy: #14304f; /* data panels, headings — 12.9:1 */
+  --color-deep: #0b1a2e;
+  --color-ink: #11213a; /* body text */
+  --color-muted: #4a5872; /* secondary text — 7.1:1 on white */
+  --color-subtle: #6b7690; /* tertiary text — 4.6:1 on white */
+  --color-line: #dde2ee;
+  --color-line-strong: #c5cde0;
+  --color-paper: #ffffff;
+  --color-mist: #f6f7fb; /* off-white editorial background */
+  --color-cyan: #1f8fb8; /* ecosystem accent (graphics) */
+  --color-cyan-700: #156b8c; /* accent text — 5.6:1 */
+  --color-sky: #9fe3f5; /* accent on Savoia/navy */
+  --color-success: #1d7a4f;
+  --color-danger: #b3261e;
+
+  --radius-card: 1rem;
+  --radius-pill: 999px;
+  --shadow-card: 0 1px 2px rgb(17 33 58 / 0.06), 0 8px 24px -12px rgb(17 33 58 / 0.18);
+  --shadow-pop: 0 12px 40px -12px rgb(17 33 58 / 0.35);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --text-display: clamp(2.15rem, 1.35rem + 2.5vw, 3.45rem);
+  --text-h2: clamp(1.75rem, 1.3rem + 1.6vw, 2.6rem);
+}
+
+:root {
+  --header-h: 64px;
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 8px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: 'ss01', 'cv11';
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-savoia);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.on-dark :focus-visible,
+.on-dark:focus-visible {
+  outline-color: var(--color-sky);
+}
+
+@layer components {
+  .container-irf {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-inline: clamp(16px, 4vw, 40px);
+  }
+  .section {
+    padding-block: clamp(64px, 8vw, 120px);
+  }
+  .eyebrow {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .h2 {
+    font-size: var(--text-h2);
+    line-height: 1.12;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .lead {
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+  .prose-irf p + p {
+    margin-top: 1rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius-pill);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    line-height: 1.2;
+    transition:
+      background-color 160ms var(--ease-out-soft),
+      color 160ms var(--ease-out-soft),
+      border-color 160ms var(--ease-out-soft),
+      transform 160ms var(--ease-out-soft);
+    white-space: nowrap;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-primary {
+    background: var(--color-savoia);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: var(--color-savoia-700);
+  }
+  .btn-light {
+    background: #fff;
+    color: var(--color-navy);
+  }
+  .btn-light:hover {
+    background: var(--color-savoia-50);
+  }
+  .btn-outline {
+    border: 1.5px solid var(--color-line-strong);
+    color: var(--color-navy);
+    background: #fff;
+  }
+  .btn-outline:hover {
+    border-color: var(--color-savoia);
+    color: var(--color-savoia-700);
+  }
+  .btn-ghost-dark {
+    border: 1.5px solid rgb(255 255 255 / 0.5);
+    color: #fff;
+  }
+  .btn-ghost-dark:hover {
+    background: rgb(255 255 255 / 0.1);
+    border-color: #fff;
+  }
+  .btn-sm {
+    min-height: 36px;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+  .field {
+    width: 100%;
+    min-height: 44px;
+    border: 1.5px solid var(--color-line-strong);
+    border-radius: 0.625rem;
+    background: #fff;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+    transition: border-color 120ms;
+  }
+  .field:hover {
+    border-color: var(--color-subtle);
+  }
+  .field:focus-visible {
+    outline: 3px solid var(--color-savoia-100);
+    outline-offset: 0;
+    border-color: var(--color-savoia);
+  }
+  .field[aria-invalid='true'] {
+    border-color: var(--color-danger);
+  }
+  select.field {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%234A5872' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+  }
+  select.field:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-height: 32px;
+    padding: 0.25rem 0.5rem 0.25rem 0.75rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-savoia-50);
+    color: var(--color-savoia-700);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+
+  .sr-only-focusable:not(:focus) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  /* Reveal-on-scroll, driven by IntersectionObserver (components/Reveal.tsx). */
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 700ms var(--ease-out-soft),
+      transform 700ms var(--ease-out-soft);
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .no-js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Hero network: roots growing into the ecosystem. */
+  .grow {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: grow 1.8s var(--ease-out-soft) forwards;
+  }
+  .node-in {
+    opacity: 0;
+    animation: node-in 0.6s ease-out forwards;
+  }
+  .breathe {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: breathe 5s ease-in-out 3;
+  }
+  @keyframes grow {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes node-in {
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes breathe {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.55;
+    }
+    50% {
+      transform: scale(1.35);
+      opacity: 0.2;
+    }
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+}
+
+/* MapLibre overrides: keep attribution discreet and on-brand. */
+.maplibregl-ctrl-attrib {
+  font-size: 11px !important;
+  background: rgb(255 255 255 / 0.85) !important;
+}
+.maplibregl-canvas:focus-visible {
+  outline: 3px solid var(--color-savoia);
+  outline-offset: -3px;
+}

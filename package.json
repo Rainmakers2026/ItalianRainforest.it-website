@@ -1,0 +1,44 @@
+{
+  "name": "italian-rainforest",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Italian Rainforest 2.0 — la mappa viva dell'ecosistema italiano dell'innovazione. An initiative by Rainmakers.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check:airtable-readonly": "node scripts/check-airtable-readonly.mjs",
+    "data:snapshot": "node scripts/snapshot-legacy.mjs",
+    "geo:build": "node scripts/build-geo.mjs",
+    "visuals:build": "node scripts/build-visuals.mjs",
+    "prebuild": "node scripts/check-airtable-readonly.mjs && node scripts/copy-vendor.mjs",
+    "postinstall": "node scripts/copy-vendor.mjs",
+    "predev": "node scripts/copy-vendor.mjs",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "maplibre-gl": "6.15.0",
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "server-only": "^0.0.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/geojson": "^7946.0.16",
+    "@types/node": "26.6.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.2",
+    "mapshaper": "0.7.95",
+    "prettier": "^3.9.10",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "vitest": "5.0.5"
+  }
+}

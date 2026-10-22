@@ -1,0 +1,109 @@
+'use client';
+
+import { useEffect, useId, useRef, useState } from 'react';
+import { track } from '@/lib/analytics';
+import { LOCALES, type Locale } from '@/lib/i18n/config';
+import { SITE } from '@/lib/site';
+import { Icon } from '../ui/Icon';
+import { useExplorer } from './ExplorerProvider';
+
+/** "Sharing is caring": copy-paste iframe for the map or the database, IT or EN. */
+export function ShareEmbed({ kind }: { kind: 'map' | 'database' }) {
+  const { t, locale } = useExplorer();
+  const [lang, setLang] = useState<Locale>(locale);
+  const [copied, setCopied] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const codeId = useId();
+  const path = `/${lang}/embed/${kind}`;
+  const title =
+    kind === 'map'
+      ? lang === 'it'
+        ? 'Mappa Italian Rainforest'
+        : 'Italian Rainforest map'
+      : lang === 'it'
+        ? 'Database Italian Rainforest'
+        : 'Italian Rainforest database';
+  const code = `<iframe src="${SITE.url}${path}" width="100%" height="640" style="border:0;border-radius:12px" loading="lazy" title="${title}" allow="clipboard-write"></iframe>`;
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (e) => {
+        if (e.some((x) => x.isIntersecting)) {
+          track('embed_code_view', { kind });
+          io.disconnect();
+        }
+      },
+      { threshold: 0.5 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [kind]);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+    } catch {
+      const ta = document.getElementById(codeId) as HTMLTextAreaElement | null;
+      ta?.select();
+      document.execCommand?.('copy');
+    }
+    setCopied(true);
+    track('embed_code_copy', { kind, lang });
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div
+      ref={ref}
+      id={`${kind}-embed`}
+      className="reveal mt-6 grid gap-5 rounded-2xl bg-navy p-5 text-white md:grid-cols-[0.9fr_1.1fr] md:items-center md:p-7"
+    >
+      <div>
+        <p className="eyebrow text-sky">{t.share.eyebrow}</p>
+        <h3 className="mt-2 text-xl font-extrabold">{t.share.title}</h3>
+        <p className="mt-1 text-white/85">{kind === 'map' ? t.share.mapText : t.share.databaseText}</p>
+        <p className="mt-3 text-sm text-white/70">{t.share.free}</p>
+      </div>
+      <div className="on-dark min-w-0">
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <label htmlFor={codeId} className="text-xs font-bold text-white/75">
+            {t.share.codeLabel}
+          </label>
+          <div role="group" aria-label={t.share.language} className="flex rounded-full bg-white/10 p-0.5 text-xs font-bold">
+            {LOCALES.map((l) => (
+              <button
+                key={l}
+                type="button"
+                aria-pressed={lang === l}
+                onClick={() => setLang(l)}
+                className={`min-h-7 rounded-full px-2.5 uppercase ${lang === l ? 'bg-white text-navy' : 'text-white/80 hover:text-white'}`}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
+        </div>
+        <textarea
+          id={codeId}
+          readOnly
+          value={code}
+          rows={3}
+          onFocus={(e) => e.currentTarget.select()}
+          className="w-full resize-none rounded-xl bg-deep/70 p-3 font-mono text-[0.75rem] leading-relaxed text-sky ring-1 ring-white/15"
+        />
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button type="button" onClick={copy} className="btn btn-light btn-sm">
+            <Icon name={copied ? 'check' : 'copy'} size={16} />
+            <span aria-live="polite">{copied ? t.share.copied : t.share.copy}</span>
+          </button>
+          <a href={path} target="_blank" rel="noopener" className="btn btn-ghost-dark btn-sm">
+            <Icon name="external" size={16} />
+            {t.share.preview}
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
