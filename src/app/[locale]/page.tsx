@@ -9,10 +9,13 @@ import { UpdateForm } from '@/components/forms/UpdateForm';
 import { Header } from '@/components/Header';
 import { RevealObserver } from '@/components/RevealObserver';
 import { Contact } from '@/components/sections/Contact';
+import { CategoryDonut } from '@/components/sections/CategoryDonut';
 import { Faq } from '@/components/sections/Faq';
 import { ForWhom } from '@/components/sections/ForWhom';
 import { Hero } from '@/components/sections/Hero';
 import { How } from '@/components/sections/How';
+import { Infographic } from '@/components/sections/Infographic';
+import { Partners } from '@/components/sections/Partners';
 import { Proof } from '@/components/sections/Proof';
 import { SectionHeader } from '@/components/sections/SectionHeader';
 import { What } from '@/components/sections/What';
@@ -23,15 +26,16 @@ import { computeStats } from '@/lib/data/stats';
 import { formatDate, isLocale, type Locale } from '@/lib/i18n/config';
 import { fmt, getDictionary } from '@/lib/i18n';
 import { downloadRequiresEmail } from '@/lib/leads';
-import { categoryList, homeMetadata, jsonLd } from '@/lib/seo';
+import { categoryList, familyList, homeMetadata, jsonLd } from '@/lib/seo';
 import { SITE } from '@/lib/site';
 
 export const revalidate = 3600;
 
 async function load(locale: string) {
   if (!isLocale(locale)) notFound();
-  const stats = computeStats(await getDataset());
-  return { locale: locale as Locale, stats, t: getDictionary(locale) };
+  const dataset = await getDataset();
+  const stats = computeStats(dataset);
+  return { locale: locale as Locale, stats, players: dataset.players, t: getDictionary(locale) };
 }
 
 export async function generateMetadata({ params }: PageProps<'/[locale]'>): Promise<Metadata> {
@@ -40,28 +44,32 @@ export async function generateMetadata({ params }: PageProps<'/[locale]'>): Prom
 }
 
 export default async function Home({ params }: PageProps<'/[locale]'>) {
-  const { locale, stats, t } = await load((await params).locale);
+  const { locale, stats, players, t } = await load((await params).locale);
 
   // FAQ answers carry live numbers and the real update date.
   const faqVars = {
-    active: stats.active,
+    active: stats.total,
+    verified: stats.active,
     categories: stats.categories,
     categoryList: categoryList(stats, locale),
+    familyList: familyList(stats, locale, t.what.families),
     date: formatDate(stats.updatedAt),
     email: SITE.email,
   };
   const faq = t.faq.items.map((i) => ({ q: i.q, a: fmt(i.a, faqVars) }));
+  // Map and database (filters, lists, popups, downloads) are always in English, on both pages.
+  const tx = getDictionary('en');
   const explorerStrings: ExplorerStrings = {
-    explorer: t.explorer,
-    map: t.map,
-    database: t.database,
-    download: t.download,
-    lead: t.lead,
-    share: t.share,
-    a11y: t.a11y,
+    explorer: tx.explorer,
+    map: tx.map,
+    database: tx.database,
+    download: tx.download,
+    lead: tx.lead,
+    share: tx.share,
+    a11y: tx.a11y,
   };
 
-  const stamp = <StaticStamp updatedAt={stats.updatedAt} template={t.explorer.updated} />;
+  const stampDark = <StaticStamp updatedAt={stats.updatedAt} template={getDictionary("en").explorer.updated} dark />;
 
   return (
     <>
@@ -72,34 +80,41 @@ export default async function Home({ params }: PageProps<'/[locale]'>) {
       <main id="main">
         <Hero locale={locale} t={t.hero} stats={stats} />
         <Why t={t.why} stats={stats} />
-        <How t={t.how} />
+        <How t={t.how} players={stats.regionCounts.lombardia ?? 0} locale={locale} />
         <What t={t.what} locale={locale} stats={stats} />
         <ForWhom t={t.forWhom} locale={locale} />
         <Who t={t.who} />
+        <Partners t={t.partners} />
         <LazyExplorer
-          locale={locale}
+          locale="en"
           t={explorerStrings}
           updatedAt={stats.updatedAt}
           downloadRequiresEmail={downloadRequiresEmail()}
-          loadingLabel={t.explorer.loading}
-          mapHeader={<ExplorerHeader id="map-title" eyebrow={t.map.eyebrow} title={t.map.title} lead={t.map.lead} stamp={stamp} />}
-          databaseHeader={
+          loadingLabel={tx.explorer.loading}
+          header={
             <ExplorerHeader
-              id="database-title"
-              eyebrow={t.database.eyebrow}
-              title={t.database.title}
-              lead={t.database.lead}
-              stamp={stamp}
+              id="map-title"
+              eyebrow={t.map.sectionEyebrow}
+              title={t.map.sectionTitle}
+              accent={t.map.sectionAccent}
+              lead={t.map.sectionLead}
+              stamp={stampDark}
             />
           }
         />
-        <section id="update" aria-labelledby="update-title" className="section bg-mist">
-          <div className="container-irf grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-            <SectionHeader id="update-title" eyebrow={t.update.eyebrow} title={t.update.title} lead={t.update.lead} />
+        <section id="update" aria-labelledby="update-title" className="section bg-white">
+          <div className="container-irf grid gap-10">
+            <SectionHeader id="update-title" title={t.update.title} lead={t.update.lead} />
             <UpdateForm t={t.update} lead={t.lead} locale={locale} />
           </div>
         </section>
-        <Faq t={t.faq} items={faq} />
+        <Infographic players={players} locale={locale} t={t.infographic} families={t.what.families} />
+        <Faq
+          t={t.faq}
+          items={faq}
+          // Item 6, "how are organisations classified?", gets the category donut.
+          visuals={{ 5: <CategoryDonut counts={stats.categoryCounts} active={stats.total} locale={locale} t={t.faq} /> }}
+        />
         <Proof t={t.proof} locale={locale} />
         <Contact t={t.contact} />
       </main>

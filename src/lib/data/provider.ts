@@ -3,29 +3,39 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { airtableConfigFromEnv, readAllRecords, type AirtableConfig } from './airtable-readonly';
 import { applyDemoGeo, isGeoDemoEnabled } from './demo-geo';
-import { dedupe, extractGatedContacts, normalizeRecord, publicId, type RawRecord } from './normalize';
+import { dedupe, extractGatedContacts, normalizeRecord, publicId, type Lookups, type RawRecord } from './normalize';
 import type { Dataset, GatedContacts, PublicPlayer } from './schema';
 
 /**
  * Frontend code never talks to a data source directly: it asks a DataProvider.
  * Both implementations are strictly read-only.
+ *
+ *  - SnapshotProvider: data/snapshot/irf-records.json, generated from the database
+ *    export by scripts/import-irf-csv.mjs (default).
+ *  - AirtableReadOnlyProvider: the Airtable base "Rainmakers OS", enabled by setting
+ *    AIRTABLE_TOKEN / AIRTABLE_BASE_ID / AIRTABLE_TABLE (+ optional AIRTABLE_VIEW,
+ *    AIRTABLE_FIELD_MAP). Same columns, same normaliser: map, database and every
+ *    number on the site switch over with no code change.
  */
 export interface DataProvider {
   readonly name: Dataset['source'];
   readRecords(): Promise<{ records: RawRecord[]; readAt: string }>;
 }
 
-/** Snapshot of the legacy public dataset (data/snapshot/legacy-records.json). */
-export class LegacyReadOnlyProvider implements DataProvider {
-  readonly name = 'legacy-snapshot' as const;
+const dataFile = (...p: string[]) => path.join(process.cwd(), 'data', ...p);
+
+export class SnapshotProvider implements DataProvider {
+  readonly name = 'snapshot' as const;
   async readRecords() {
-    const file = path.join(process.cwd(), 'data', 'snapshot', 'legacy-records.json');
-    const json = JSON.parse(await readFile(file, 'utf8')) as { fetchedAt: string; records: RawRecord[] };
-    return { records: json.records, readAt: json.fetchedAt };
+    const json = JSON.parse(await readFile(dataFile('snapshot', 'irf-records.json'), 'utf8')) as {
+      exportDate?: string;
+      importedAt: string;
+      records: RawRecord[];
+    };
+    return { records: json.records, readAt: json.exportDate ?? json.importedAt };
   }
 }
 
-/** Airtable REST API, GET only, token kept server-side. */
 export class AirtableReadOnlyProvider implements DataProvider {
   readonly name = 'airtable' as const;
   constructor(private cfg: AirtableConfig) {}
@@ -37,10 +47,25 @@ export class AirtableReadOnlyProvider implements DataProvider {
 
 export function getProvider(): DataProvider {
   const cfg = airtableConfigFromEnv();
-  return cfg ? new AirtableReadOnlyProvider(cfg) : new LegacyReadOnlyProvider();
+  return cfg ? new AirtableReadOnlyProvider(cfg) : new SnapshotProvider();
 }
 
-const STALE_AFTER_DAYS = Number(process.env.DATA_STALE_AFTER_DAYS ?? 30);
+/** Logo files and geocoded positions prepared offline; used when the source lacks them. */
+async function loadLookups(): Promise<Lookups> {
+  const read = async <T,>(file: string, pick: (j: never) => T, fallback: T): Promise<T> => {
+    try {
+      return pick(JSON.parse(await readFile(dataFile('snapshot', file), 'utf8')) as never);
+    } catch {
+      return fallback;
+    }
+  };
+  return {
+    logos: await read('logos.json', (j: { logos: Lookups['logos'] }) => j.logos, {}),
+    geo: await read('geocode-cache.json', (j: Lookups['geo']) => j, {}),
+  };
+}
+
+const STALE_AFTER_DAYS = Number(process.env.DATA_STALE_AFTER_DAYS ?? 60);
 const TTL_MS = Number(process.env.DATA_REVALIDATE_SECONDS ?? 3600) * 1000;
 
 type Cache = { at: number; dataset: Dataset; raw: RawRecord[] };
@@ -60,23 +85,21 @@ async function load(): Promise<Cache> {
     // Source temporarily unavailable: keep serving the last good copy or the snapshot.
     if (cache) return cache;
     console.error('[data] Airtable unavailable, falling back to snapshot:', (err as Error).message);
-    ({ records: raw, readAt } = await new LegacyReadOnlyProvider().readRecords());
-    source = 'legacy-snapshot';
+    ({ records: raw, readAt } = await new SnapshotProvider().readRecords());
+    source = 'snapshot';
     warnings.push('source-unavailable');
   }
 
-  const normalized = raw.map(normalizeRecord).filter((p): p is PublicPlayer => !!p);
+  const lookups = await loadLookups();
+  const normalized = raw.map((r) => normalizeRecord(r, lookups)).filter((p): p is PublicPlayer => !!p);
   const { players: unique, duplicates } = dedupe(normalized);
-  if (duplicates.length) warnings.push(`duplicates:${duplicates.join(', ')}`);
+  if (duplicates.length) warnings.push(`duplicates:${duplicates.length}`);
   const players = (isGeoDemoEnabled() ? applyDemoGeo(unique) : unique).sort((a, b) =>
     a.name.localeCompare(b.name, 'it', { sensitivity: 'base' }),
   );
 
   const ageDays = (Date.now() - new Date(readAt).getTime()) / 86_400_000;
-  if (ageDays > STALE_AFTER_DAYS) {
-    warnings.push(`stale:${Math.round(ageDays)}d`);
-    console.warn(`[data] Dataset is ${Math.round(ageDays)} days old (threshold ${STALE_AFTER_DAYS}).`);
-  }
+  if (ageDays > STALE_AFTER_DAYS) warnings.push(`stale:${Math.round(ageDays)}d`);
 
   return {
     at: Date.now(),

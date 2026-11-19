@@ -29,7 +29,10 @@ npm start
 | `test` | Vitest: read-only policy, sanitisation, export, query state |
 | `lint`, `typecheck`, `format` | ESLint, `tsc --noEmit`, Prettier |
 | `check:airtable-readonly` | Static guard: fails on any Airtable write path |
-| `data:snapshot` | Re-reads the public dataset from the legacy site (single GET) into `data/snapshot/` |
+| `data:import [csv] [logo-dir]` | Imports the IRF database export (CSV) into `data/snapshot/irf-records.json`; with a logo folder (one sub-folder per PLAYER TYPE, `<Company>.webp`) also rebuilds `public/logos/players`. Writes `docs/data-quality.md` |
+| `data:geocode` | Geocodes new/changed addresses with OpenStreetMap Nominatim (cached in `data/snapshot/geocode-cache.json`), then re-imports |
+| `infographic:build` | Regenerates the downloadable infographic PNGs (`public/infographic/`) from the snapshot |
+| `brand:prepare <dir>` | Regenerates logos and favicon from the official artwork (1.webp white, 2.webp blue) |
 | `geo:build <dir>` | Rebuilds simplified cartography from openpolis/Natural Earth GeoJSON |
 | `visuals:build` | Regenerates the WHY/HOW SVG illustrations |
 
@@ -52,15 +55,17 @@ docs/                            audit, data schema, performance, final audit
 ## Data
 
 - **Read-only, always.** No create/update/delete towards Airtable exists in the codebase; `prebuild` and the tests enforce it.
-- Without Airtable credentials the site uses `data/snapshot/legacy-records.json` (public data of the legacy site).
-- With `AIRTABLE_TOKEN` + `AIRTABLE_BASE_ID` + `AIRTABLE_TABLE` (+ optional `AIRTABLE_VIEW`) the Airtable REST API is read server-side with GET only. Use a token with **only** `data.records:read`, ideally on a dedicated sanitised view.
+- Without Airtable credentials the site uses `data/snapshot/irf-records.json`, imported from the IRF database export (`data/source/irf-database.csv`) with logos and geocoded positions.
+- With `AIRTABLE_TOKEN` + `AIRTABLE_BASE_ID` + `AIRTABLE_TABLE` (+ optional `AIRTABLE_VIEW`, `AIRTABLE_FIELD_MAP`) the base **"Rainmakers OS"** is read server-side with GET only, through the same normaliser: map, database, hero numbers, categories and FAQ switch over with no code change. Logos and positions prepared offline are reused by company name when the base lacks them. Use a token with **only** `data.records:read`.
+- The only Airtable write is the **lead approval queue** (`src/lib/leads-airtable.ts`): create-only, on a separate staging base (`AIRTABLE_LEADS_*`), guarded by `check:airtable-readonly`.
 - Schema and field mapping: [docs/data-schema.md](docs/data-schema.md).
 
-### Demo positions
-The current public data has no location fields. With `IRF_GEO_DEMO=true` players investing in Italy get a **synthetic** position so the map can be reviewed. These positions are labelled "dimostrativa / illustrative" in the UI, shown in italics with `*` in the table, and never exported. Set `IRF_GEO_DEMO=false` as soon as Airtable provides Region/Province/City/Latitude/Longitude.
+### Positions
+Positions come from the database addresses, geocoded with OpenStreetMap Nominatim. An address is used only when its province agrees with the REGION column; otherwise the city (or, failing that, the region) is used and the profile says the position is approximate. Players without a region are listed but not on the map. See [docs/data-quality.md](docs/data-quality.md).
 
 ## Leads & analytics
-- Forms post to our own API, which forwards to `LEAD_WEBHOOK_URL` (CRM, n8n/Make, email workflow). In production, without a webhook the API answers 503 and the UI suggests email. Airtable hosts are refused as destinations.
+- **Pay-per-data:** browsing and filtering are free; the first download (CSV, JSON, PDF, map PNG/PDF) or embed code asks once for name, surname and email. The profile stays in the browser (`localStorage`), so later visits don't ask again; the sign-up goes to the Airtable approval queue and/or `LEAD_WEBHOOK_URL`.
+- Other forms (suggestions, contact requests) go to `LEAD_WEBHOOK_URL`.
 - Rate limiting is in-memory per instance (best effort on serverless). For strict limits plug a shared store (e.g. Upstash Redis) into `rateLimited()` in `src/lib/leads.ts`.
 - Analytics: `NEXT_PUBLIC_ANALYTICS_PROVIDER=plausible|umami|gtm|none`. Events are listed in `src/lib/analytics.ts`; no PII is ever sent.
 

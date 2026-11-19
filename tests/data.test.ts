@@ -1,40 +1,69 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { applyDemoGeo } from '@/lib/data/demo-geo';
-import { dedupe, normalizeRecord, normalizeTags, normalizeWebsite, type RawRecord } from '@/lib/data/normalize';
+import { dedupe, nameKey, normalizeIndustries, normalizeRecord, normalizeWebsite, type Lookups, type RawRecord } from '@/lib/data/normalize';
 import type { PublicPlayer } from '@/lib/data/schema';
+import { computeStats } from '@/lib/data/stats';
+import { categoryFromSource } from '@/lib/data/taxonomy';
 import { exportRows, toCsv } from '@/lib/export';
-import { applyFilters, DEFAULT_FILTERS, parseFilters, serializeFilters } from '@/lib/filters';
+import { applyFilters, DEFAULT_FILTERS, facetCounts, parseFilters, serializeFilters } from '@/lib/filters';
 
-const snapshot = JSON.parse(readFileSync('data/snapshot/legacy-records.json', 'utf8')) as { records: RawRecord[] };
-const players = snapshot.records.map(normalizeRecord).filter((p): p is PublicPlayer => !!p);
+const snapshot = JSON.parse(readFileSync('data/snapshot/irf-records.json', 'utf8')) as { exportDate: string; records: RawRecord[] };
+const lookups: Lookups = {
+  logos: (JSON.parse(readFileSync('data/snapshot/logos.json', 'utf8')) as { logos: Lookups['logos'] }).logos,
+  geo: JSON.parse(readFileSync('data/snapshot/geocode-cache.json', 'utf8')) as Lookups['geo'],
+};
+const players = snapshot.records.map((r) => normalizeRecord(r, lookups)).filter((p): p is PublicPlayer => !!p);
 
+// A record shaped like the Airtable base "Rainmakers OS".
 const sensitive: RawRecord = {
   id: 'recTEST123',
   fields: {
-    'Company Name': '  Acme   Ventures \n',
-    'Account Type': ['VC', 'BAN / Club Deal'],
-    Status: 'Active',
-    Website: 'www.acme.vc/?utm_source=x',
-    Hashtags: ['IA', 'TBD', 'FinTech'],
-    'Stage of Investment/Development': ['1. Idea or Patent', '4. Scaling'],
-    Region: 'Lombardia',
-    Province: 'MI',
-    City: 'Milano',
-    Latitude: 45.46,
-    Longitude: 9.19,
-    Email: 'secret.person@acme.vc',
-    Phone: '+39 333 1234567',
-    'Contact Person': 'Mario Rossi',
+    'COMPANY NAME': '  Acme   Ventures \n',
+    'PLAYER TYPE': ['VC', 'BAN/CLUB DEAL'],
+    STATUS: 'ACTIVE',
+    WEBSITE: 'www.acme.vc/?utm_source=x',
+    INDUSTRY: 'Fintech; DA VERIFICARE; it',
+    REGION: 'Lombardia',
+    PROVINCE: 'MI',
+    CITY: 'Milano',
+    'OPEN STREET MAP': 'https://www.openstreetmap.org/?mlat=45.4642&mlon=9.19#map=17/45.4642/9.19',
+    EMAIL: 'secret.person@acme.vc',
+    PHONE: '+39 333 1234567',
+    REFERENCE: 'Mario Rossi',
   },
 };
 
-describe('normalisation & sanitisation', () => {
-  it('maps the whole legacy snapshot', () => {
-    expect(players.length).toBeGreaterThan(400);
+describe('IRF database import', () => {
+  it('maps the whole snapshot (621 enablers, no startups, no template rows)', () => {
+    expect(players.length).toBe(snapshot.records.length);
+    expect(players.length).toBeGreaterThan(600);
+    expect(players.some((p) => /^nome( azienda)?$/i.test(p.name))).toBe(false);
     expect(players.every((p) => p.name === p.name.trim() && !/\s{2,}/.test(p.name))).toBe(true);
   });
 
+  it('maps every PLAYER TYPE of the export to a category', () => {
+    for (const t of ['INCUBATOR/ACCELERATOR', 'VENTURE BUILDER/STARTUP STUDIO', 'VC', 'MEDIA', 'PST', 'BAN/CLUB DEAL', 'ASSOCIATIONS', 'EMPOWERMENT PROGRAM', 'CROWDFUNDING PLATFORM', 'INSTITUTIONS', 'CORSI DI FORMAZIONE', 'FAMILY OFFICE', 'CVC', 'COWORKING', 'Altri abilitatori'])
+      expect(categoryFromSource(t), t).not.toBeNull();
+    expect(categoryFromSource('STARTUP')).toBeNull();
+    expect(players.some((p) => p.categories.includes('unclassified'))).toBe(false);
+  });
+
+  it('keeps logos and positions from the lookups', () => {
+    expect(players.filter((p) => p.logo).length).toBe(Object.keys(lookups.logos).length);
+    expect(players.every((p) => !p.logo || p.logo.src.startsWith('/logos/players/'))).toBe(true);
+    expect(players.filter((p) => p.location?.lat != null).length).toBeGreaterThan(400);
+  });
+
+  it('computes live stats', () => {
+    const s = computeStats({ players, updatedAt: snapshot.exportDate, source: 'snapshot', hasDemoGeo: false, warnings: [] });
+    expect(s.total).toBe(players.length);
+    expect(s.categories).toBeGreaterThanOrEqual(14);
+    expect(s.regions).toBeGreaterThan(10);
+    expect(s.familyCounts.financial).toBeGreaterThan(0);
+  });
+});
+
+describe('normalisation & sanitisation', () => {
   it('never exposes sensitive fields in the public player', () => {
     const p = normalizeRecord(sensitive)!;
     const json = JSON.stringify(p);
@@ -45,22 +74,34 @@ describe('normalisation & sanitisation', () => {
     expect(p.hasGatedContacts).toBe(true);
     expect(p.name).toBe('Acme Ventures');
     expect(p.categories).toEqual(['vc', 'angels']);
-    expect(p.location).toMatchObject({ region: 'lombardia', province: 'milano', city: 'Milano', source: 'data' });
-    expect(p.tags).toEqual(['AI', 'FinTech']);
-    expect(p.stages).toEqual(['idea', 'scaling']);
+    expect(p.status).toBe('active');
+    expect(p.industries).toEqual(['Fintech']);
+    expect(p.location).toMatchObject({ region: 'lombardia', province: 'milano', city: 'Milano', lat: 45.4642, lng: 9.19, precision: 'address' });
   });
 
-  it('cleans websites', () => {
+  it('reads status placeholders as "to be verified" and skips startups', () => {
+    const p = normalizeRecord({ id: 'r1', fields: { 'COMPANY NAME': 'X', 'PLAYER TYPE': 'VC', STATUS: 'DA VERIFICARE' } })!;
+    expect(p.status).toBe('unverified');
+    expect(normalizeRecord({ id: 'r2', fields: { 'COMPANY NAME': 'Y', 'PLAYER TYPE': ['STARTUP'] } })).toBeNull();
+  });
+
+  it('falls back to the geocode and logo lookups by name', () => {
+    const k = nameKey('Acme Ventures');
+    const p = normalizeRecord(
+      { id: 'r3', fields: { 'COMPANY NAME': 'Acme Ventures', 'PLAYER TYPE': 'VC', REGION: 'Lazio' } },
+      { logos: { [k]: { src: '/logos/players/x.webp', w: 10, h: 10, tone: 'dark' } }, geo: { [k]: { lat: 41.9, lng: 12.5, precision: 'city' } } },
+    )!;
+    expect(p.logo?.src).toBe('/logos/players/x.webp');
+    expect(p.location).toMatchObject({ lat: 41.9, lng: 12.5, precision: 'city', region: 'lazio' });
+  });
+
+  it('cleans websites and industries', () => {
     expect(normalizeWebsite('www.acme.vc/?utm_source=x').host).toBe('acme.vc');
-    expect(normalizeWebsite('www.acme.vc/?utm_source=x').url).toBe('https://www.acme.vc/');
     expect(normalizeWebsite('not a site').url).toBeNull();
+    expect(normalizeIndustries(['Fintech', 'fintech', 'it', 'Altro'])).toEqual(['Fintech']);
   });
 
-  it('collapses tag synonyms and drops placeholders', () => {
-    expect(normalizeTags(['IA', 'AI', 'TBD', 'HealthCare', 'Healthcare'])).toEqual(['AI', 'Healthcare']);
-  });
-
-  it('dedupes exact duplicates only', () => {
+  it('dedupes by name', () => {
     const p = normalizeRecord(sensitive)!;
     const { players: out, duplicates } = dedupe([p, { ...p, id: 'other' }]);
     expect(out).toHaveLength(1);
@@ -69,15 +110,12 @@ describe('normalisation & sanitisation', () => {
 });
 
 describe('export', () => {
-  it('excludes gated contacts and demo positions', () => {
-    const demo = applyDemoGeo(players.slice(0, 40)).filter((p) => p.location?.source === 'demo');
-    expect(demo.length).toBeGreaterThan(0);
-    const rows = exportRows(demo, 'it');
-    expect(rows.every((r) => r.latitude === '' && r.region === '')).toBe(true);
+  it('excludes gated contacts', () => {
     const csv = toCsv(exportRows([normalizeRecord(sensitive)!], 'en'), 'x');
     expect(csv).not.toContain('secret.person');
     expect(csv).not.toContain('Mario Rossi');
     expect(csv).toContain('Acme Ventures');
+    expect(csv.split('\r\n')[0]).toContain('company_name,player_type,website');
   });
 
   it('neutralises spreadsheet formulas', () => {
@@ -88,30 +126,32 @@ describe('export', () => {
 
 describe('query state', () => {
   it('round-trips through the URL', () => {
-    const f = { ...DEFAULT_FILTERS, q: 'fintech', categories: ['vc' as const], region: 'lombardia', province: 'milano' };
+    const f = { ...DEFAULT_FILTERS, q: 'fintech', categories: ['vc' as const], region: 'lombardia', city: 'Milano', industry: 'Fintech', status: 'active' as const };
     const sp = serializeFilters(f);
-    expect(sp.toString()).toBe('q=fintech&category=vc&region=lombardia&province=milano');
+    expect(sp.toString()).toBe('q=fintech&category=vc&region=lombardia&city=Milano&industry=Fintech&status=active');
     expect(parseFilters(sp)).toEqual(f);
   });
 
-  it('rejects unknown values and keeps province inside its region', () => {
-    const f = parseFilters(new URLSearchParams('category=nope,vc&region=atlantis&province=milano'));
+  it('rejects unknown values', () => {
+    const f = parseFilters(new URLSearchParams('category=nope,vc&region=atlantis&status=weird'));
     expect(f.categories).toEqual(['vc']);
-    expect(f.region).toBe('lombardia'); // derived from the province
-    const g = parseFilters(new URLSearchParams('region=lazio&province=milano'));
-    expect(g.province).toBeNull();
+    expect(f.region).toBeNull();
+    expect(f.status).toBe('all');
   });
 
-  it('filters by status and category', () => {
-    const active = applyFilters(players, DEFAULT_FILTERS);
-    expect(active.every((p) => p.status === 'active')).toBe(true);
+  it('shows every enabler by default and filters by the database columns', () => {
+    expect(applyFilters(players, DEFAULT_FILTERS)).toHaveLength(players.length);
     const vc = applyFilters(players, { ...DEFAULT_FILTERS, categories: ['vc'] });
     expect(vc.length).toBeGreaterThan(0);
     expect(vc.every((p) => p.categories.includes('vc'))).toBe(true);
+    const milano = applyFilters(players, { ...DEFAULT_FILTERS, city: 'milano' });
+    expect(milano.length).toBeGreaterThan(10);
+    expect(milano.every((p) => p.location?.city?.toLowerCase() === 'milano')).toBe(true);
+    expect(facetCounts(players, DEFAULT_FILTERS, 'region').get('lombardia')).toBeGreaterThan(50);
   });
 
   it('search is accent- and case-insensitive', () => {
-    const r = applyFilters(players, { ...DEFAULT_FILTERS, q: 'UNICREDIT' });
-    expect(r.some((p) => /unicredit/i.test(p.name))).toBe(true);
+    const r = applyFilters(players, { ...DEFAULT_FILTERS, q: 'POLIHUB' });
+    expect(r.some((p) => /polihub/i.test(p.name))).toBe(true);
   });
 });

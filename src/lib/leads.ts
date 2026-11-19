@@ -1,10 +1,12 @@
 import 'server-only';
 import { z } from 'zod';
+import { airtableLeadsConfigured, stageLead } from './leads-airtable';
 
 /**
- * Lead / submission handling. Submissions NEVER go to Airtable: they are sent to
- * LEAD_WEBHOOK_URL (e.g. CRM, email workflow, moderation queue). Without a sink in
- * production the API answers 503 and the UI falls back to email.
+ * Lead / submission handling. Sign-ups (downloads, embed code) are appended to the
+ * Airtable approval queue (src/lib/leads-airtable.ts, a staging base — never the
+ * read-only "Rainmakers OS" data base) and/or sent to LEAD_WEBHOOK_URL (CRM, email
+ * workflow). Without any sink in production, open data is still served.
  */
 
 export const emailSchema = z.email().max(200);
@@ -22,8 +24,33 @@ const common = {
   elapsed: z.number().int().min(0),
 };
 
+const personName = z.string().trim().min(1).max(100);
+const company = z.string().trim().max(160).optional().default('');
+/** Who the visitor is: collected once by the sign-up gate, then sent with every gated action. */
+const person = { firstName: personName, lastName: personName, referent: personName.optional(), company };
+
+export const LEAD_REASONS = [
+  'download_csv',
+  'download_json',
+  'download_pdf',
+  'download_bulk',
+  'map_png',
+  'map_pdf',
+  'map_csv',
+  'embed',
+  'contacts',
+] as const;
+
+/** One-time sign-up (lead magnet) before the first download or contact reveal. */
+export const SignupSchema = z.object({
+  ...common,
+  ...person,
+  reason: z.enum(LEAD_REASONS),
+});
+/** Contact reveal from the player profile, for a signed-up visitor. */
 export const ContactRequestSchema = z.object({
   ...common,
+  ...person,
   playerId: z.string().min(4).max(20),
   message: z.string().max(1000).optional().default(''),
 });
@@ -36,11 +63,16 @@ export const SuggestionSchema = z.object({
 });
 export const DownloadRequestSchema = z.object({
   ...common,
+  firstName: personName.optional(),
+  lastName: personName.optional(),
+  referent: personName.optional(),
+  company,
   format: z.enum(['csv', 'json']),
   query: z.string().max(1000),
 });
 
 export type Lead =
+  | ({ kind: 'signup' } & z.infer<typeof SignupSchema>)
   | ({ kind: 'contact_request' } & z.infer<typeof ContactRequestSchema>)
   | ({ kind: 'suggestion' } & z.infer<typeof SuggestionSchema>)
   | ({ kind: 'download' } & z.infer<typeof DownloadRequestSchema>);
@@ -79,20 +111,36 @@ export function isSameOrigin(req: Request): boolean {
 
 // --- Sink ---------------------------------------------------------------------
 export function sinkConfigured(): boolean {
-  return !!process.env.LEAD_WEBHOOK_URL || process.env.NODE_ENV !== 'production';
+  return !!process.env.LEAD_WEBHOOK_URL || airtableLeadsConfigured() || process.env.NODE_ENV !== 'production';
 }
 
 export async function deliverLead(lead: Lead): Promise<void> {
   const url = process.env.LEAD_WEBHOOK_URL;
   const { company_url: _hp, elapsed: _e, ...payload } = lead;
+  // People who sign up go to the Airtable approval queue (staging base).
+  if (lead.kind === 'signup' && airtableLeadsConfigured()) {
+    await stageLead({
+      kind: lead.kind,
+      reason: lead.reason,
+      firstName: lead.firstName,
+      lastName: lead.lastName,
+      email: lead.email,
+      referent: lead.referent,
+      company: lead.company,
+      marketing: lead.marketing,
+      locale: lead.locale,
+      utm: lead.utm,
+    });
+  }
   const body = JSON.stringify({ ...payload, receivedAt: new Date().toISOString(), site: 'italian-rainforest' });
   if (!url) {
+    if (airtableLeadsConfigured()) return;
     // Development only: print a redacted summary instead of the email address.
     console.info('[lead:dev]', lead.kind, { ...payload, email: '[redacted]' });
     return;
   }
   const target = new URL(url);
-  if (/(^|\.)airtable\.com$/i.test(target.hostname)) throw new Error('LEAD_WEBHOOK_URL must not point to Airtable (read-only policy)');
+  if (/(^|\.)airtable\.com$/i.test(target.hostname)) throw new Error('LEAD_WEBHOOK_URL must not point to Airtable (use AIRTABLE_LEADS_*)');
   const res = await fetch(target, {
     method: 'POST',
     headers: {

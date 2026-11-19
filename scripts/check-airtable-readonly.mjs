@@ -1,6 +1,8 @@
 // Static guard for the READ-ONLY Airtable policy (PRD §30, §61).
+// The data base ("Rainmakers OS") is read-only. The only write path allowed is the
+// create-only lead approval queue in src/lib/leads-airtable.ts, on a separate base.
 // Fails (exit 1) when:
-//   1. any file other than the dedicated client references the Airtable API host;
+//   1. any file other than the two dedicated clients references the Airtable API host;
 //   2. the dedicated client contains a write verb (POST/PATCH/PUT/DELETE) or a non-GET method;
 //   3. Airtable write endpoints/SDK helpers appear anywhere in the source.
 import { readdir, readFile } from 'node:fs/promises';
@@ -11,6 +13,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const SRC_DIRS = ['src', 'scripts'];
 const CLIENT = path.join('src', 'lib', 'data', 'airtable-readonly.ts');
 const SELF = path.join('scripts', 'check-airtable-readonly.mjs');
+const LEADS = path.join('src', 'lib', 'leads-airtable.ts');
 
 const API_HOST = /api\.airtable\.com/i;
 const WRITE_VERB = /\b(POST|PATCH|PUT|DELETE)\b/;
@@ -39,8 +42,16 @@ export async function findViolations() {
         if (WRITE_VERB.test(body)) violations.push(`${rel}: contains a write HTTP verb`);
         for (const m of body.matchAll(/method\s*:\s*['"`](\w+)['"`]/g)) if (m[1] !== 'GET') violations.push(`${rel}: method ${m[1]}`);
         if (SDK_WRITES.test(body)) violations.push(`${rel}: contains an Airtable write helper`);
+      } else if (rel === LEADS) {
+        // Create-only: POST is the single verb, it must use the AIRTABLE_LEADS_* credentials
+        // and must guard against the data base id.
+        const body = code.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+        for (const m of body.matchAll(/method\s*:\s*['"`](\w+)['"`]/g)) if (m[1] !== 'POST') violations.push(`${rel}: method ${m[1]}`);
+        if (/\b(PATCH|PUT|DELETE)\b/.test(body)) violations.push(`${rel}: contains an update/delete verb`);
+        if (/process\.env\.AIRTABLE_(TOKEN|TABLE|VIEW)\b/.test(body)) violations.push(`${rel}: uses the data-base credentials`);
+        if (!/baseId === process\.env\.AIRTABLE_BASE_ID/.test(body)) violations.push(`${rel}: missing the data-base guard`);
       } else if (API_HOST.test(code)) {
-        violations.push(`${rel}: references api.airtable.com outside ${CLIENT}`);
+        violations.push(`${rel}: references api.airtable.com outside ${CLIENT} / ${LEADS}`);
       }
     }
   }
@@ -53,5 +64,5 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     console.error('✖ Airtable read-only policy violated:\n  - ' + v.join('\n  - '));
     process.exit(1);
   }
-  console.log('✔ Airtable read-only policy: no write paths found.');
+  console.log('✔ Airtable policy: data base read-only, leads create-only on the staging base.');
 }

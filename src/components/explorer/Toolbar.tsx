@@ -2,16 +2,16 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
-import { PROVINCES, REGIONS } from '@/lib/geo/territories';
-import { CATEGORY_BY_KEY, STAGES } from '@/lib/data/taxonomy';
-import { activeFilterCount, facetCounts, topTags, type Filters } from '@/lib/filters';
+import { REGIONS } from '@/lib/geo/territories';
+import { CATEGORY_BY_KEY, CATEGORY_FAMILIES, STATUSES, type CategoryKey } from '@/lib/data/taxonomy';
+import { activeFilterCount, facetCounts, type Filters } from '@/lib/filters';
 import { formatNumber } from '@/lib/i18n/config';
 import { fmt } from '@/lib/i18n';
 import { Dialog } from '../ui/Dialog';
 import { Icon } from '../ui/Icon';
 import { CategoryBar } from './CategoryBar';
 import { useExplorer } from './ExplorerProvider';
-import { provinceName, regionName } from './labels';
+import { regionName } from './labels';
 
 type Source = 'map' | 'database';
 
@@ -57,7 +57,7 @@ function SearchBox({ source }: { source: Source }) {
       <label htmlFor={id} className="sr-only">
         {t.explorer.search}
       </label>
-      <Icon name="search" size={18} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-subtle" />
+      <Icon name="search" size={18} className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-savoia" />
       <input
         id={id}
         type="search"
@@ -67,7 +67,7 @@ function SearchBox({ source }: { source: Source }) {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={t.explorer.searchPlaceholder}
-        className="field pl-9"
+        className="field field-pill pl-10"
       />
     </div>
   );
@@ -98,7 +98,7 @@ function Select({
       </label>
       <select
         id={id}
-        className="field"
+        className={`field field-pill ${value ? 'is-set' : ''}`}
         value={value ?? ''}
         disabled={disabled}
         onChange={(e) => onChange(e.target.value || null)}
@@ -115,51 +115,47 @@ function Select({
   );
 }
 
-function useFilterOptions(extended: boolean) {
+function useFilterOptions() {
   const { players, filters, locale, t } = useExplorer();
   return useMemo(() => {
-    const regionCounts = facetCounts(players, filters, 'region');
-    const provinceCounts = facetCounts(players, filters, 'province');
-    const statusCounts = facetCounts(players, filters, 'status');
     const n = (v: number | undefined) => formatNumber(v ?? 0, locale);
-    const regions = REGIONS.map((r) => ({ value: r.slug, label: `${r[locale]} (${n(regionCounts.get(r.slug))})` })).sort((a, b) =>
-      a.label.localeCompare(b.label, locale),
-    );
-    const provinces = PROVINCES.filter((p) => p.region === filters.region).map((p) => ({
-      value: p.slug,
-      label: `${p.name} (${n(provinceCounts.get(p.slug))})`,
+    const categoryCounts = facetCounts(players, filters, 'categories');
+    const regionCounts = facetCounts(players, filters, 'region');
+    const cityCounts = facetCounts(players, filters, 'city');
+    const industryCounts = facetCounts(players, filters, 'industry');
+    const statusCounts = facetCounts(players, filters, 'status');
+    const byCount = (m: Map<string, number>) =>
+      [...m.entries()].sort((a, b) => a[0].localeCompare(b[0], locale)).map(([v, c]) => ({ value: v, label: `${v} (${n(c)})` }));
+    // Player types in the order of the four enablers, then "other".
+    const order: CategoryKey[] = [...CATEGORY_FAMILIES.flatMap((f) => f.categories), 'other', 'unclassified'];
+    const categories = order
+      .filter((k) => categoryCounts.get(k) || filters.categories.includes(k))
+      .map((k) => ({ value: k, label: `${CATEGORY_BY_KEY[k].label[locale]} (${n(categoryCounts.get(k))})` }));
+    const regions = REGIONS.filter((r) => regionCounts.get(r.slug) || filters.region === r.slug)
+      .map((r) => ({ value: r.slug, label: `${r[locale]} (${n(regionCounts.get(r.slug))})` }))
+      .sort((a, b) => a.label.localeCompare(b.label, locale));
+    const status = STATUSES.filter((s) => statusCounts.get(s) || filters.status === s).map((s) => ({
+      value: s,
+      label: `${t.explorer.statusLabels[s]} (${n(statusCounts.get(s))})`,
     }));
-    const status = [
-      { value: 'active', label: `${t.explorer.statusActive} (${n(statusCounts.get('active'))})` },
-      { value: 'inactive', label: `${t.explorer.statusInactive} (${n(statusCounts.get('inactive'))})` },
-      { value: 'all', label: t.explorer.statusAll },
-    ];
-    let stages: { value: string; label: string }[] = [];
-    let tags: { value: string; label: string }[] = [];
-    let invests: { value: string; label: string }[] = [];
-    if (extended) {
-      const stageCounts = facetCounts(players, filters, 'stage');
-      stages = STAGES.map((s) => ({ value: s.key, label: `${s.label[locale]} (${n(stageCounts.get(s.key))})` }));
-      tags = topTags(
-        players.filter((p) => p.status === 'active'),
-        60,
-      )
-        .map(([tag, c]) => ({ value: tag, label: `${tag} (${n(c)})` }))
-        .sort((a, b) => a.label.localeCompare(b.label, locale));
-      const ic = new Map<string, number>();
-      for (const p of players) for (const c of p.investmentCountries) ic.set(c, (ic.get(c) ?? 0) + 1);
-      invests = [...ic.entries()].sort((a, b) => b[1] - a[1]).map(([c, v]) => ({ value: c, label: `${c} (${n(v)})` }));
-    }
-    return { regions, provinces, status, stages, tags, invests };
-  }, [players, filters, locale, t, extended]);
+    return { categories, regions, cities: byCount(cityCounts), industries: byCount(industryCounts), status };
+  }, [players, filters, locale, t]);
 }
 
-function FilterFields({ source, extended, stacked }: { source: Source; extended: boolean; stacked: boolean }) {
+function FilterFields({ source, stacked }: { source: Source; stacked: boolean }) {
   const { filters, setFilters, t } = useExplorer();
-  const o = useFilterOptions(extended);
-  const cls = stacked ? 'w-full' : 'w-[11.5rem]';
+  const o = useFilterOptions();
+  const cls = stacked ? 'w-full' : 'w-[11rem]';
   return (
     <>
+      <Select
+        className={cls}
+        label={t.explorer.category}
+        value={filters.categories[0] ?? null}
+        onChange={(v) => setFilters({ categories: v ? [v as CategoryKey] : [] }, source)}
+        options={o.categories}
+        placeholder={t.explorer.allCategories}
+      />
       <Select
         className={cls}
         label={t.explorer.region}
@@ -170,49 +166,28 @@ function FilterFields({ source, extended, stacked }: { source: Source; extended:
       />
       <Select
         className={cls}
-        label={t.explorer.province}
-        value={filters.province}
-        onChange={(v) => setFilters({ province: v }, source)}
-        options={o.provinces}
-        placeholder={filters.region ? t.explorer.allProvinces : t.explorer.selectRegionFirst}
-        disabled={!filters.region}
+        label={t.explorer.city}
+        value={filters.city}
+        onChange={(v) => setFilters({ city: v }, source)}
+        options={o.cities}
+        placeholder={t.explorer.allCities}
       />
       <Select
-        className={stacked ? 'w-full' : 'w-[9.5rem]'}
-        label={t.explorer.status}
-        value={filters.status === 'active' ? 'active' : filters.status}
-        onChange={(v) => setFilters({ status: (v as Filters['status']) ?? 'active' }, source)}
-        options={o.status}
-        placeholder={t.explorer.status}
+        className={cls}
+        label={t.explorer.industry}
+        value={filters.industry}
+        onChange={(v) => setFilters({ industry: v }, source)}
+        options={o.industries}
+        placeholder={t.explorer.allIndustries}
       />
-      {extended && (
-        <>
-          <Select
-            className={cls}
-            label={t.explorer.stage}
-            value={filters.stage}
-            onChange={(v) => setFilters({ stage: v as Filters['stage'] }, source)}
-            options={o.stages}
-            placeholder={t.explorer.allStages}
-          />
-          <Select
-            className={cls}
-            label={t.explorer.tag}
-            value={filters.tag}
-            onChange={(v) => setFilters({ tag: v }, source)}
-            options={o.tags}
-            placeholder={t.explorer.tag}
-          />
-          <Select
-            className={cls}
-            label={t.explorer.invests}
-            value={filters.invests}
-            onChange={(v) => setFilters({ invests: v }, source)}
-            options={o.invests}
-            placeholder={t.explorer.invests}
-          />
-        </>
-      )}
+      <Select
+        className={stacked ? 'w-full' : 'w-[10rem]'}
+        label={t.explorer.status}
+        value={filters.status === 'all' ? null : filters.status}
+        onChange={(v) => setFilters({ status: (v as Filters['status']) ?? 'all' }, source)}
+        options={o.status}
+        placeholder={t.explorer.statusAll}
+      />
     </>
   );
 }
@@ -229,23 +204,10 @@ function ActiveChips({ source }: { source: Source }) {
     });
   if (filters.region)
     chips.push({ key: 'r', label: regionName(filters.region, locale), remove: () => setFilters({ region: null }, source) });
-  if (filters.province)
-    chips.push({ key: 'p', label: provinceName(filters.province), remove: () => setFilters({ province: null }, source) });
-  if (filters.status !== 'active')
-    chips.push({
-      key: 's',
-      label: filters.status === 'inactive' ? t.explorer.statusInactive : t.explorer.statusAll,
-      remove: () => setFilters({ status: 'active' }, source),
-    });
-  if (filters.stage)
-    chips.push({
-      key: 'st',
-      label: STAGES.find((s) => s.key === filters.stage)!.label[locale],
-      remove: () => setFilters({ stage: null }, source),
-    });
-  if (filters.tag) chips.push({ key: 't', label: `#${filters.tag}`, remove: () => setFilters({ tag: null }, source) });
-  if (filters.invests)
-    chips.push({ key: 'i', label: `${t.explorer.invests}: ${filters.invests}`, remove: () => setFilters({ invests: null }, source) });
+  if (filters.city) chips.push({ key: 'ci', label: filters.city, remove: () => setFilters({ city: null }, source) });
+  if (filters.industry) chips.push({ key: 'in', label: filters.industry, remove: () => setFilters({ industry: null }, source) });
+  if (filters.status !== 'all')
+    chips.push({ key: 's', label: t.explorer.statusLabels[filters.status], remove: () => setFilters({ status: 'all' }, source) });
   if (!chips.length) return null;
   return (
     <div className="flex flex-wrap items-center gap-1.5" aria-label={t.explorer.activeFilters} role="group">
@@ -285,10 +247,10 @@ export function ResultsCount({ className = '' }: { className?: string }) {
 
 export function Toolbar({
   source,
-  extended = false,
   showCategories = false,
 }: {
   source: Source;
+  /** @deprecated all filters are always shown */
   extended?: boolean;
   showCategories?: boolean;
 }) {
@@ -303,7 +265,7 @@ export function Toolbar({
         <SearchBox source={source} />
         {/* Desktop/tablet: inline selects (wrap on tablet) */}
         <div className="hidden md:contents">
-          <FilterFields source={source} extended={extended} stacked={false} />
+          <FilterFields source={source} stacked={false} />
         </div>
         {/* Mobile: one Filters button → bottom sheet */}
         <button
@@ -322,7 +284,7 @@ export function Toolbar({
         </button>
       </div>
       <ActiveChips source={source} />
-      {showCategories && <CategoryBar source={source} />}
+      {showCategories && <CategoryBar />}
 
       <Dialog
         open={sheet}
@@ -333,13 +295,7 @@ export function Toolbar({
         labelledBy={titleId}
       >
         <div className="grid gap-4">
-          <div>
-            <p className="mb-2 text-xs font-bold text-muted">{t.explorer.category}</p>
-            <div className="[&>div]:flex-wrap">
-              <CategoryBar source={source} interactiveHover={false} />
-            </div>
-          </div>
-          <FilterFields source={source} extended={extended} stacked />
+          <FilterFields source={source} stacked />
         </div>
         <div className="sticky bottom-0 -mx-5 mt-6 border-t border-line bg-white px-5 pt-4 pb-1">
           <button type="button" className="btn btn-primary w-full" onClick={() => setSheet(false)}>

@@ -2,14 +2,20 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
+import { useLeadProfile } from '@/lib/lead-profile';
 import { LOCALES, type Locale } from '@/lib/i18n/config';
 import { SITE } from '@/lib/site';
 import { Icon } from '../ui/Icon';
 import { useExplorer } from './ExplorerProvider';
 
-/** "Sharing is caring": copy-paste iframe for the map or the database, IT or EN. */
+/**
+ * "Sharing is caring": copy-paste iframe for the map or the database, IT or EN.
+ * The code is unlocked by the same one-time sign-up as the downloads.
+ */
 export function ShareEmbed({ kind }: { kind: 'map' | 'database' }) {
-  const { t, locale } = useExplorer();
+  const { t, locale, requireLead } = useExplorer();
+  const profile = useLeadProfile();
+  const unlocked = !!profile;
   const [lang, setLang] = useState<Locale>(locale);
   const [copied, setCopied] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -41,7 +47,8 @@ export function ShareEmbed({ kind }: { kind: 'map' | 'database' }) {
     return () => io.disconnect();
   }, [kind]);
 
-  const copy = async () => {
+  const copy = () => requireLead('embed', () => void doCopy());
+  const doCopy = async () => {
     try {
       await navigator.clipboard.writeText(code);
     } catch {
@@ -58,13 +65,13 @@ export function ShareEmbed({ kind }: { kind: 'map' | 'database' }) {
     <div
       ref={ref}
       id={`${kind}-embed`}
-      className="reveal mt-6 grid gap-5 rounded-2xl bg-navy p-5 text-white md:grid-cols-[0.9fr_1.1fr] md:items-center md:p-7"
+      className="on-dark reveal mt-8 grid gap-5 rounded-[var(--radius-card)] bg-[linear-gradient(135deg,#3a52c2,#4b61d1_55%,#6079e0)] p-6 text-white shadow-[0_24px_50px_-28px_rgb(27_58_92/0.8)] md:grid-cols-[0.9fr_1.1fr] md:items-center md:p-7"
     >
       <div>
-        <p className="eyebrow text-sky">{t.share.eyebrow}</p>
-        <h3 className="mt-2 text-xl font-extrabold">{t.share.title}</h3>
+        <h3 className="text-2xl font-black tracking-[-0.02em]">{t.share.eyebrow}</h3>
+        <p className="mt-1 text-lg font-bold">{t.share.title}</p>
         <p className="mt-1 text-white/85">{kind === 'map' ? t.share.mapText : t.share.databaseText}</p>
-        <p className="mt-3 text-sm text-white/70">{t.share.free}</p>
+        <p className="mt-3 text-sm text-white/90">{t.share.free}</p>
       </div>
       <div className="on-dark min-w-0">
         <div className="mb-2 flex items-center justify-between gap-3">
@@ -88,15 +95,22 @@ export function ShareEmbed({ kind }: { kind: 'map' | 'database' }) {
         <textarea
           id={codeId}
           readOnly
-          value={code}
+          value={unlocked ? code : code.replace(/src="[^"]+"/, 'src="https://…"')}
           rows={3}
-          onFocus={(e) => e.currentTarget.select()}
-          className="w-full resize-none rounded-xl bg-deep/70 p-3 font-mono text-[0.75rem] leading-relaxed text-sky ring-1 ring-white/15"
+          onFocus={(e) => (unlocked ? e.currentTarget.select() : copy())}
+          aria-describedby={unlocked ? undefined : `${codeId}-locked`}
+          className={`w-full resize-none rounded-xl bg-deep/70 p-3 font-mono text-[0.75rem] leading-relaxed text-sky ring-1 ring-white/15 ${unlocked ? '' : 'blur-[3px] select-none'}`}
         />
+        {!unlocked && (
+          <p id={`${codeId}-locked`} className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-white/85">
+            <Icon name="lock" size={14} />
+            {t.share.locked}
+          </p>
+        )}
         <div className="mt-3 flex flex-wrap gap-2">
           <button type="button" onClick={copy} className="btn btn-light btn-sm">
             <Icon name={copied ? 'check' : 'copy'} size={16} />
-            <span aria-live="polite">{copied ? t.share.copied : t.share.copy}</span>
+            <span aria-live="polite">{copied ? t.share.copied : unlocked ? t.share.copy : t.share.unlock}</span>
           </button>
           <a href={path} target="_blank" rel="noopener" className="btn btn-ghost-dark btn-sm">
             <Icon name="external" size={16} />

@@ -3,24 +3,23 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
 import type { PublicPlayer } from '@/lib/data/schema';
-import { STAGE_BY_KEY } from '@/lib/data/taxonomy';
+import { STATUSES } from '@/lib/data/taxonomy';
 import { formatNumber, type Locale } from '@/lib/i18n/config';
 import { fmt } from '@/lib/i18n';
 import { Icon } from '../ui/Icon';
 import { Avatar } from './Avatar';
-import { DownloadButtons } from './DownloadDialog';
+import { DownloadButtons } from './Downloads';
 import { useExplorer, useLoadWhenNear } from './ExplorerProvider';
-import { categoryColor, categoryName, locationLabel, stageRange } from './labels';
-import { WebsiteLink } from './PlayerBits';
+import { categoryColor, categoryName, locationLabel } from './labels';
+import { StatusBadge, WebsiteLink } from './PlayerBits';
 import { EmptyState, ErrorState, LoadingState } from './States';
 import { ResultsCount, Toolbar } from './Toolbar';
 
-type SortKey = 'name' | 'category' | 'location' | 'stage';
+type SortKey = 'name' | 'category' | 'location' | 'industry' | 'status';
 const PAGE = 25;
 
 function sorter(key: SortKey, locale: Locale) {
   const coll = new Intl.Collator(locale, { sensitivity: 'base' });
-  const minStage = (p: PublicPlayer) => (p.stages.length ? Math.min(...p.stages.map((s) => STAGE_BY_KEY[s].order)) : 99);
   return (a: PublicPlayer, b: PublicPlayer) => {
     if (key === 'category')
       return coll.compare(categoryName(a.categories[0]!, locale), categoryName(b.categories[0]!, locale)) || coll.compare(a.name, b.name);
@@ -30,7 +29,13 @@ function sorter(key: SortKey, locale: Locale) {
       if (!la !== !lb) return la ? -1 : 1; // empty last
       return coll.compare(la ?? '', lb ?? '') || coll.compare(a.name, b.name);
     }
-    if (key === 'stage') return minStage(a) - minStage(b) || coll.compare(a.name, b.name);
+    if (key === 'industry') {
+      const ia = a.industries[0];
+      const ib = b.industries[0];
+      if (!ia !== !ib) return ia ? -1 : 1;
+      return coll.compare(ia ?? '', ib ?? '') || coll.compare(a.name, b.name);
+    }
+    if (key === 'status') return STATUSES.indexOf(a.status) - STATUSES.indexOf(b.status) || coll.compare(a.name, b.name);
     return coll.compare(a.name, b.name);
   };
 }
@@ -68,7 +73,7 @@ function LocationCell({ p, locale, demo }: { p: PublicPlayer; locale: Locale; de
 }
 
 export function DatabaseExplorer() {
-  const { state, results, filters, locale, t, openPlayer, resetFilters, requestContact } = useExplorer();
+  const { state, results, filters, locale, t, openPlayer, resetFilters } = useExplorer();
   const root = useRef<HTMLDivElement>(null);
   const tableTop = useRef<HTMLDivElement>(null);
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: 'name', dir: 1 });
@@ -134,9 +139,9 @@ export function DatabaseExplorer() {
   };
 
   return (
-    <div ref={root} className="card overflow-clip shadow-[var(--shadow-card)]">
+    <div ref={root} className="card overflow-clip text-ink shadow-[var(--shadow-pop)]">
       <div className="border-b border-line p-3 md:p-4">
-        <Toolbar source="database" extended showCategories />
+        <Toolbar source="database" extended />
       </div>
       <div
         ref={tableTop}
@@ -158,11 +163,11 @@ export function DatabaseExplorer() {
           <table className="hidden w-full table-fixed border-collapse text-left text-sm lg:table">
             <caption className="sr-only">{t.database.caption}</caption>
             <colgroup>
-              <col className="w-[27%]" />
-              <col className="w-[17%]" />
-              <col className="w-[16%]" />
+              <col className="w-[29%]" />
               <col className="w-[18%]" />
-              <col className="w-[11%]" />
+              <col className="w-[16%]" />
+              <col className="w-[16%]" />
+              <col className="w-[10%]" />
               <col className="w-[11%]" />
             </colgroup>
             <thead className="sticky top-[var(--header-h)] z-10 bg-mist text-[0.8125rem]">
@@ -170,10 +175,8 @@ export function DatabaseExplorer() {
                 {sortHeader('name', cols.name, 'pl-4')}
                 {sortHeader('category', cols.category)}
                 {sortHeader('location', cols.location)}
-                <th scope="col" className="px-3 py-3 font-bold text-muted">
-                  {cols.focus}
-                </th>
-                {sortHeader('stage', cols.stage)}
+                {sortHeader('industry', cols.industry)}
+                {sortHeader('status', cols.status)}
                 <th scope="col" className="px-3 py-3 pr-4 text-right font-bold text-muted">
                   <span className="sr-only">{cols.actions}</span>
                 </th>
@@ -184,7 +187,7 @@ export function DatabaseExplorer() {
                 <tr key={p.id} className="group border-b border-line last:border-0 hover:bg-savoia-50/60">
                   <td className="py-3 pr-3 pl-4">
                     <div className="flex items-center gap-3">
-                      <Avatar player={p} size={32} />
+                      <Avatar player={p} size={34} wide={!!p.logo} />
                       <div className="min-w-0">
                         <button
                           type="button"
@@ -209,27 +212,18 @@ export function DatabaseExplorer() {
                   </td>
                   <td className="px-3 py-3 text-muted">
                     <span className="line-clamp-2">
-                      {p.tags.slice(0, 3).join(', ') || '—'}
-                      {p.tags.length > 3 && <span className="text-subtle"> +{p.tags.length - 3}</span>}
+                      {p.industries.slice(0, 2).join(', ') || '—'}
+                      {p.industries.length > 2 && <span className="text-subtle"> +{p.industries.length - 2}</span>}
                     </span>
                   </td>
-                  <td className="px-3 py-3 text-muted">{stageRange(p, locale) ?? '—'}</td>
+                  <td className="px-3 py-3">
+                    <StatusBadge p={p} t={t} />
+                  </td>
                   <td className="py-3 pr-4 pl-3 text-right">
-                    <div className="flex justify-end gap-1">
-                      <button type="button" className="btn btn-outline btn-sm px-3" onClick={() => openPlayer(p.id, 'database')}>
-                        {t.explorer.details}
-                        <span className="sr-only">: {p.name}</span>
-                      </button>
-                      <button
-                        type="button"
-                        className="inline-flex size-9 items-center justify-center rounded-full text-muted hover:bg-white hover:text-savoia-700"
-                        onClick={() => requestContact(p.id, 'database')}
-                        aria-label={`${t.explorer.requestContacts}: ${p.name}`}
-                        title={t.explorer.requestContacts}
-                      >
-                        <Icon name="lock" size={16} />
-                      </button>
-                    </div>
+                    <button type="button" className="btn btn-outline btn-sm px-3" onClick={() => openPlayer(p.id, 'database')}>
+                      {t.explorer.details}
+                      <span className="sr-only">: {p.name}</span>
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -245,7 +239,7 @@ export function DatabaseExplorer() {
                   onClick={() => openPlayer(p.id, 'database')}
                   className="flex h-full w-full items-start gap-3 rounded-xl border border-line bg-white p-3 text-left hover:border-line-strong"
                 >
-                  <Avatar player={p} size={40} />
+                  <Avatar player={p} size={40} wide={!!p.logo} />
                   <span className="min-w-0 flex-1">
                     <span className="block font-bold text-navy">{p.name}</span>
                     <span className="mt-0.5 block text-[0.8125rem] text-muted">
@@ -254,7 +248,10 @@ export function DatabaseExplorer() {
                     <span className="mt-1 block text-[0.8125rem] text-muted">
                       <LocationCell p={p} locale={locale} demo={t.explorer.demoBadge} />
                     </span>
-                    {p.tags.length > 0 && <span className="mt-1 block truncate text-xs text-subtle">{p.tags.slice(0, 4).join(' · ')}</span>}
+                    {p.industries.length > 0 && <span className="mt-1 block truncate text-xs text-subtle">{p.industries.slice(0, 3).join(' · ')}</span>}
+                    <span className="mt-1.5 block">
+                      <StatusBadge p={p} t={t} />
+                    </span>
                   </span>
                   <Icon name="arrowRight" size={18} className="mt-1 shrink-0 text-subtle" />
                 </button>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ComponentType } from 'react';
 import type { ExplorerProps } from './ExplorerSections';
 import { ExplorerShell } from './ExplorerShell';
+import { ViewSwitch } from './ViewSwitch';
 
 /**
  * Keeps the map/database code (and its hydration cost) out of the initial page
@@ -42,20 +43,24 @@ export function LazyExplorer(props: ExplorerProps & { loadingLabel: string }) {
 
   if (Explorer) return <Explorer {...props} />;
 
-  // Same frame and approximate height as the loaded explorer: no layout shift on swap.
-  const placeholder = (h: string) => (
-    <div
-      className="card mt-8 flex items-center justify-center text-sm font-semibold text-muted shadow-[var(--shadow-card)]"
-      style={{ height: h }}
-    >
-      {props.loadingLabel}
-    </div>
-  );
+  // Same frame, switch and approximate height as the loaded explorer: no layout shift on swap.
   return (
     <div ref={sentinel}>
       <ExplorerShell
-        map={{ header: props.mapHeader, body: placeholder('min(84vh, calc(100dvh - var(--header-h) - 24px))') }}
-        database={{ header: props.databaseHeader, body: placeholder('900px') }}
+        header={props.header}
+        body={
+          <>
+            <div className="mt-9">
+              <ViewSwitch view="map" ariaLabel={props.t.map.switchLabel} labels={{ map: props.t.map.viewMap, database: props.t.map.viewDatabase }} />
+            </div>
+            <div
+              className="card mt-6 flex items-center justify-center text-sm font-semibold text-muted shadow-[var(--shadow-pop)]"
+              style={{ height: 'calc(min(84vh, calc(100dvh - var(--header-h) - 24px)) + 150px)' }}
+            >
+              {props.loadingLabel}
+            </div>
+          </>
+        }
       />
     </div>
   );

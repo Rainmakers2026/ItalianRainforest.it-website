@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import type { DatasetStats } from '@/lib/data/stats';
-import { CATEGORY_BY_KEY } from '@/lib/data/taxonomy';
+import { CATEGORY_BY_KEY, CATEGORY_FAMILIES, type FamilyKey } from '@/lib/data/taxonomy';
 import { LOCALES, OG_LOCALE, type Locale } from '@/lib/i18n/config';
 import { fmt, getDictionary } from '@/lib/i18n';
+import { plain } from '@/lib/i18n/rich';
 import { absoluteUrl, SITE } from '@/lib/site';
 
 export function alternates(locale: Locale, path = '') {
@@ -17,7 +18,7 @@ export function alternates(locale: Locale, path = '') {
 
 export function homeMetadata(locale: Locale, stats: DatasetStats): Metadata {
   const t = getDictionary(locale).meta;
-  const description = fmt(t.description, { active: stats.active });
+  const description = fmt(t.description, { active: stats.total });
   return {
     metadataBase: new URL(SITE.url),
     title: t.title,
@@ -40,11 +41,18 @@ export function homeMetadata(locale: Locale, stats: DatasetStats): Metadata {
   };
 }
 
+/** "venture builder e startup studio (264), venture capital (184), …" — by size, with the live counts. */
 export function categoryList(stats: DatasetStats, locale: Locale) {
-  return stats.categoryCounts
+  return [...stats.categoryCounts]
     .filter((c) => c.key !== 'unclassified')
-    .map((c) => CATEGORY_BY_KEY[c.key].label[locale].toLowerCase())
+    .sort((a, b) => b.count - a.count)
+    .map((c) => `${CATEGORY_BY_KEY[c.key].label[locale].toLowerCase()} (${c.count})`)
     .join(', ');
+}
+
+/** "abilitatori personali (8), di business (…)…" from the four families. */
+export function familyList(stats: DatasetStats, locale: Locale, labels: Record<FamilyKey, string>) {
+  return CATEGORY_FAMILIES.map((f) => `${labels[f.key].toLowerCase()} (${stats.familyCounts[f.key]})`).join(', ');
 }
 
 /** JSON-LD graph: WebSite + Organization (Rainmakers) + Dataset + FAQPage, all matching visible content. */
@@ -69,7 +77,7 @@ export function jsonLd(locale: Locale, stats: DatasetStats, faq: { q: string; a:
         '@id': `${SITE.url}/#website`,
         url: home,
         name: SITE.name,
-        description: fmt(t.meta.description, { active: stats.active }),
+        description: fmt(t.meta.description, { active: stats.total }),
         inLanguage: locale,
         publisher: { '@id': orgId },
       },
@@ -80,7 +88,7 @@ export function jsonLd(locale: Locale, stats: DatasetStats, faq: { q: string; a:
           locale === 'it'
             ? 'Italian Rainforest — database dell’ecosistema italiano dell’innovazione'
             : 'Italian Rainforest — Italian innovation ecosystem database',
-        description: fmt(t.why.definition, { active: stats.active, categories: stats.categories }),
+        description: plain(fmt(t.why.definition, { active: stats.total, categories: stats.categories })),
         url: `${home}#database`,
         creator: { '@id': orgId },
         publisher: { '@id': orgId },
@@ -95,7 +103,7 @@ export function jsonLd(locale: Locale, stats: DatasetStats, faq: { q: string; a:
           'startup ecosystem Italy',
         ],
         variableMeasured: stats.categoryCounts.map((c) => CATEGORY_BY_KEY[c.key].label[locale]),
-        size: `${stats.active} ${locale === 'it' ? 'organizzazioni attive' : 'active organisations'}`,
+        size: `${stats.total} ${locale === 'it' ? 'abilitatori' : 'enablers'}`,
       },
       {
         '@type': 'FAQPage',

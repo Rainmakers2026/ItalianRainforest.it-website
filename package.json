@@ -11,15 +11,20 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "check:airtable-readonly": "node scripts/check-airtable-readonly.mjs",
-    "data:snapshot": "node scripts/snapshot-legacy.mjs",
     "geo:build": "node scripts/build-geo.mjs",
-    "visuals:build": "node scripts/build-visuals.mjs",
     "prebuild": "node scripts/check-airtable-readonly.mjs && node scripts/copy-vendor.mjs",
     "postinstall": "node scripts/copy-vendor.mjs",
     "predev": "node scripts/copy-vendor.mjs",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "images:prepare": "node scripts/prepare-images.mjs",
+    "data:import": "node scripts/import-irf-csv.mjs",
+    "data:geocode": "node scripts/geocode-irf.mjs && node scripts/import-irf-csv.mjs",
+    "infographic:build": "node scripts/build-infographic.mts",
+    "brand:prepare": "node scripts/prepare-brand.mjs"
   },
   "dependencies": {
+    "jspdf": "4.2.1",
+    "jspdf-autotable": "5.0.9",
     "maplibre-gl": "6.15.0",
     "next": "16.4.2",
     "react": "19.3.1",

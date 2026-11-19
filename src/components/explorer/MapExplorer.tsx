@@ -7,9 +7,11 @@ import { formatNumber } from '@/lib/i18n/config';
 import { fmt } from '@/lib/i18n';
 import { Icon } from '../ui/Icon';
 import { useExplorer, useLoadWhenNear } from './ExplorerProvider';
+import { PlayerPanelPopup } from './PlayerDetail';
 import { PlayerList } from './PlayerList';
 import { PlayerPreviewCard } from './PlayerPreviewCard';
 import { DemoGeoBanner, EmptyState, ErrorState, LoadingState } from './States';
+import { MapDownloads } from './Downloads';
 import { ResultsCount, Toolbar } from './Toolbar';
 
 const MapCanvas = dynamic(() => import('./MapCanvas'), { ssr: false });
@@ -66,10 +68,10 @@ export function MapExplorer({ height = 'min(84vh, calc(100dvh - var(--header-h) 
     ) : null;
 
   return (
-    <div ref={root} className="card overflow-clip shadow-[var(--shadow-card)]">
+    <div ref={root} className="card overflow-clip text-ink shadow-[0_40px_80px_-40px_rgb(5_15_30/0.9)] ring-1 ring-white/10">
       <div className="sticky top-[var(--header-h)] z-20 border-b border-line bg-white p-3 md:static md:p-4">
         <Toolbar source="map" showCategories />
-        <div className="mt-3 flex items-center justify-between gap-3 md:hidden">
+        <div className="mt-3 flex items-center justify-between gap-2 md:hidden">
           <div role="group" aria-label={t.map.title} className="inline-flex rounded-full bg-mist p-1 text-sm font-bold">
             {(['map', 'list'] as const).map((v) => (
               <button
@@ -77,14 +79,23 @@ export function MapExplorer({ height = 'min(84vh, calc(100dvh - var(--header-h) 
                 type="button"
                 aria-pressed={view === v}
                 onClick={() => setView(v)}
-                className={`inline-flex min-h-9 items-center gap-1.5 rounded-full px-4 ${view === v ? 'bg-white text-navy shadow-sm' : 'text-muted'}`}
+                className={`inline-flex min-h-10 items-center gap-1.5 rounded-full px-3 transition-colors duration-200 min-[400px]:px-4 ${view === v ? 'bg-white text-navy shadow-sm' : 'text-muted'}`}
               >
                 <Icon name={v === 'map' ? 'map' : 'list'} size={16} />
-                {v === 'map' ? t.map.viewMap : t.map.viewList}
+                <span className="max-[359px]:sr-only">{v === 'map' ? t.map.viewMap : t.map.viewList}</span>
+                {v === 'list' && (
+                  <span className="rounded-full bg-savoia-50 px-1.5 text-xs text-savoia-700 tabular-nums" aria-hidden="true">
+                    {n}
+                  </span>
+                )}
               </button>
             ))}
           </div>
-          <ResultsCount />
+          {/* On mobile the count sits on the List toggle; this copy keeps the live announcement. */}
+          <div className="sr-only">
+            <ResultsCount />
+          </div>
+          <MapDownloads compact />
         </div>
       </div>
       <div className="px-3 pt-3 empty:hidden md:px-4">
@@ -93,7 +104,7 @@ export function MapExplorer({ height = 'min(84vh, calc(100dvh - var(--header-h) 
 
       <div className="relative grid md:grid-cols-[minmax(300px,1fr)_2fr]" style={{ height }}>
         {/* Left panel: alphabetical list, or the preview card on marker hover */}
-        <aside className={`min-h-0 flex-col border-line md:flex md:border-r ${view === 'list' ? 'flex' : 'hidden'}`}>
+        <aside className={`relative min-h-0 flex-col border-line md:flex md:border-r ${view === 'list' ? 'view-fade flex' : 'hidden'}`}>
           <div className="hidden items-center justify-between gap-2 border-b border-line px-4 py-3 md:flex">
             <ResultsCount />
           </div>
@@ -109,7 +120,7 @@ export function MapExplorer({ height = 'min(84vh, calc(100dvh - var(--header-h) 
             {panel ?? (
               <>
                 {preview && (
-                  <div className="hidden h-full p-2 md:block">
+                  <div key={preview.id} className="fade-pop hidden h-full p-2 md:block">
                     <PlayerPreviewCard p={preview} onClose={() => setPreviewId(null)} />
                   </div>
                 )}
@@ -119,11 +130,19 @@ export function MapExplorer({ height = 'min(84vh, calc(100dvh - var(--header-h) 
               </>
             )}
           </div>
+          <PlayerPanelPopup />
         </aside>
 
         {/* Map */}
-        <div className={`relative min-h-0 bg-mist md:block ${view === 'map' ? 'block' : 'hidden'}`}>
+        <div className={`relative min-h-0 bg-mist md:block ${view === 'map' ? 'view-fade block' : 'hidden'}`}>
           {state === 'idle' ? <LoadingState label={t.map.loadingMap} /> : <MapCanvas />}
+
+          {/* Desktop: download the filtered map (PNG) or its results (CSV). */}
+          {state === 'ready' && (
+            <div className="absolute top-3 left-3 z-10 hidden rounded-full bg-white/95 p-1 shadow-[var(--shadow-card)] ring-1 ring-line backdrop-blur-sm md:block">
+              <MapDownloads />
+            </div>
+          )}
 
           {/* Mobile: floating list CTA */}
           {state === 'ready' && !preview && (
@@ -139,7 +158,7 @@ export function MapExplorer({ height = 'min(84vh, calc(100dvh - var(--header-h) 
 
           {/* Mobile: bottom sheet for the tapped marker */}
           {preview && (
-            <div className="absolute inset-x-0 bottom-0 z-10 max-h-[45%] min-h-[35%] overflow-y-auto rounded-t-2xl bg-white p-4 shadow-[var(--shadow-pop)] md:hidden">
+            <div key={preview.id} className="fade-pop absolute inset-x-0 bottom-0 z-10 max-h-[45%] min-h-[35%] overflow-y-auto rounded-t-3xl bg-white p-4 shadow-[var(--shadow-pop)] md:hidden">
               <PlayerPreviewCard p={preview} compact onClose={() => setPreviewId(null)} />
             </div>
           )}

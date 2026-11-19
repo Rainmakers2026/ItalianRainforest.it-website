@@ -3,42 +3,27 @@
 import { track } from '@/lib/analytics';
 import { LOCALES, type Locale } from '@/lib/i18n/config';
 
-/** Switches language while preserving the current section (#hash) and filters (?query). */
-export function LanguageSwitch({
-  locale,
-  label,
-  basePath = '',
-  dark = false,
-}: {
-  locale: Locale;
-  label: string;
-  basePath?: string;
-  dark?: boolean;
-}) {
+const READ_IN: Record<Locale, string> = { it: 'Leggi questa pagina in italiano', en: 'Read this page in English' };
+
+/**
+ * Round pill showing the other language, as on rainmakers.it. Keeps the current
+ * section (#hash) and filters (?query) when switching.
+ */
+export function LanguageSwitch({ locale, basePath = '' }: { locale: Locale; basePath?: string }) {
+  const other = LOCALES.find((l) => l !== locale)!;
   return (
-    <nav aria-label={label} className="flex items-center rounded-full border border-line p-0.5 text-xs font-bold">
-      {LOCALES.map((l) => {
-        const active = l === locale;
-        return (
-          <a
-            key={l}
-            href={`/${l}${basePath}`}
-            hrefLang={l}
-            lang={l}
-            aria-current={active ? 'true' : undefined}
-            onClick={(e) => {
-              if (active) return e.preventDefault();
-              track('language_switch', { from: locale, to: l });
-              e.currentTarget.href = `/${l}${basePath}${window.location.search}${window.location.hash}`;
-            }}
-            className={`inline-flex min-h-8 min-w-9 items-center justify-center rounded-full px-2 uppercase transition-colors ${
-              active ? 'bg-navy text-white' : dark ? 'text-white/80 hover:text-white' : 'text-muted hover:text-ink'
-            }`}
-          >
-            {l}
-          </a>
-        );
-      })}
-    </nav>
+    <a
+      href={`/${other}${basePath}`}
+      hrefLang={other}
+      lang={other}
+      aria-label={READ_IN[other]}
+      onClick={(e) => {
+        track('language_switch', { from: locale, to: other });
+        e.currentTarget.href = `/${other}${basePath}${window.location.search}${window.location.hash}`;
+      }}
+      className="inline-flex size-11 items-center justify-center rounded-full border border-white/25 text-[0.8125rem] font-bold text-white uppercase transition-colors hover:border-white/60 hover:bg-white/10"
+    >
+      {other}
+    </a>
   );
 }

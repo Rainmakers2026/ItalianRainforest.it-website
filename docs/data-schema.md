@@ -3,80 +3,89 @@
 ## Flow
 
 ```
-Airtable (READ-ONLY view)  ──GET──▶  AirtableReadOnlyProvider ─┐
-data/snapshot/legacy-records.json ─▶ LegacyReadOnlyProvider ───┤
-                                                                ▼
-                         normalizeRecord() → dedupe() → [applyDemoGeo()]   (server only)
-                                                                ▼
-                         PublicPlayer[]  ──▶ /api/players (public)  ──▶ map, database, embeds
-                         GatedContacts   ──▶ /api/contact-request only (after email + consent)
+data/source/irf-database.csv ──▶ scripts/import-irf-csv.mjs ──▶ data/snapshot/irf-records.json ─▶ SnapshotProvider ─┐
+  + logo folder (LOGHI PLAYER) ──▶ public/logos/players/<hash>.webp + data/snapshot/logos.json                      │
+  + scripts/geocode-irf.mjs    ──▶ data/snapshot/geocode-cache.json (OpenStreetMap Nominatim)                       │
+Airtable "Rainmakers OS" (READ-ONLY) ──GET──▶ AirtableReadOnlyProvider ────────────────────────────────────────────┤
+                                                                                                                    ▼
+                        normalizeRecord(record, {logos, geo}) → dedupe()          (server only)
+                                                                                                                    ▼
+                        PublicPlayer[] ──▶ /api/players ──▶ map, database, embeds, hero numbers, categories, FAQ, infographic
+                        GatedContacts  ──▶ /api/contact-request only
 ```
 
-The provider is chosen automatically: Airtable when `AIRTABLE_TOKEN`, `AIRTABLE_BASE_ID` and `AIRTABLE_TABLE` are set, otherwise the snapshot. If Airtable fails, the last good copy (or the snapshot) is served and a warning is logged. The browser never receives the raw record or the Airtable record id.
+The provider is chosen automatically: Airtable when `AIRTABLE_TOKEN`, `AIRTABLE_BASE_ID` and `AIRTABLE_TABLE` are set, otherwise the snapshot. If Airtable fails, the last good copy (or the snapshot) is served. The browser never receives the raw record or the Airtable record id.
 
-## Source fields (Airtable)
+Logos and geocoded positions are keyed by **company name** (`nameKey()`), so they are reused when the site switches to Airtable and a record has no LOGO attachment or coordinates.
 
-| Airtable field | Exists today | Public | Maps to |
-|---|---|---|---|
-| Company Name | ✔ | ✔ | `name`, `slug` |
-| Account Type (multi) | ✔ | ✔ | `categories` (see taxonomy) |
-| Status | ✔ | ✔ | `status` (`active`/`inactive`) |
-| Website | ✔ | ✔ | `website`, `websiteHost` (normalised) |
-| Hashtags (multi) | ✔ | ✔ | `tags` (synonyms merged, `TBD` dropped) |
-| Stage of Investment/Development (multi) | ✔ | ✔ | `stages` |
-| Countries of investment (multi) | ✔ | ✔ | `investmentCountries` |
-| Created | ✔ | ✔ | `createdAt` |
-| Description / Description EN | expected | ✔ | `description.it/en` |
-| Logo (attachment) | expected | ✔ | `logo` (thumbnail URL) |
-| Country, Region, Province, City | expected | ✔ | `location` (region/province → ISTAT slugs; province accepts name or code, e.g. `MI`) |
-| Latitude, Longitude | expected | ✔ | `location.lat/lng` |
-| LinkedIn | expected | ✔ | `publicSocial.linkedin` |
-| **Email, Phone, Contact Person** | expected | **✘ sensitive** | `GatedContacts` (server only) |
+## Columns (CSV export = Airtable "Rainmakers OS")
 
-Field names are defined once in `src/lib/data/normalize.ts` (`FIELDS`). Rename there if the base uses different labels.
-
-## PublicPlayer (`src/lib/data/schema.ts`, Zod-validated)
-
-| Field | Type | Notes |
+| Column | Public | Maps to |
 |---|---|---|
-| id | string | Pseudonymous: `sha256("irf:" + recordId)` (10 chars). Used in analytics. |
-| slug | string | Unique, used in `?player=` deep links. |
-| name | string | |
-| categories | CategoryKey[] | ≥1; first = primary (marker colour). |
-| status | `active` \| `inactive` | Default filter = active. |
-| website, websiteHost | string \| null | |
-| description | `{ it, en }` | nullable each. |
-| logo | url \| null | |
-| tags | string[] | |
-| stages | StageKey[] | `idea, prototype, early-revenue, scaling, growth, pre-ipo` |
-| investmentCountries | string[] | |
-| location | `{ country, region, province, city, lat, lng, source }` \| null | `source: 'demo'` = synthetic, never exported. |
-| publicSocial | `{ linkedin }` | |
-| hasGatedContacts | boolean | Only a flag: the values are never public. |
-| createdAt | string \| null | |
+| COMPANY NAME (`Map` in the CSV) | ✔ | `name`, `slug` |
+| WEBSITE | ✔ | `website`, `websiteHost` (normalised, tracking params removed) |
+| SHORT DESCRIPTION | ✔ | `description` (cookie/404 boilerplate dropped by the importer) |
+| PLAYER TYPE (multi, `;`-separated in the CSV) | ✔ | `categories` — STARTUP rows are excluded |
+| ADDRESS | ✔ | `location.address` — hidden when it contradicts REGION |
+| REGION | ✔ | `location.region` (slug) |
+| CITY | ✔ | `location.city` (normalised: Turin → Torino, …) |
+| INDUSTRY | ✔ | `industries` |
+| STATUS | ✔ | `status`: ACTIVE → `active`, INACTIVE → `inactive`, DA VERIFICARE/empty → `unverified` |
+| LOGO (attachment in Airtable; SI/NO in the CSV) | ✔ | `logo` {src, w, h, tone} |
+| OPEN STREET MAP | ✔ | `location.lat/lng` when the link carries coordinates |
+| EMAIL, PHONE, REFERENCE | ✖ gated | `GatedContacts` (never public, never exported) |
+| REFERENCE, INFORMATION SOURCE | ✖ | not used |
 
-## Taxonomy (`src/lib/data/taxonomy.ts`)
+Other names can be mapped without code changes: `AIRTABLE_FIELD_MAP='{"name":"Company"}'` (keys in `src/lib/data/normalize.ts`).
 
-| Key | Airtable value | IT | EN |
-|---|---|---|---|
-| vc | VC | Venture capital | Venture capital |
-| incubator | Incubator / Accelerator | Incubatori e acceleratori | Incubators & accelerators |
-| cvc | CVC | Corporate venture capital | Corporate venture capital |
-| coworking | CoWorking | Coworking | Coworking spaces |
-| venture-builder | Startup Studio / Venture Builder | Startup studio e venture builder | Startup studios & venture builders |
-| angels | BAN / Club Deal | Business angel e club deal | Business angels & club deals |
-| institution | Institution | Istituzioni | Institutions |
-| media | Media & Communities | Media e community | Media & communities |
-| programs | Empowerment Programs | Programmi di empowerment | Empowerment programmes |
-| science-park | PST | Parchi scientifici e tecnologici | Science & technology parks |
-| other | Other | Altri abilitatori | Other enablers |
-| unclassified | *(empty)* | Da classificare | Not yet classified |
+"DA VERIFICARE", "Not Answered" and empty cells are treated as missing values.
 
-## Geography
-Regions (20) and provinces (110, openpolis/ISTAT) with bounding boxes are generated in `src/lib/geo/territories.ts` by `npm run geo:build <source-dir>`. Map shapes are served from `public/geo/*.json` (self-hosted, no tile server).
+## Player types → categories → families
 
-## Query state (shared by map, database, embeds, CSV)
-`?q=&category=vc,cvc&region=lombardia&province=milano&status=active|inactive|all&stage=&tag=&invests=&player=<slug>` — parsed/validated in `src/lib/filters.ts`. Unknown values are ignored; a province outside the selected region is dropped.
+| PLAYER TYPE | Category key | Family |
+|---|---|---|
+| EMPOWERMENT PROGRAM | `programs` | personal |
+| CORSI DI FORMAZIONE | `training` | personal |
+| INCUBATOR/ACCELERATOR | `incubator` | business |
+| VENTURE BUILDER/STARTUP STUDIO | `venture-builder` | business |
+| PST | `science-park` | business |
+| VC | `vc` | financial |
+| CVC | `cvc` | financial |
+| BAN/CLUB DEAL | `angels` | financial |
+| CROWDFUNDING PLATFORM | `crowdfunding` | financial |
+| FAMILY OFFICE | `family-office` | financial |
+| INSTITUTIONS | `institution` | environmental |
+| ASSOCIATIONS | `associations` | environmental |
+| MEDIA | `media` | environmental |
+| COWORKING | `coworking` | environmental |
+| Altri abilitatori | `other` | — |
+| STARTUP | excluded | — |
 
-## Exports (`/api/download`)
-CSV (UTF-8 BOM, formula-injection safe) or JSON, filtered with the same query state. Columns: id, name, categories, status, website, linkedin, description, city, province, region, country, latitude, longitude, focus, stages, investment_countries. **Never** gated contacts, **never** demo positions.
+Labels, short labels, definitions and colours live in `src/lib/data/taxonomy.ts` (colours: one hue per family).
+
+## Positions
+
+`scripts/geocode-irf.mjs` asks Nominatim (1 request/second, generic user agent, results cached) in this order:
+1. the street address, only when its province belongs to the REGION of the row → `precision: address`;
+2. CITY + REGION → `precision: city`;
+3. REGION → `precision: region`.
+
+Rows without a region are not placed. Players sharing a point are fanned out on the map so each stays clickable. The profile states when a position is approximate.
+
+## Public schema (`PublicPlayer`)
+
+`id, slug, name, categories[], status, website, websiteHost, description, logo, industries[], location {country, region, province, city, address, lat, lng, precision, source}, hasGatedContacts` — see `src/lib/data/schema.ts` (zod).
+
+## Leads (approval queue)
+
+The one-time sign-up (name, surname, email, consent) asked before downloads and embed codes is appended, create-only, to an Airtable table on a **separate staging base** (`AIRTABLE_LEADS_*`, `src/lib/leads-airtable.ts`). Columns: Nome, Cognome, Email, Referente, Organizzazione, Motivo, Dettaglio, Lingua, Consenso marketing, UTM, Ricevuto il, Stato (= "Da approvare"). The team approves contacts there before moving them into Rainmakers OS. The build fails if this module uses the data-base credentials, any verb other than POST, or lacks the guard against the data base id.
+
+## Updating the data
+
+```
+npm run data:import -- data/source/irf-database.csv "<path>/LOGHI PLAYER"   # CSV + logos
+npm run data:geocode                                                      # new addresses only
+npm run infographic:build                                                 # downloadable PNGs
+```
+
+Every import rewrites `docs/data-quality.md` with what needs fixing in the source.

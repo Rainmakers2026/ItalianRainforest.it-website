@@ -68,7 +68,7 @@ export default async function PrivacyPage({ params }: PageProps<'/[locale]/priva
       <header className="border-b border-line">
         <div className="container-irf flex h-16 items-center">
           <a href={`/${locale}`} aria-label="Italian Rainforest — home">
-            <Logo size={32} />
+            <Logo size={32} tone="blue" />
           </a>
         </div>
       </header>

@@ -7,7 +7,12 @@ export const SITE = {
   // TODO(owner): confirm the production domain.
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.italianrainforest.it').replace(/\/$/, ''),
   email: 'italianrainforest@rainmakers.it',
-  whatsappCommunity: 'https://chat.whatsapp.com/Fka8dKBYNkw8hbZtTo88U1',
+  // TODO(owner): community channels. Telegram is a placeholder until the channel exists
+  // (set NEXT_PUBLIC_TELEGRAM_URL). No WhatsApp references any more.
+  community: {
+    telegram: process.env.NEXT_PUBLIC_TELEGRAM_URL || 'https://t.me/',
+    telegramIsPlaceholder: !process.env.NEXT_PUBLIC_TELEGRAM_URL,
+  },
   rainmakers: {
     name: 'Rainmakers',
     url: 'https://www.rainmakers.it',

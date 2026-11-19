@@ -6,7 +6,7 @@ import { fmt, type Dictionary } from '@/lib/i18n';
 import { SITE } from '@/lib/site';
 
 export type LeadStrings = Dictionary['lead'];
-export type FormErrors = Partial<Record<'email' | 'consent' | 'org' | 'details' | 'form', string>>;
+export type FormErrors = Partial<Record<'email' | 'consent' | 'org' | 'details' | 'form' | 'firstName' | 'lastName' | 'company', string>>;
 
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -70,7 +70,18 @@ export function EmailField({ t, error, defaultValue, label }: { t: LeadStrings; 
 }
 
 /** Required processing consent + optional marketing consent + honeypot. */
-export function ConsentFields({ t, locale, error }: { t: LeadStrings; locale: Locale; error?: string }) {
+export function ConsentFields({
+  t,
+  locale,
+  error,
+  marketing = true,
+}: {
+  t: LeadStrings;
+  locale: Locale;
+  error?: string;
+  /** Optional newsletter opt-in (off for forms that collect no email). */
+  marketing?: boolean;
+}) {
   const id = useId();
   const [before, after] = t.consent.split('{privacy}');
   return (
@@ -100,10 +111,12 @@ export function ConsentFields({ t, locale, error }: { t: LeadStrings; locale: Lo
         </label>
         <FieldError id={`${id}-err`}>{error}</FieldError>
       </div>
-      <label className="flex items-start gap-2.5 text-muted">
-        <input type="checkbox" name="marketing" className="mt-0.5 size-[18px] shrink-0 accent-savoia" />
-        <span>{t.marketing}</span>
-      </label>
+      {marketing && (
+        <label className="flex items-start gap-2.5 text-muted">
+          <input type="checkbox" name="marketing" className="mt-0.5 size-[18px] shrink-0 accent-savoia" />
+          <span>{t.marketing}</span>
+        </label>
+      )}
       {/* Honeypot: hidden from people and assistive tech. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
         <label>

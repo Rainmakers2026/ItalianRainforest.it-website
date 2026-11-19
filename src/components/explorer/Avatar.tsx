@@ -1,29 +1,38 @@
 import type { PublicPlayer } from '@/lib/data/schema';
 import { categoryColor, initials, primaryCategory } from './labels';
 
-/** Logo when available (small, lazy), otherwise initials on the category colour. */
-export function Avatar({ player, size = 36 }: { player: PublicPlayer; size?: number }) {
+/**
+ * The player's logo (pre-sized local file, lazy) on a tile that suits its artwork —
+ * light logos sit on navy — otherwise initials on the player-type colour.
+ */
+export function Avatar({ player, size = 36, wide = false }: { player: PublicPlayer; size?: number; wide?: boolean }) {
   const color = categoryColor(primaryCategory(player));
+  const w = wide ? Math.round(size * 1.9) : size;
   if (player.logo) {
+    const dark = player.logo.tone === 'light';
     return (
-      // eslint-disable-next-line @next/next/no-img-element -- remote thumbnails from the data source, already small
-      <img
-        src={player.logo}
-        alt=""
-        width={size}
-        height={size}
-        loading="lazy"
-        decoding="async"
-        className="shrink-0 rounded-lg bg-white object-contain ring-1 ring-line"
-        style={{ width: size, height: size }}
-      />
+      <span
+        className={`flex shrink-0 items-center justify-center overflow-hidden rounded-lg ring-1 ${dark ? 'bg-navy ring-navy' : 'bg-white ring-line'}`}
+        style={{ width: w, height: size, padding: Math.max(3, size * 0.1) }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element -- pre-optimised local logos */}
+        <img
+          src={player.logo.src}
+          alt=""
+          width={player.logo.w ?? size}
+          height={player.logo.h ?? size}
+          loading="lazy"
+          decoding="async"
+          className="max-h-full max-w-full object-contain"
+        />
+      </span>
     );
   }
   return (
     <span
       aria-hidden="true"
       className="flex shrink-0 items-center justify-center rounded-lg text-[0.75rem] font-extrabold text-white"
-      style={{ width: size, height: size, background: color, fontSize: size * 0.34 }}
+      style={{ width: w, height: size, background: color, fontSize: size * 0.34 }}
     >
       {initials(player.name)}
     </span>

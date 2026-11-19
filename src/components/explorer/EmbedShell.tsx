@@ -5,10 +5,10 @@ import { serializeFilters } from '@/lib/filters';
 import { SITE } from '@/lib/site';
 import { LogoMark } from '../Logo';
 import { Icon } from '../ui/Icon';
-import { ContactDialog } from './ContactDialog';
 import { DatabaseExplorer } from './DatabaseExplorer';
 import { useExplorer } from './ExplorerProvider';
 import { MapExplorer } from './MapExplorer';
+import { LeadGate } from './LeadGate';
 import { PlayerDetail } from './PlayerDetail';
 import { UpdatedStamp } from './States';
 
@@ -39,7 +39,7 @@ export function EmbedShell({ kind, locale, credit }: { kind: 'map' | 'database';
       </div>
       {kind === 'map' ? <MapExplorer height="max(380px, calc(100dvh - 230px))" /> : <DatabaseExplorer />}
       <PlayerDetail />
-      <ContactDialog />
+      <LeadGate />
     </div>
   );
 }

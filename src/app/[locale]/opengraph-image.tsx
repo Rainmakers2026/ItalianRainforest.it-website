@@ -59,7 +59,7 @@ export default async function OG({ params }: { params: Promise<{ locale: string 
           <div style={{ fontSize: 64, fontWeight: 800, lineHeight: 1.05 }}>{t.hero.title}</div>
           <div
             style={{ fontSize: 28, opacity: 0.85 }}
-          >{`${stats.active} ${t.hero.statOrgs} · ${stats.categories} ${t.hero.statCategories}`}</div>
+          >{`${stats.total} ${t.hero.statOrgs} · ${stats.categories} ${t.hero.statTypes}`}</div>
         </div>
         <div style={{ fontSize: 24, opacity: 0.8 }}>{t.footer.initiative}</div>
       </div>

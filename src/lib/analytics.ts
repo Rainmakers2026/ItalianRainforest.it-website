@@ -5,6 +5,9 @@
  */
 export type AnalyticsEvent =
   | 'map_view'
+  | 'explorer_view_switch'
+  | 'lead_gate_view'
+  | 'lead_signup'
   | 'map_filter_used'
   | 'map_category_hover'
   | 'map_player_hover'

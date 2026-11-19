@@ -1,0 +1,2972 @@
+{
+ "irf_8b8df6e4ea587b": {
+  "sig": "Viale Carlo III di Borbone, 8, 81100 Caserta CE, Italy|ok|Caserta|Campania",
+  "lat": 41.06492,
+  "lng": 14.32653,
+  "precision": "address"
+ },
+ "irf_4b537a00e58127": {
+  "sig": "Via Maria Vittoria, 38c, 10123 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06518,
+  "lng": 7.69184,
+  "precision": "address"
+ },
+ "irf_62aa94362c1d28": {
+  "sig": "Via Giulia di Barolo, 5, 10124 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06714,
+  "lng": 7.69616,
+  "precision": "address"
+ },
+ "irf_95301605022d7c": {
+  "sig": "Via Giuseppe Mazzini, 9, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46208,
+  "lng": 9.18861,
+  "precision": "address"
+ },
+ "irf_16888d94da2ada": {
+  "sig": "Via Monte Napoleone, 8, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46811,
+  "lng": 9.19549,
+  "precision": "address"
+ },
+ "irf_9abac92664ba81": {
+  "sig": "Piazzale Susa, 1, 20133 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46852,
+  "lng": 9.22325,
+  "precision": "address"
+ },
+ "irf_f21bbc84a80335": {
+  "sig": "Via Nizza, 52, 10126 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.05018,
+  "lng": 7.67399,
+  "precision": "address"
+ },
+ "irf_92f52f049f28a1": {
+  "sig": "Piazza Giuseppe Missori, 2, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46135,
+  "lng": 9.1881,
+  "precision": "address"
+ },
+ "irf_8f1454df40901c": {
+  "sig": "Via Brisa, 3, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46438,
+  "lng": 9.18026,
+  "precision": "address"
+ },
+ "irf_76296ad511ee5c": {
+  "sig": "|||Umbria",
+  "lat": 42.96592,
+  "lng": 12.49024,
+  "precision": "region"
+ },
+ "irf_8ad3ff716105d6": {
+  "sig": "||Bolzano|Trentino-Alto Adige",
+  "lat": 46.49848,
+  "lng": 11.35474,
+  "precision": "city"
+ },
+ "irf_28cd26800e53cd": {
+  "sig": "Via Alberto Sordi, 21, Palazzina G, Piano Terra, 03100 Frosinone FR, Italy|ok|Frosinone|Lazio",
+  "lat": 41.64071,
+  "lng": 13.35092,
+  "precision": "city"
+ },
+ "irf_adbbcdedef4d0f": {
+  "sig": "Viale Giosuè Carducci, 55100 Lucca LU, Italy|ok|Lucca|Toscana",
+  "lat": 43.83954,
+  "lng": 10.49557,
+  "precision": "address"
+ },
+ "irf_5edacde1d894ed": {
+  "sig": "Piazza Trento, 7, 20135 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.44659,
+  "lng": 9.20437,
+  "precision": "address"
+ },
+ "irf_ee307d3dce4d0e": {
+  "sig": "Via Lamarmora, 230, 25124 Brescia BS, Italy|ok|Brescia|Lombardia",
+  "lat": 45.52024,
+  "lng": 10.21524,
+  "precision": "address"
+ },
+ "irf_7c31b762bd687e": {
+  "sig": "Via Manfredo Fanti, 9, 60121 Ancona AN, Italy|ok|Ancona|Marche",
+  "lat": 43.62049,
+  "lng": 13.51292,
+  "precision": "address"
+ },
+ "irf_6b0d37c98ce494": {
+  "sig": "Via Manfredo Fanti, 9, 60121 Ancona AN, Italy|ok|Ancona|Marche",
+  "lat": 43.62049,
+  "lng": 13.51292,
+  "precision": "address"
+ },
+ "irf_279c2c5ee2d0d5": {
+  "sig": "Viale Europa, 20059 Cologno Monzese MI, Italy|ok|Cologno Monzese|Lombardia",
+  "lat": 45.51625,
+  "lng": 9.26265,
+  "precision": "address"
+ },
+ "irf_300fdfa7fc3295": {
+  "sig": "Viale Europa, 46, 20093 Cologno Monzese MI, Italy|ok|Cologno Monzese|Lombardia",
+  "lat": 45.51625,
+  "lng": 9.26265,
+  "precision": "address"
+ },
+ "irf_16a31280134035": {
+  "sig": "Via Pellegrina Rosselli Del Turco, 34, 47100 Forlì FC, Italy|ok|Forlì|Emilia-Romagna",
+  "lat": 44.22378,
+  "lng": 12.05269,
+  "precision": "address"
+ },
+ "irf_430204425f0d4a": {
+  "sig": "Via Vetere, 1/A, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45627,
+  "lng": 9.18009,
+  "precision": "address"
+ },
+ "irf_e431c021ea1fff": {
+  "sig": "Via Pietro Mascagni, 7, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46618,
+  "lng": 9.20211,
+  "precision": "address"
+ },
+ "irf_868afdd86c4a05": {
+  "sig": "Via Oslavia, 4, 00195 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.91667,
+  "lng": 12.46325,
+  "precision": "address"
+ },
+ "irf_8901e9870ec6f0": {
+  "sig": "Via Napo Torriani, 31, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48363,
+  "lng": 9.20292,
+  "precision": "address"
+ },
+ "irf_d6f0679fd76d38": {
+  "sig": "Via del Gesù, 62, 00186 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.89662,
+  "lng": 12.47871,
+  "precision": "address"
+ },
+ "irf_2de40c6be9f73b": {
+  "sig": "Via del Gesù, 62, 00186 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.89662,
+  "lng": 12.47871,
+  "precision": "address"
+ },
+ "irf_8149fd859d92d4": {
+  "sig": "Via Trieste, 46, 46100 Mantova MN, Italy|ok|Mantova|Lombardia",
+  "lat": 45.15338,
+  "lng": 10.79636,
+  "precision": "address"
+ },
+ "irf_e7eea553afc61e": {
+  "sig": "Piazzetta Pattari, 7, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4648,
+  "lng": 9.19393,
+  "precision": "address"
+ },
+ "irf_a869213b165823": {
+  "sig": "Via Giuseppe Fanin, 48, 40127 Bologna BO, Italy|ok|Bologna|Emilia-Romagna",
+  "lat": 44.48981,
+  "lng": 11.25581,
+  "precision": "address"
+ },
+ "irf_b176562b18d25e": {
+  "sig": "|||Lombardia",
+  "lat": 45.57037,
+  "lng": 9.77325,
+  "precision": "region"
+ },
+ "irf_519ba91a5a5b4a": {
+  "sig": "Via Wolfgang Amadeus Mozart, 12, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4688,
+  "lng": 9.20185,
+  "precision": "address"
+ },
+ "irf_a9c6cf2194c729": {
+  "sig": "Via Narni, 29, 00181 Roma RM, Italy|region-mismatch|Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_00c8fc21f60694": {
+  "sig": "Viale Amelia, 70, 00181 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.87898,
+  "lng": 12.52733,
+  "precision": "address"
+ },
+ "irf_d7df2979f814b9": {
+  "sig": "c/o Impact Hub Milano, Via Aosta, 4, 20155 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_7720c502db9afa": {
+  "sig": "Via Flaminia 215, 00196 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.92222,
+  "lng": 12.47149,
+  "precision": "address"
+ },
+ "irf_79baebc94320af": {
+  "sig": "Corso di Porta Romana, 68, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45705,
+  "lng": 9.194,
+  "precision": "address"
+ },
+ "irf_d24f07b26f7505": {
+  "sig": "Via Alberto Caroncini, 20139 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.44948,
+  "lng": 9.21813,
+  "precision": "address"
+ },
+ "irf_4049ed9e03c4cd": {
+  "sig": "Via Santa Maria Valle, 5, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45982,
+  "lng": 9.18423,
+  "precision": "address"
+ },
+ "irf_77c358ebf7afdd": {
+  "sig": "|||Lombardia",
+  "lat": 45.57037,
+  "lng": 9.77325,
+  "precision": "region"
+ },
+ "irf_29ea4a7d2d25ea": {
+  "sig": "Via Jacopo da Montagnana, 40, 35100 Padova PD, Italy|ok|Padova|Veneto",
+  "lat": 45.42063,
+  "lng": 11.88462,
+  "precision": "address"
+ },
+ "irf_3259138318d8d4": {
+  "sig": "Via Ercolano Salvi, 00143 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.81663,
+  "lng": 12.49033,
+  "precision": "address"
+ },
+ "irf_62a26af32d700d": {
+  "sig": "Via Ercolano Salvi, 12, 00195 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.81663,
+  "lng": 12.49033,
+  "precision": "address"
+ },
+ "irf_f5867f2a2dc8f0": {
+  "sig": "Corso Venezia, 47, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47107,
+  "lng": 9.20136,
+  "precision": "address"
+ },
+ "irf_f61122a8e2444a": {
+  "sig": "Via Pantano, 9, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46015,
+  "lng": 9.19151,
+  "precision": "address"
+ },
+ "irf_964cef337ed177": {
+  "sig": "Via Castiglione, 101, 40136 Bologna BO, Italy|ok|Bologna|Emilia-Romagna",
+  "lat": 44.4836,
+  "lng": 11.34839,
+  "precision": "address"
+ },
+ "irf_0f3c8b2c1e1ef6": {
+  "sig": "Via Pontaccio, 14, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4725,
+  "lng": 9.18524,
+  "precision": "address"
+ },
+ "irf_141e53af53a809": {
+  "sig": "|||Lombardia",
+  "lat": 45.57037,
+  "lng": 9.77325,
+  "precision": "region"
+ },
+ "irf_19ac2c4a3e6c56": {
+  "sig": "Via Borgonuovo, 14, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4714,
+  "lng": 9.1908,
+  "precision": "address"
+ },
+ "irf_4769be7efd83a9": {
+  "sig": "|||Lombardia",
+  "lat": 45.57037,
+  "lng": 9.77325,
+  "precision": "region"
+ },
+ "irf_dcf36169ef457c": {
+  "sig": "Via Borromei, 6, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46437,
+  "lng": 9.18197,
+  "precision": "address"
+ },
+ "irf_4a06f0f8014cfe": {
+  "sig": "Via Olmetto, 1, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46008,
+  "lng": 9.18625,
+  "precision": "address"
+ },
+ "irf_54030f6724f257": {
+  "sig": "Via Francesco Prampolini, 55, 41124 Modena MO, Italy|ok|Modena|Emilia-Romagna",
+  "lat": 44.64116,
+  "lng": 10.93133,
+  "precision": "address"
+ },
+ "irf_515e4e5b7900be": {
+  "sig": "Via dei Tre Orologi 10C, 00198 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.92033,
+  "lng": 12.48657,
+  "precision": "address"
+ },
+ "irf_db0d5541683d50": {
+  "sig": "Via dell'Annunciata, 21, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4726,
+  "lng": 9.19217,
+  "precision": "address"
+ },
+ "irf_c44058075f8e98": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_9875e01d42985c": {
+  "sig": "Largo B. Belotti, 16, 24121 Bergamo BG, Italy|ok|Bergamo|Lombardia",
+  "lat": 45.69449,
+  "lng": 9.66987,
+  "precision": "city"
+ },
+ "irf_291d12fcb2343c": {
+  "sig": "Via Flavia, 34148 Trieste TS, Italy|ok|Trieste|Friuli-Venezia Giulia",
+  "lat": 45.61221,
+  "lng": 13.81941,
+  "precision": "address"
+ },
+ "irf_76a34d6fdd4a00": {
+  "sig": "Via Ribes, 5, 10010 Colleretto Giacosa TO, Italy|ok|Colleretto Giacosa|Piemonte",
+  "lat": 45.44126,
+  "lng": 7.82625,
+  "precision": "address"
+ },
+ "irf_1b01b7e314ed5e": {
+  "sig": "Via Lillo Del Duca, 20091 Bresso MI, Italy|ok|Bresso|Lombardia",
+  "lat": 45.5308,
+  "lng": 9.18996,
+  "precision": "address"
+ },
+ "irf_cd1fe299c17891": {
+  "sig": "Piazzale Principessa Clotilde 4/A, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47932,
+  "lng": 9.19314,
+  "precision": "address"
+ },
+ "irf_3e148a2a5c1cb5": {
+  "sig": "|||Piemonte",
+  "lat": 45.06074,
+  "lng": 7.92355,
+  "precision": "region"
+ },
+ "irf_44f348dd29b0af": {
+  "sig": "Via Borgogna, 5, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46595,
+  "lng": 9.19881,
+  "precision": "address"
+ },
+ "irf_bd9a61f1ac6e8b": {
+  "sig": "Corso di Porta Romana, 17, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45911,
+  "lng": 9.19105,
+  "precision": "address"
+ },
+ "irf_ec8bdce3a78b90": {
+  "sig": "Via Dante, 7, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4665,
+  "lng": 9.18434,
+  "precision": "address"
+ },
+ "irf_b421880c1dfe4b": {
+  "sig": "Via Andrea Doria, 27, 10123 Turin, Italy|unparsed|Torino|Piemonte",
+  "lat": 45.06776,
+  "lng": 7.68249,
+  "precision": "city"
+ },
+ "irf_e30c2de1e48efe": {
+  "sig": "Largo della Fontanella di Borghese, 19, 00186 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90377,
+  "lng": 12.47658,
+  "precision": "address"
+ },
+ "irf_a6184497e300c6": {
+  "sig": "Via Innsbruck 23, 39100 Bolzano BZ, Italy|ok|Bolzano|Trentino-Alto Adige",
+  "lat": 46.49278,
+  "lng": 11.37205,
+  "precision": "address"
+ },
+ "irf_32715d5c74d78a": {
+  "sig": "Via Chiossetto, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46434,
+  "lng": 9.20082,
+  "precision": "address"
+ },
+ "irf_17d39d4587926d": {
+  "sig": "Via Stezzano, 87, 24126 Bergamo BG, Italy|ok|Bergamo|Lombardia",
+  "lat": 45.66403,
+  "lng": 9.65765,
+  "precision": "address"
+ },
+ "irf_cb8813ecda427f": {
+  "sig": "Via Stezzano, 87, 24126 Bergamo BG, Italy|ok|Bergamo|Lombardia",
+  "lat": 45.66403,
+  "lng": 9.65765,
+  "precision": "address"
+ },
+ "irf_b0b8b78b88ced9": {
+  "sig": "Via Ludovisi, 35, 00187 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90713,
+  "lng": 12.4885,
+  "precision": "address"
+ },
+ "irf_75a4e0595ab6fd": {
+  "sig": "Via Giuseppe Garibaldi, 5, 10122 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.07158,
+  "lng": 7.68384,
+  "precision": "address"
+ },
+ "irf_d65f3366451a1b": {
+  "sig": "Corso Venezia, 36, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47114,
+  "lng": 9.20195,
+  "precision": "address"
+ },
+ "irf_54667ddf4ad518": {
+  "sig": "Piazza della Madonna della Neve, 50121 Firenze FI, Italy|ok|Firenze|Toscana",
+  "lat": 43.76916,
+  "lng": 11.26838,
+  "precision": "address"
+ },
+ "irf_df6e83cfa1cf68": {
+  "sig": "Piazza Madonna delle Neve, 8, 50122 Firenze FI, Italy|ok|Firenze|Toscana",
+  "lat": 43.7698,
+  "lng": 11.25564,
+  "precision": "city"
+ },
+ "irf_c31c1d8226dc03": {
+  "sig": "Via Meravigli, 9, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46577,
+  "lng": 9.18329,
+  "precision": "address"
+ },
+ "irf_7eb67c1e52c183": {
+  "sig": "Via Diomede Carafa, 80124 Napoli NA, Italy|ok|Napoli|Campania",
+  "lat": 40.81775,
+  "lng": 14.17016,
+  "precision": "address"
+ },
+ "irf_9c2ffe523e96a3": {
+  "sig": "Via Coroglio, 57, 80124 Napoli NA, Italy|ok|Napoli|Campania",
+  "lat": 40.80472,
+  "lng": 14.17454,
+  "precision": "address"
+ },
+ "irf_ee7112e01bdf6c": {
+  "sig": "Via Bergognone, 34, 20144 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45187,
+  "lng": 9.16251,
+  "precision": "address"
+ },
+ "irf_ea947078248380": {
+  "sig": "Via della Guastalla, 15, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46049,
+  "lng": 9.19865,
+  "precision": "address"
+ },
+ "irf_bcf07f8470ce3e": {
+  "sig": "Via Alessandria, 00198 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.91248,
+  "lng": 12.50348,
+  "precision": "address"
+ },
+ "irf_d723aa3ac4669b": {
+  "sig": "Via Alessandria, 220, 00198 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.91248,
+  "lng": 12.50348,
+  "precision": "address"
+ },
+ "irf_be67d29baa7587": {
+  "sig": "Via Lorenzo Mascheroni, 15, 20145 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46987,
+  "lng": 9.16536,
+  "precision": "address"
+ },
+ "irf_6e9c52b4b4961e": {
+  "sig": "Via Lorenzo Mascheroni, 15, 20145 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46987,
+  "lng": 9.16536,
+  "precision": "address"
+ },
+ "irf_c9aa69270045a3": {
+  "sig": "Viale Antonio Gramsci, 15c, 80121 Napoli NA, Italy|ok|Napoli|Campania",
+  "lat": 40.83018,
+  "lng": 14.22327,
+  "precision": "address"
+ },
+ "irf_73fcc46cf36b34": {
+  "sig": "Via Martiri Della Libertà 14 e 14C, 47521 Cesena FC, Italy|ok|Cesena|Emilia-Romagna",
+  "lat": 44.13635,
+  "lng": 12.24224,
+  "precision": "city"
+ },
+ "irf_c32295d5fda87b": {
+  "sig": "Largo Francesco Belloli, 43122 Parma PR, Italy|ok|Parma|Emilia-Romagna",
+  "lat": 44.83664,
+  "lng": 10.3429,
+  "precision": "address"
+ },
+ "irf_e144dcd639c474": {
+  "sig": "Largo Belloli 11/A, 43122 Parma PR, Italy|ok|Parma|Emilia-Romagna",
+  "lat": 44.83664,
+  "lng": 10.3429,
+  "precision": "address"
+ },
+ "irf_c49cdef4f0283a": {
+  "sig": "Piazza San Carlo 206, 10121 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06792,
+  "lng": 7.68272,
+  "precision": "address"
+ },
+ "irf_c603e30452246a": {
+  "sig": "Corso Susa 13/15 –, 10040 Caselette TO, Italy|ok|Caselette|Piemonte",
+  "lat": 45.09667,
+  "lng": 7.45625,
+  "precision": "address"
+ },
+ "irf_78f2eabd481076": {
+  "sig": "Via Giuseppe Giacosa, 38, 10125 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.05426,
+  "lng": 7.68339,
+  "precision": "address"
+ },
+ "irf_ed579bb7847807": {
+  "sig": "Corso Re Umberto I, 10121 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.46551,
+  "lng": 7.87527,
+  "precision": "address"
+ },
+ "irf_32e3cee339c94e": {
+  "sig": "Via Timavo, 34, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.49052,
+  "lng": 9.19872,
+  "precision": "address"
+ },
+ "irf_874582f23a801a": {
+  "sig": "Via Vittor Pisani, 28, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48358,
+  "lng": 9.2024,
+  "precision": "address"
+ },
+ "irf_89c7d3c12d886a": {
+  "sig": "Piazzale Cadorna 13, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46774,
+  "lng": 9.17589,
+  "precision": "address"
+ },
+ "irf_af7aa1125995bf": {
+  "sig": "Via per Cernobbio 11, 22100 Como CO, Italy|region-mismatch|Bologna|Emilia-Romagna",
+  "lat": 44.49382,
+  "lng": 11.34263,
+  "precision": "city"
+ },
+ "irf_0a274d3b9ddbb9": {
+  "sig": "Via Cavour, 22074 Lomazzo CO, Italy|ok|Lomazzo|Lombardia",
+  "lat": 45.69484,
+  "lng": 9.03577,
+  "precision": "address"
+ },
+ "irf_30297201d474c2": {
+  "sig": "Via per Cernobbio 11, 22100 Como CO, Italy|ok|Como|Lombardia",
+  "lat": 45.82015,
+  "lng": 9.06477,
+  "precision": "address"
+ },
+ "irf_47409fbd5cd5ca": {
+  "sig": "Viale dell'Astronomia, 00144 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.83461,
+  "lng": 12.46567,
+  "precision": "address"
+ },
+ "irf_9ab9a635741ecf": {
+  "sig": "Corso Giuseppe Mazzini, 144, 63100 Ascoli Piceno AP, Italy|region-mismatch|Teramo|Abruzzo",
+  "lat": 42.66129,
+  "lng": 13.69835,
+  "precision": "city"
+ },
+ "irf_8b6e151c751a48": {
+  "sig": "Piazza Cittadella, 12, 37122 Verona VR, Italy|ok|Verona|Veneto",
+  "lat": 45.43615,
+  "lng": 10.99353,
+  "precision": "address"
+ },
+ "irf_b69cd73d38e2d5": {
+  "sig": "Piazza del Castello, 3, 36100 Vicenza VI, Italy|ok|Vicenza|Veneto",
+  "lat": 45.54674,
+  "lng": 11.54117,
+  "precision": "address"
+ },
+ "irf_dddfff3c7a08e8": {
+  "sig": "Viale delle Scienze, 90128 Palermo PA, Italy|ok|Palermo|Sicilia",
+  "lat": 38.10455,
+  "lng": 13.34951,
+  "precision": "address"
+ },
+ "irf_a77b61c6eade81": {
+  "sig": "Via Diocleziano, 107, 80125 Napoli NA, Italy|ok|Napoli|Campania",
+  "lat": 40.81988,
+  "lng": 14.18509,
+  "precision": "address"
+ },
+ "irf_9ee1d5becae5fb": {
+  "sig": "Via Ospedale, 121, 09100 Cagliari CA, Italy|ok|Cagliari|Sardegna",
+  "lat": 39.22205,
+  "lng": 9.11412,
+  "precision": "address"
+ },
+ "irf_8a9dbf67cc2886": {
+  "sig": "Via Torino, 146, 00184 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90029,
+  "lng": 12.49651,
+  "precision": "address"
+ },
+ "irf_43b84c18420312": {
+  "sig": "Piazza Quattro Novembre, 7, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48745,
+  "lng": 9.20257,
+  "precision": "address"
+ },
+ "irf_b30e2efd73a7c8": {
+  "sig": "Piazza IV Novembre, 7, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48745,
+  "lng": 9.20257,
+  "precision": "address"
+ },
+ "irf_0f3a9d3198e577": {
+  "sig": "||Roma|Lazio",
+  "lat": 41.89332,
+  "lng": 12.48293,
+  "precision": "city"
+ },
+ "irf_453e32768e3a77": {
+  "sig": "Via Emilia San Pietro, 4, 42121 Reggio nell'Emilia RE, Italy|ok|Reggio nell'Emilia|Emilia-Romagna",
+  "lat": 44.69514,
+  "lng": 10.64199,
+  "precision": "address"
+ },
+ "irf_0ff9d8812521b8": {
+  "sig": "Via Legnano, 28, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47687,
+  "lng": 9.18144,
+  "precision": "address"
+ },
+ "irf_f01bbed0cb0e49": {
+  "sig": "Via Alberto Casella, 59100 Prato PO, Italy|ok|Prato|Toscana",
+  "lat": 43.89788,
+  "lng": 11.10691,
+  "precision": "address"
+ },
+ "irf_dbafbaa48acb49": {
+  "sig": "Via Branze 45, 25123 Brescia BS, Italy|ok|Brescia|Lombardia",
+  "lat": 45.56296,
+  "lng": 10.23156,
+  "precision": "address"
+ },
+ "irf_32555fff101011": {
+  "sig": "Via Giulio Caccini, 1, 00198 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.91525,
+  "lng": 12.49536,
+  "precision": "address"
+ },
+ "irf_14e51a4c8ec0b3": {
+  "sig": "|||Lazio",
+  "lat": 41.98016,
+  "lng": 12.7668,
+  "precision": "region"
+ },
+ "irf_6979ce2825cb3f": {
+  "sig": "Via Trasimeno, 52100 Arezzo AR, Italy|ok|Arezzo|Toscana",
+  "lat": 43.45758,
+  "lng": 11.87795,
+  "precision": "address"
+ },
+ "irf_db4f7c2260bbf7": {
+  "sig": "Via di Spini, 50, 38121 Trento TN, Italy|ok|Trento|Trentino-Alto Adige",
+  "lat": 46.11783,
+  "lng": 11.10452,
+  "precision": "address"
+ },
+ "irf_13ac5787cbfca8": {
+  "sig": "Via di Spini, 50, 38121 Trento TN, Italy|ok|Trento|Trentino-Alto Adige",
+  "lat": 46.11783,
+  "lng": 11.10452,
+  "precision": "address"
+ },
+ "irf_aeff829e5af5ab": {
+  "sig": "Via Emanuele Gianturco 1, 00196 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.91424,
+  "lng": 12.47397,
+  "precision": "address"
+ },
+ "irf_af5269abf298c8": {
+  "sig": "|||Lombardia",
+  "lat": 45.57037,
+  "lng": 9.77325,
+  "precision": "region"
+ },
+ "irf_357b4a63bdfaa6": {
+  "sig": "Via Piero Vivarelli, 9/2, 41125 Modena MO, Italy|ok|Modena|Emilia-Romagna",
+  "lat": 44.62831,
+  "lng": 10.94704,
+  "precision": "address"
+ },
+ "irf_1a3e74e0b4b78d": {
+  "sig": "Via Francesco Olgiati, 26, 20143 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.44017,
+  "lng": 9.14608,
+  "precision": "address"
+ },
+ "irf_85d5d22737a59e": {
+  "sig": "Via Bernardo Quaranta, 40, 20139 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.43642,
+  "lng": 9.2052,
+  "precision": "address"
+ },
+ "irf_78022b26fb8dcc": {
+  "sig": "Via Claudio Treves, 20037 Paderno Dugnano MI, Italy|ok|Paderno Dugnano|Lombardia",
+  "lat": 45.58192,
+  "lng": 9.15048,
+  "precision": "address"
+ },
+ "irf_e9ef074aa90c2a": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_ace8f89851d1e6": {
+  "sig": "||Bologna|Emilia-Romagna",
+  "lat": 44.49382,
+  "lng": 11.34263,
+  "precision": "city"
+ },
+ "irf_31032110b94441": {
+  "sig": "Piazza Gaudenzio Sella, 1a, 13900 Biella BI, Italy|ok|Biella|Piemonte",
+  "lat": 45.56115,
+  "lng": 8.05442,
+  "precision": "address"
+ },
+ "irf_e55cf961e69f17": {
+  "sig": "Viale Monza 259, 20126 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.51173,
+  "lng": 9.22413,
+  "precision": "address"
+ },
+ "irf_cad1022bb6c8c1": {
+  "sig": "Viale Monza, 259, 20126 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.51159,
+  "lng": 9.22407,
+  "precision": "address"
+ },
+ "irf_d9f751c3ee8423": {
+  "sig": "Via Luigi Russolo 9, 20138 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.43468,
+  "lng": 9.24135,
+  "precision": "address"
+ },
+ "irf_6c8ecaca4c1d89": {
+  "sig": "Via Giovanni Cagliero, 23, 20125 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4963,
+  "lng": 9.20122,
+  "precision": "address"
+ },
+ "irf_dfa70f42d869f9": {
+  "sig": "Strada Casale, 175, 36100 Vicenza VI, Italy|ok|Vicenza|Veneto",
+  "lat": 45.53507,
+  "lng": 11.56926,
+  "precision": "address"
+ },
+ "irf_2e3a10125d3185": {
+  "sig": "Via Sandro Sandri, 00159 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90411,
+  "lng": 12.54961,
+  "precision": "address"
+ },
+ "irf_64182a9f134ef3": {
+  "sig": "Via Sandro Sandri, 81, 00159 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90411,
+  "lng": 12.54961,
+  "precision": "address"
+ },
+ "irf_276c010373b88f": {
+  "sig": "Via Galliano, 27, 10129 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.05981,
+  "lng": 7.66541,
+  "precision": "address"
+ },
+ "irf_0909527484f86a": {
+  "sig": "Via Emilia Levante, 9F, 40127 Bologna BO, Italy|ok|Bologna|Emilia-Romagna",
+  "lat": 44.48365,
+  "lng": 11.37399,
+  "precision": "address"
+ },
+ "irf_7c52dae125021c": {
+  "sig": "||Catania|Sicilia",
+  "lat": 37.50236,
+  "lng": 15.08737,
+  "precision": "city"
+ },
+ "irf_9a938e51fb5fec": {
+  "sig": "Via Amico Canobio, 4, 28100 Novara NO, Italy|region-mismatch|Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_4ff44da92b49af": {
+  "sig": "Via Diomede, 71051 San Nicola di Tremiti FG, Italy|ok|San Nicola Di Tremiti|Puglia",
+  "lat": 42.12023,
+  "lng": 15.50345,
+  "precision": "address"
+ },
+ "irf_4a2836a119c89a": {
+  "sig": "Via Padova, 2, 88050 Caraffa di Catanzaro CZ, Italy|ok|Caraffa Di Catanzaro|Calabria",
+  "lat": 38.88129,
+  "lng": 16.4856,
+  "precision": "city"
+ },
+ "irf_6bdedbaff3d9a9": {
+  "sig": "Via Andrea Costaguta, 21a, 10144 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.08713,
+  "lng": 7.67343,
+  "precision": "address"
+ },
+ "irf_649e3774f4bcf2": {
+  "sig": "Via Livorno, 60, 10144 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.08913,
+  "lng": 7.67026,
+  "precision": "address"
+ },
+ "irf_aca7db2187cc4d": {
+  "sig": "Piazza San Carlo, 156, 10121 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06792,
+  "lng": 7.68272,
+  "precision": "address"
+ },
+ "irf_fb3d0f36260489": {
+  "sig": "Piazza Solferino, 11, 10121 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06777,
+  "lng": 7.67677,
+  "precision": "address"
+ },
+ "irf_b32439fe8fe950": {
+  "sig": "Via Vincenzo Monti, 8, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46691,
+  "lng": 9.17467,
+  "precision": "address"
+ },
+ "irf_3c11a5b48bf259": {
+  "sig": "Piazza Venezia 11, 00187 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.89645,
+  "lng": 12.48287,
+  "precision": "address"
+ },
+ "irf_53eda10fd526b8": {
+  "sig": "Via Ludovico di Savoia 2b, 00185 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.88778,
+  "lng": 12.50955,
+  "precision": "address"
+ },
+ "irf_9bdc35c59cc6b6": {
+  "sig": "Via Pantano 9, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46015,
+  "lng": 9.19151,
+  "precision": "address"
+ },
+ "irf_66a8fd93f7c7b0": {
+  "sig": "|||Campania",
+  "lat": 40.86067,
+  "lng": 14.84398,
+  "precision": "region"
+ },
+ "irf_38a6ab57db7238": {
+  "sig": "||Napoli|Campania",
+  "lat": 40.83588,
+  "lng": 14.24877,
+  "precision": "city"
+ },
+ "irf_6566827f0b2722": {
+  "sig": "Piazza Adriano Olivetti, 20135 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.44312,
+  "lng": 9.20432,
+  "precision": "address"
+ },
+ "irf_a353860ffde21c": {
+  "sig": "Via Santa Croce, 77, 38122 Trento TN, Italy|ok|Trento|Trentino-Alto Adige",
+  "lat": 46.0628,
+  "lng": 11.124,
+  "precision": "address"
+ },
+ "irf_bfa9dad59c5efe": {
+  "sig": "Via Giovanni Forleo, 72022 Latiano BR, Italy|ok|Latiano|Puglia",
+  "lat": 40.55138,
+  "lng": 17.71388,
+  "precision": "address"
+ },
+ "irf_0b80d7266a0f03": {
+  "sig": "Piazza della Croce Rossa, 1, 00161 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90851,
+  "lng": 12.50354,
+  "precision": "address"
+ },
+ "irf_05feebad639a30": {
+  "sig": "Via Alberico Albricci, 9, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4609,
+  "lng": 9.19058,
+  "precision": "address"
+ },
+ "irf_c74aba0836a8b0": {
+  "sig": "|||Lazio",
+  "lat": 41.98016,
+  "lng": 12.7668,
+  "precision": "region"
+ },
+ "irf_e461233869982a": {
+  "sig": "Viale della Liberazione, 111, 80125 Napoli NA, Italy|ok|Napoli|Campania",
+  "lat": 40.81994,
+  "lng": 14.16846,
+  "precision": "address"
+ },
+ "irf_67182f981bbdb4": {
+  "sig": "Via Torquato Taramelli, 12, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.49036,
+  "lng": 9.19364,
+  "precision": "address"
+ },
+ "irf_6566368d2391dd": {
+  "sig": "Via San Marco, 21, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47562,
+  "lng": 9.18824,
+  "precision": "address"
+ },
+ "irf_fa0010d4bcfafe": {
+  "sig": "Via Saragozza, 40123 Bologna BO, Italy|ok|Bologna|Emilia-Romagna",
+  "lat": 44.49035,
+  "lng": 11.33766,
+  "precision": "address"
+ },
+ "irf_a901897ec64e63": {
+  "sig": "Via Melchiorre Gioia, 11, 10121 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06513,
+  "lng": 7.67657,
+  "precision": "address"
+ },
+ "irf_5272f818d0dd0d": {
+  "sig": "Via San Salvatore da Horta, 2, 09124 Cagliari CA, Italy|ok|Cagliari|Sardegna",
+  "lat": 39.21497,
+  "lng": 9.11642,
+  "precision": "address"
+ },
+ "irf_fef69ada7de375": {
+  "sig": "Via Edmund Mach, 38098 San Michele all'Adige TN, Italy|region-mismatch|Cagliari|Sardegna",
+  "lat": 39.2172,
+  "lng": 9.11331,
+  "precision": "city"
+ },
+ "irf_714a681aa83f80": {
+  "sig": "Viale Ortles, 22, 20139 Milano MI, Italy|region-mismatch|Trento|Trentino-Alto Adige",
+  "lat": 46.06642,
+  "lng": 11.12576,
+  "precision": "city"
+ },
+ "irf_2bf1fcdbb73c54": {
+  "sig": "Via Santa Croce, 77, 38122 Trento TN, Italy|region-mismatch|Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_1b2edf37e8f73b": {
+  "sig": "Piazza dell'Esquilino, 5, 00185 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.89861,
+  "lng": 12.49784,
+  "precision": "address"
+ },
+ "irf_1849437cb0144b": {
+  "sig": "Via Bassanese, 31011 Asolo TV, Italy|ok|Asolo|Veneto",
+  "lat": 45.78779,
+  "lng": 11.89949,
+  "precision": "address"
+ },
+ "irf_49f58d89966942": {
+  "sig": "Via Thomas Edison, 60027 Osimo AN, Italy|ok|Osimo|Marche",
+  "lat": 43.53088,
+  "lng": 13.50507,
+  "precision": "address"
+ },
+ "irf_b1b8b4f0159c01": {
+  "sig": "Via Giovanni Bovio, 6, 28100 Novara NO, Italy|region-mismatch|Ancona|Marche",
+  "lat": 43.61701,
+  "lng": 13.5171,
+  "precision": "city"
+ },
+ "irf_a8a5a8bb6fff1f": {
+  "sig": "Via Roma, 90133 Palermo PA, Italy|ok|Palermo|Sicilia",
+  "lat": 38.11989,
+  "lng": 13.36194,
+  "precision": "address"
+ },
+ "irf_605e510bd7a2db": {
+  "sig": "Via Bernardino Zenale, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.16987,
+  "precision": "address"
+ },
+ "irf_2c4a800e92ab85": {
+  "sig": "Via Monfalcone, 24, 95127 Catania CT, Italy|ok|Catania|Sicilia",
+  "lat": 37.51835,
+  "lng": 15.10116,
+  "precision": "address"
+ },
+ "irf_859b504752e293": {
+  "sig": "Via Luciano Conti, 53100 Siena SI, Italy|ok|Siena|Toscana",
+  "lat": 43.33331,
+  "lng": 11.3028,
+  "precision": "address"
+ },
+ "irf_475e12f0a1f3c8": {
+  "sig": "Via San Marco, 21a, 20121 Milano MI, Italy|region-mismatch|Siena|Toscana",
+  "lat": 43.31855,
+  "lng": 11.33165,
+  "precision": "city"
+ },
+ "irf_77362b73a41d43": {
+  "sig": "Via Pietro Orseolo, 3, 20144 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45643,
+  "lng": 9.16888,
+  "precision": "address"
+ },
+ "irf_0144823f079304": {
+  "sig": "Piazzale Portello, 20156 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.49056,
+  "lng": 9.14557,
+  "precision": "address"
+ },
+ "irf_f357df8ae30a16": {
+  "sig": "Via Vincenzo Vela, 42, 10128 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06679,
+  "lng": 7.66278,
+  "precision": "address"
+ },
+ "irf_83fa4fbe738504": {
+  "sig": "Via Vela, 42, 10128 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06679,
+  "lng": 7.66278,
+  "precision": "address"
+ },
+ "irf_568add4102ac5c": {
+  "sig": "Via Morimondo, 26b, 20143 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.44481,
+  "lng": 9.15046,
+  "precision": "address"
+ },
+ "irf_471aa8dd32b4de": {
+  "sig": "Via Tortona, 4, 20144 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45512,
+  "lng": 9.16933,
+  "precision": "address"
+ },
+ "irf_b86f8db387f83a": {
+  "sig": "Via Jacopo Linussio, 38, 33100 Udine UD, Italy|ok|Udine|Friuli-Venezia Giulia",
+  "lat": 46.01399,
+  "lng": 13.26566,
+  "precision": "address"
+ },
+ "irf_c1da3e3630cc97": {
+  "sig": "Via Vittorio Locchi, 19, 34143 Trieste TS, Italy|ok|Trieste|Friuli-Venezia Giulia",
+  "lat": 45.64101,
+  "lng": 13.76128,
+  "precision": "address"
+ },
+ "irf_c01949f626df12": {
+  "sig": "Via Ugo Bassi, 7, 20159 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48917,
+  "lng": 9.18493,
+  "precision": "address"
+ },
+ "irf_e9cdbbf203a6b5": {
+  "sig": "Via XII Ottobre, 2/101A, 16121 – Genova, Italy|unparsed|Genova|Liguria",
+  "lat": 44.40726,
+  "lng": 8.93386,
+  "precision": "city"
+ },
+ "irf_cd5f714188c4c7": {
+  "sig": "Via Primo maggio, 156, 60131 Ancona AN, Italy|ok|Ancona|Marche",
+  "lat": 43.56172,
+  "lng": 13.5107,
+  "precision": "address"
+ },
+ "irf_5de09c2548c8b6": {
+  "sig": "Via Paolo Nanni Costa, 14, 40133 Bologna BO, Italy|ok|Bologna|Emilia-Romagna",
+  "lat": 44.50812,
+  "lng": 11.30678,
+  "precision": "address"
+ },
+ "irf_4c09215873e182": {
+  "sig": "Via Paolo Nanni Costa, 20, 40133 Bologna BO, Italy|ok|Bologna|Emilia-Romagna",
+  "lat": 44.50882,
+  "lng": 11.30734,
+  "precision": "address"
+ },
+ "irf_5c9be62bdcbf17": {
+  "sig": "Via Legnone, 4, 20158 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.49775,
+  "lng": 9.18196,
+  "precision": "address"
+ },
+ "irf_fa499969eeb6c7": {
+  "sig": "Via Carlo Imbonati, 20159 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.5019,
+  "lng": 9.18208,
+  "precision": "address"
+ },
+ "irf_93e5ad79347945": {
+  "sig": "Corso Stati Uniti, 14, 35127 Padova PD, Italy|ok|Padova|Veneto",
+  "lat": 45.39304,
+  "lng": 11.93398,
+  "precision": "address"
+ },
+ "irf_da112750d0e6e9": {
+  "sig": "Via Edoardo Plinio Masini, 8, 35131 Padova PD, Italy|ok|Padova|Veneto",
+  "lat": 45.40962,
+  "lng": 11.9012,
+  "precision": "address"
+ },
+ "irf_8edc76882e77ca": {
+  "sig": "Via Crimea 6, 10133 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.05609,
+  "lng": 7.69607,
+  "precision": "address"
+ },
+ "irf_f45e30c6351b6c": {
+  "sig": "Largo Padri della Costituzione, 56125 Pisa PI, Italy|ok|Pisa|Toscana",
+  "lat": 43.71081,
+  "lng": 10.39806,
+  "precision": "address"
+ },
+ "irf_f74bb17e575d9a": {
+  "sig": "Via Giacomo Leopardi, 8, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46802,
+  "lng": 9.17486,
+  "precision": "address"
+ },
+ "irf_1cd797f3157409": {
+  "sig": "Viale Famagosta, 75, 20142 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4379,
+  "lng": 9.16713,
+  "precision": "address"
+ },
+ "irf_ea9279551a6ab1": {
+  "sig": "Viale Famagosta 75, 20142 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4379,
+  "lng": 9.16713,
+  "precision": "address"
+ },
+ "irf_4c24a7f8ac0568": {
+  "sig": "Via Enrico Melen, 83 –, 16152 Genova GE, Italy|ok|Genova|Liguria",
+  "lat": 44.42581,
+  "lng": 8.86287,
+  "precision": "address"
+ },
+ "irf_e3f3231041538f": {
+  "sig": "Via Campo di Marte 9, 06124 Perugia PG, Italy|ok|Perugia|Umbria",
+  "lat": 43.09985,
+  "lng": 12.38254,
+  "precision": "address"
+ },
+ "irf_7b32292b6f13ae": {
+  "sig": "||Roma|Lazio",
+  "lat": 41.89332,
+  "lng": 12.48293,
+  "precision": "city"
+ },
+ "irf_1495c61dfc3ddb": {
+  "sig": "Via Alessandro Lamarmora, 230, 25100 Brescia BS, Italy|ok|Brescia|Lombardia",
+  "lat": 45.52024,
+  "lng": 10.21524,
+  "precision": "address"
+ },
+ "irf_561798f5a498c3": {
+  "sig": "Piazza Mastai, 00153 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.88747,
+  "lng": 12.4735,
+  "precision": "address"
+ },
+ "irf_d1f0e3c832f622": {
+  "sig": "Viale della Costituzione, 18, 38122 Trento TN, Italy|ok|Trento|Trentino-Alto Adige",
+  "lat": 46.06162,
+  "lng": 11.1144,
+  "precision": "address"
+ },
+ "irf_e302202ccd0743": {
+  "sig": "Piazza Monsignor Giuseppe Almici, 25100 Brescia BS, Italy|region-mismatch|Trento|Trentino-Alto Adige",
+  "lat": 46.06642,
+  "lng": 11.12576,
+  "precision": "city"
+ },
+ "irf_8efaa50f85db3f": {
+  "sig": "Via G.B. Cacciamali, 52, 25125 Brescia BS, Italy|ok|Brescia|Lombardia",
+  "lat": 45.5398,
+  "lng": 10.22002,
+  "precision": "city"
+ },
+ "irf_acff71d392f68e": {
+  "sig": "Piazza Borromeo, 14, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46331,
+  "lng": 9.18239,
+  "precision": "address"
+ },
+ "irf_1b8dc3306be526": {
+  "sig": "Via San Giovanni sul Muro 9, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46676,
+  "lng": 9.18145,
+  "precision": "address"
+ },
+ "irf_88f2d2123c1b78": {
+  "sig": "Largo Abate Conforti, snc, 84121 Salerno SA, Italy|ok|Salerno|Campania",
+  "lat": 40.68036,
+  "lng": 14.75945,
+  "precision": "city"
+ },
+ "irf_145f2d40189494": {
+  "sig": "Piazza Giannantonio Manci, 17, 38123 Trento TN, Italy|ok|Trento|Trentino-Alto Adige",
+  "lat": 46.06578,
+  "lng": 11.15512,
+  "precision": "address"
+ },
+ "irf_b81c8201acfc76": {
+  "sig": "|||Lombardia",
+  "lat": 45.57037,
+  "lng": 9.77325,
+  "precision": "region"
+ },
+ "irf_e787fc3cc0be44": {
+  "sig": "|||Piemonte",
+  "lat": 45.06074,
+  "lng": 7.92355,
+  "precision": "region"
+ },
+ "irf_543ed2ff052fe0": {
+  "sig": "Via Aosta, 4a, 20155 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.49211,
+  "lng": 9.166,
+  "precision": "address"
+ },
+ "irf_ca1a4b11a2fb1f": {
+  "sig": "Via Senato, 15, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47004,
+  "lng": 9.19772,
+  "precision": "address"
+ },
+ "irf_9a1cd93688a6af": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_effd0d19fdfc9c": {
+  "sig": "||Bolzano|Trentino-Alto Adige",
+  "lat": 46.49848,
+  "lng": 11.35474,
+  "precision": "city"
+ },
+ "irf_0a34548ae4c557": {
+  "sig": "Via Aosta, 4a, 20155 Milano MI, Italy|region-mismatch|Bari|Puglia",
+  "lat": 41.12578,
+  "lng": 16.86203,
+  "precision": "city"
+ },
+ "irf_f94b744fd57474": {
+  "sig": "Viale dello Scalo San Lorenzo, 57-59, 00185 Roma RM, Italy|region-mismatch|Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_eef2b9419ce263": {
+  "sig": "Via Palermo 41, 00184 – Rome, Italy|unparsed|Roma|Lazio",
+  "lat": 41.89332,
+  "lng": 12.48293,
+  "precision": "city"
+ },
+ "irf_e56986e6dba65f": {
+  "sig": "Via Nizza, 52, 10126 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.05018,
+  "lng": 7.67399,
+  "precision": "address"
+ },
+ "irf_96d3ae8bd85f5a": {
+  "sig": "Vicolo della Neve, 83100 Avellino AV, Italy|ok|Avellino|Campania",
+  "lat": 40.91462,
+  "lng": 14.79423,
+  "precision": "address"
+ },
+ "irf_1f2a8ff15ad297": {
+  "sig": "Via Petrosa, 50015 Sesto Fiorentino FI, Italy|region-mismatch|Avellino|Campania",
+  "lat": 40.9142,
+  "lng": 14.78888,
+  "precision": "city"
+ },
+ "irf_fa786739084b24": {
+  "sig": "P.zza S.Marco, 4, 50121 Firenze FI, Italy|ok|Firenze|Toscana",
+  "lat": 43.77772,
+  "lng": 11.25968,
+  "precision": "address"
+ },
+ "irf_7c2ad55b965fd7": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_635ad834237db1": {
+  "sig": "Via Rialto, 75, 38068 Rovereto TN, Italy|ok|Rovereto|Trentino-Alto Adige",
+  "lat": 45.88882,
+  "lng": 11.04508,
+  "precision": "address"
+ },
+ "irf_28004092223c64": {
+  "sig": "Via Giacomo Leopardi, 3, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46725,
+  "lng": 9.17557,
+  "precision": "address"
+ },
+ "irf_8583e1c9b98a75": {
+  "sig": "Via alla Moia, 38068 Rovereto TN, Italy|ok|Rovereto|Trentino-Alto Adige",
+  "lat": 45.88261,
+  "lng": 11.01996,
+  "precision": "address"
+ },
+ "irf_814afda8f1e108": {
+  "sig": "Via Casilina, 3T –, 00182 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.89023,
+  "lng": 12.51787,
+  "precision": "address"
+ },
+ "irf_0ce776317ebe64": {
+  "sig": "Via degli Abeti, 1, 61122 Pesaro PU, Italy|region-mismatch|Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_8e7e8c9c4a1838": {
+  "sig": "Via Schiavini 21, 61121 Pesaro PU, Italy|ok|Pesaro|Marche",
+  "lat": 43.91319,
+  "lng": 12.90831,
+  "precision": "address"
+ },
+ "irf_5bcaafbcc04978": {
+  "sig": "Via Copernico, 38, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.49071,
+  "lng": 9.20485,
+  "precision": "address"
+ },
+ "irf_239743c65799c1": {
+  "sig": "Via Vittor Pisani 28, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48358,
+  "lng": 9.2024,
+  "precision": "address"
+ },
+ "irf_6f55a4ff713e65": {
+  "sig": "Corso Inghilterra 3, 10138 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06858,
+  "lng": 7.66288,
+  "precision": "address"
+ },
+ "irf_1e2f4f54c7a1c4": {
+  "sig": "Via Giacomo Peroni 386, 00131 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.93124,
+  "lng": 12.63066,
+  "precision": "address"
+ },
+ "irf_92acc5b9d035ea": {
+  "sig": "Via Antonio Pacinotti, 31020 Villorba TV, Italy|ok|Villorba|Veneto",
+  "lat": 45.72852,
+  "lng": 12.25094,
+  "precision": "address"
+ },
+ "irf_67f0cdfb5c3c52": {
+  "sig": "Corso Magenta, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46573,
+  "lng": 9.17291,
+  "precision": "address"
+ },
+ "irf_7daf90f4bd2e50": {
+  "sig": "Via Calabria, 00198 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90976,
+  "lng": 12.49743,
+  "precision": "address"
+ },
+ "irf_c87d79dd040e9c": {
+  "sig": "Via Calabria, 46, 00187 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90976,
+  "lng": 12.49743,
+  "precision": "address"
+ },
+ "irf_2d0b9e270371e9": {
+  "sig": "Via Morego, 16163 Genova GE, Italy|ok|Genova|Liguria",
+  "lat": 44.47258,
+  "lng": 8.90593,
+  "precision": "address"
+ },
+ "irf_c2c8f425b86337": {
+  "sig": "Via Lodovica, 20871 Vimercate MB, Italy|ok|Vimercate|Lombardia",
+  "lat": 45.62079,
+  "lng": 9.35017,
+  "precision": "address"
+ },
+ "irf_3142c4353376d8": {
+  "sig": "|||Lombardia",
+  "lat": 45.57037,
+  "lng": 9.77325,
+  "precision": "region"
+ },
+ "irf_6986d75ae6ce4f": {
+  "sig": "Piazza Duca d'Aosta, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48484,
+  "lng": 9.20324,
+  "precision": "address"
+ },
+ "irf_2291cb06a024c7": {
+  "sig": "Via Antonio Meucci 3, 20091 Bresso MI, Italy|ok|Bresso|Lombardia",
+  "lat": 45.53113,
+  "lng": 9.18893,
+  "precision": "address"
+ },
+ "irf_37913b782d966d": {
+  "sig": "Via Bianca di Savoia, 17, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45252,
+  "lng": 9.19132,
+  "precision": "address"
+ },
+ "irf_cb43d1f3f9c99e": {
+  "sig": "Corso di Porta Romana, 61, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45669,
+  "lng": 9.19498,
+  "precision": "address"
+ },
+ "irf_6f86ce4c72778f": {
+  "sig": "Corso Magenta 59, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46528,
+  "lng": 9.17311,
+  "precision": "address"
+ },
+ "irf_31c63c38e970c7": {
+  "sig": "Largo Augusto, 8, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46287,
+  "lng": 9.19681,
+  "precision": "address"
+ },
+ "irf_22de54b24e47d7": {
+  "sig": "|||Piemonte",
+  "lat": 45.06074,
+  "lng": 7.92355,
+  "precision": "region"
+ },
+ "irf_522381f877667d": {
+  "sig": "Via Vincenzo Monti 72/2, 20129 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46681,
+  "lng": 9.1746,
+  "precision": "address"
+ },
+ "irf_752115f45427e3": {
+  "sig": "Via San Prospero, 2, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46611,
+  "lng": 9.18593,
+  "precision": "address"
+ },
+ "irf_4a794ac8ecce15": {
+  "sig": "Via Stezzano, 87, 24126 Bergamo BG, Italy|ok|Bergamo|Lombardia",
+  "lat": 45.66403,
+  "lng": 9.65765,
+  "precision": "address"
+ },
+ "irf_68869469e5851f": {
+  "sig": "Via Castiglione, 134, 40136 Bologna BO, Italy|ok|Bologna|Emilia-Romagna",
+  "lat": 44.48323,
+  "lng": 11.34925,
+  "precision": "address"
+ },
+ "irf_c7a863b1dd0483": {
+  "sig": "Via Giovanni Maria Angioy, 34, 09124 Cagliari CA, Italy|ok|Cagliari|Sardegna",
+  "lat": 39.21645,
+  "lng": 9.11139,
+  "precision": "address"
+ },
+ "irf_8f01d3de479f34": {
+  "sig": "Via Arturo Toscanini, 10064 Pinerolo TO, Italy|ok|Pinerolo|Piemonte",
+  "lat": 44.87726,
+  "lng": 7.33945,
+  "precision": "address"
+ },
+ "irf_8026e482d99455": {
+  "sig": "Piazza Castello, 26, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47175,
+  "lng": 9.18083,
+  "precision": "address"
+ },
+ "irf_221f4ebfe66482": {
+  "sig": "Via Roma, 17, 12100 Cuneo CN, Italy|ok|Cuneo|Piemonte",
+  "lat": 44.39331,
+  "lng": 7.55205,
+  "precision": "address"
+ },
+ "irf_0332e995c1dfcf": {
+  "sig": "Via Borromei 2, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.464,
+  "lng": 9.18203,
+  "precision": "address"
+ },
+ "irf_1b3e6f66b5a9cd": {
+  "sig": "Viale Pola 12, 00198 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.91897,
+  "lng": 12.5114,
+  "precision": "address"
+ },
+ "irf_da738bfb0bd0d7": {
+  "sig": "|||Lombardia",
+  "lat": 45.57037,
+  "lng": 9.77325,
+  "precision": "region"
+ },
+ "irf_20b9a720aae8ea": {
+  "sig": "Via Marco Aurelio, 26 A, 00184 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.88819,
+  "lng": 12.49564,
+  "precision": "address"
+ },
+ "irf_ec1a64cafd2367": {
+  "sig": "|||Lazio",
+  "lat": 41.98016,
+  "lng": 12.7668,
+  "precision": "region"
+ },
+ "irf_c2d2145c9db427": {
+  "sig": "Via della Moscova, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47653,
+  "lng": 9.19084,
+  "precision": "address"
+ },
+ "irf_f55c4d6dffa11c": {
+  "sig": "Corso di Porta Romana, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45962,
+  "lng": 9.19003,
+  "precision": "address"
+ },
+ "irf_44b4512de1cd9e": {
+  "sig": "Piazza Quadrivio, 8, 23100 Sondrio SO, Italy|ok|Sondrio|Lombardia",
+  "lat": 46.17192,
+  "lng": 9.87379,
+  "precision": "address"
+ },
+ "irf_663d795f8cf07d": {
+  "sig": "Via Cavestro 3 –, 43121 Parma PR, Italy|ok|Parma|Emilia-Romagna",
+  "lat": 44.9165,
+  "lng": 10.45217,
+  "precision": "address"
+ },
+ "irf_084174cd5a6601": {
+  "sig": "Via Ursino 58, 95131 Catania CT, Italy|ok|Catania|Sicilia",
+  "lat": 37.50971,
+  "lng": 15.09793,
+  "precision": "address"
+ },
+ "irf_0fa5c85cafcbd1": {
+  "sig": "Piazza Giacomo Zanellato 23, 35131 Padova PD, Italy|ok|Padova|Veneto",
+  "lat": 45.41003,
+  "lng": 11.90097,
+  "precision": "address"
+ },
+ "irf_519d2abafc6792": {
+  "sig": "|||Lombardia",
+  "lat": 45.57037,
+  "lng": 9.77325,
+  "precision": "region"
+ },
+ "irf_18ccba186d8757": {
+  "sig": "Piazza Monte Grappa, 4, 00195 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.91799,
+  "lng": 12.46957,
+  "precision": "address"
+ },
+ "irf_facafdf404ffe2": {
+  "sig": "Via Gerolamo Morone, 6, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46814,
+  "lng": 9.19191,
+  "precision": "address"
+ },
+ "irf_bd7dfaebea64fd": {
+  "sig": "Corso Castelfidardo, 22, 10129 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06669,
+  "lng": 7.65965,
+  "precision": "address"
+ },
+ "irf_01641031fcecc5": {
+  "sig": "Piazza Dante 8/9, 16121 Genova GE, Italy|ok|Genova|Liguria",
+  "lat": 44.40525,
+  "lng": 8.93614,
+  "precision": "address"
+ },
+ "irf_df9e26c306d3b5": {
+  "sig": "Via Melone, 2, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46995,
+  "lng": 9.18737,
+  "precision": "address"
+ },
+ "irf_eef8b9fd5d437d": {
+  "sig": "Via Arrigo Boito, 8, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46841,
+  "lng": 9.1879,
+  "precision": "address"
+ },
+ "irf_c915d65ca9ce3b": {
+  "sig": "||Roma|Lazio",
+  "lat": 41.89332,
+  "lng": 12.48293,
+  "precision": "city"
+ },
+ "irf_512b185ae52fa1": {
+  "sig": "Via Milazzo, 00185 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90241,
+  "lng": 12.50501,
+  "precision": "address"
+ },
+ "irf_f58b00ff55016b": {
+  "sig": "Via Giovanni Durando, 10, 20158 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.50414,
+  "lng": 9.16428,
+  "precision": "address"
+ },
+ "irf_396df0ea3ef9b9": {
+  "sig": "|||Sicilia",
+  "lat": 37.58779,
+  "lng": 14.15505,
+  "precision": "region"
+ },
+ "irf_d20bd0e1cb2416": {
+  "sig": "Via Copernico, 38, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.49071,
+  "lng": 9.20485,
+  "precision": "address"
+ },
+ "irf_be3660ee98bd4d": {
+  "sig": "Piazza Teresa Noce, 10155 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.09004,
+  "lng": 7.68669,
+  "precision": "address"
+ },
+ "irf_37848a2061c819": {
+  "sig": "Via Pietro Giardini, 476, 41124 Modena MO, Italy|region-mismatch|Genova|Liguria",
+  "lat": 44.40726,
+  "lng": 8.93386,
+  "precision": "city"
+ },
+ "irf_743f86157662e5": {
+  "sig": "Via Antonio Salandra, 00187 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90603,
+  "lng": 12.49474,
+  "precision": "address"
+ },
+ "irf_727f065d9692d2": {
+  "sig": "Via Antonio Salandra 13, 00187 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90603,
+  "lng": 12.49474,
+  "precision": "address"
+ },
+ "irf_00fd38335591e4": {
+  "sig": "Via Dante 15, 20123 Milan, Italy|unparsed|Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_bcd7b53772d8b3": {
+  "sig": "||Ragusa|Sicilia",
+  "lat": 36.92571,
+  "lng": 14.73075,
+  "precision": "city"
+ },
+ "irf_8438a96c7a8191": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_8ce4ee75eed1d8": {
+  "sig": "Via Antonio Zanolini, 38, 40126 Bologna BO, Italy|ok|Bologna|Emilia-Romagna",
+  "lat": 44.49675,
+  "lng": 11.35944,
+  "precision": "address"
+ },
+ "irf_2368409471696e": {
+  "sig": "Viale Umberto Tupini, 00144 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.83397,
+  "lng": 12.46243,
+  "precision": "address"
+ },
+ "irf_897e662b8640f2": {
+  "sig": "Viale America, 00144 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.82839,
+  "lng": 12.47266,
+  "precision": "address"
+ },
+ "irf_e8ae10d261a61f": {
+  "sig": "Via Principe Amedeo, 12, 10123 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06817,
+  "lng": 7.68628,
+  "precision": "address"
+ },
+ "irf_6b7b7e52cfc35e": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_bf1555f5a6c68e": {
+  "sig": "Via Wolfgang Amadeus Mozart, 1, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46833,
+  "lng": 9.19998,
+  "precision": "address"
+ },
+ "irf_2344cc01909a33": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_14fd8e3eee5ac0": {
+  "sig": "Largo Donegani 2, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47538,
+  "lng": 9.19479,
+  "precision": "address"
+ },
+ "irf_d9db5001972064": {
+  "sig": "Via Merano, 14, 20127 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.49704,
+  "lng": 9.22125,
+  "precision": "address"
+ },
+ "irf_0445c9da284fb8": {
+  "sig": "Via Arcivescovo Calabiana, 6, 20139 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.44386,
+  "lng": 9.20808,
+  "precision": "address"
+ },
+ "irf_7402a0ee1ad514": {
+  "sig": "Piazza Cardinale Pappalardo, 23, 95131 Catania CT, Italy|ok|Catania|Sicilia",
+  "lat": 37.50184,
+  "lng": 15.09091,
+  "precision": "address"
+ },
+ "irf_351399881b027e": {
+  "sig": "Piazza San Silvestro 8, 00187 Rome RM, Italy|ok|Roma|Lazio",
+  "lat": 41.9023,
+  "lng": 12.48093,
+  "precision": "address"
+ },
+ "irf_00a9f12035134e": {
+  "sig": "Via Emilia, 155, 47921 Rimini RN, Italy|region-mismatch|Rimini|Lombardia",
+  "lat": 45.43968,
+  "lng": 9.16837,
+  "precision": "city"
+ },
+ "irf_ec293ca926f923": {
+  "sig": "Via del Tiratoio 1, 50124 Firenze FI, Italy|ok|Firenze|Toscana",
+  "lat": 43.77095,
+  "lng": 11.24287,
+  "precision": "address"
+ },
+ "irf_e3c3f75df4042d": {
+  "sig": "Via Santa Teresa, 156, 10121 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.0683,
+  "lng": 7.68233,
+  "precision": "address"
+ },
+ "irf_27660fc01877d2": {
+  "sig": "Corso Castelfidardo, 22, 10128 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06669,
+  "lng": 7.65965,
+  "precision": "address"
+ },
+ "irf_35fd7737632fcd": {
+  "sig": "Via Sicilia, 150, 00187 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90931,
+  "lng": 12.49354,
+  "precision": "address"
+ },
+ "irf_e050a9a9f9e1d6": {
+  "sig": "||Venezia|Veneto",
+  "lat": 45.43719,
+  "lng": 12.33459,
+  "precision": "city"
+ },
+ "irf_bd679248543084": {
+  "sig": "Galleria Passarella, 2, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46561,
+  "lng": 9.19712,
+  "precision": "address"
+ },
+ "irf_8e709b5e26255c": {
+  "sig": "Viale Luigi Bodio, 37, 20158 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.49759,
+  "lng": 9.16768,
+  "precision": "address"
+ },
+ "irf_cb9ee1614ed28b": {
+  "sig": "Via Alessandro Volta, 19, 39100 Bolzano BZ, Italy|ok|Bolzano|Trentino-Alto Adige",
+  "lat": 46.47953,
+  "lng": 11.33119,
+  "precision": "address"
+ },
+ "irf_c43e829d50a495": {
+  "sig": "Via Alessandro Volta, 13/A, 39100 Bolzano BZ, Italy|ok|Bolzano|Trentino-Alto Adige",
+  "lat": 46.47827,
+  "lng": 11.33284,
+  "precision": "address"
+ },
+ "irf_45f1d2b6f7cb55": {
+  "sig": "Via Broletto 44, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46792,
+  "lng": 9.18573,
+  "precision": "address"
+ },
+ "irf_493e6188ebcf76": {
+  "sig": "Via Giuseppe Frua, 20, 20146 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46518,
+  "lng": 9.14773,
+  "precision": "address"
+ },
+ "irf_2a5bad94221821": {
+  "sig": "Via Giacomo Leopardi, 7, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4676,
+  "lng": 9.17509,
+  "precision": "address"
+ },
+ "irf_9091d5c121c4f0": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_a28f16481853b8": {
+  "sig": "|||Piemonte",
+  "lat": 45.06074,
+  "lng": 7.92355,
+  "precision": "region"
+ },
+ "irf_19ac584ffb74a5": {
+  "sig": "Via Aurelio Saffi 29, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46642,
+  "lng": 9.16773,
+  "precision": "address"
+ },
+ "irf_5175b657f696a0": {
+  "sig": "Via Lillo Del Duca, 20091 Bresso MI, Italy|ok|Bresso|Lombardia",
+  "lat": 45.5308,
+  "lng": 9.18996,
+  "precision": "address"
+ },
+ "irf_18da6fb67cbd13": {
+  "sig": "Via Giuseppe Sanna Randaccio, 64, 09129 Cagliari CA, Italy|ok|Cagliari|Sardegna",
+  "lat": 39.2179,
+  "lng": 9.12942,
+  "precision": "address"
+ },
+ "irf_c5eb7b8f88a10c": {
+  "sig": "Via Monferrato, 83, 20097 San Giuliano Milanese MI, Italy|ok|San Giuliano Milanese|Lombardia",
+  "lat": 45.40141,
+  "lng": 9.25762,
+  "precision": "address"
+ },
+ "irf_1678c180607465": {
+  "sig": "Viale Michelangiolo, 3, 50126 Firenze FI, Italy|ok|Firenze|Toscana",
+  "lat": 43.7625,
+  "lng": 11.27271,
+  "precision": "address"
+ },
+ "irf_417154f01e4950": {
+  "sig": "Via Abbondio Sangiorgio, 13, 20145 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47573,
+  "lng": 9.16769,
+  "precision": "address"
+ },
+ "irf_c01767fbad6c44": {
+  "sig": "Via Francesco Olgiati 26, 20143 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.44027,
+  "lng": 9.14605,
+  "precision": "address"
+ },
+ "irf_ad7fcd1d09e8d7": {
+  "sig": "|||Lombardia",
+  "lat": 45.57037,
+  "lng": 9.77325,
+  "precision": "region"
+ },
+ "irf_3e91adc4a3e57e": {
+  "sig": "Via Visconti di Modrone, 12, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.42743,
+  "lng": 9.11199,
+  "precision": "address"
+ },
+ "irf_1898a532811daa": {
+  "sig": "Via Carrara, 12, 04100 Latina LT, Italy|ok|Latina|Lazio",
+  "lat": 41.51182,
+  "lng": 12.94999,
+  "precision": "address"
+ },
+ "irf_ec3620470529f1": {
+  "sig": "Via Sant'Antonio, 4, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46158,
+  "lng": 9.19336,
+  "precision": "address"
+ },
+ "irf_c5da2bef5f2cf6": {
+  "sig": "Via Boscovich, 31, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48133,
+  "lng": 9.20514,
+  "precision": "address"
+ },
+ "irf_64622964bfa12a": {
+  "sig": "Strada Vincenzo Lancia, 95121 Catania CT, Italy|ok|Catania|Sicilia",
+  "lat": 37.43451,
+  "lng": 15.04897,
+  "precision": "address"
+ },
+ "irf_137f465ba0be06": {
+  "sig": "Via della Galassia, 00079 Rocca Priora RM, Italy|ok|Rocca Priora|Lazio",
+  "lat": 41.78141,
+  "lng": 12.74667,
+  "precision": "address"
+ },
+ "irf_5649008d46bd2a": {
+  "sig": "Via Fratelli Cuzio, 27100 Pavia PV, Italy|ok|Pavia|Lombardia",
+  "lat": 45.19571,
+  "lng": 9.15257,
+  "precision": "address"
+ },
+ "irf_90242b47d22adb": {
+  "sig": "Via Albert Einstein, 26900 Lodi LO, Italy|ok|Lodi|Lombardia",
+  "lat": 45.30315,
+  "lng": 9.47987,
+  "precision": "address"
+ },
+ "irf_56c2984b6e2997": {
+  "sig": "Corso Martiri della Libertà, 29, 17014 Cairo Montenotte SV, Italy|ok|Cairo Montenotte|Liguria",
+  "lat": 44.4018,
+  "lng": 8.27043,
+  "precision": "address"
+ },
+ "irf_4029db47e3c148": {
+  "sig": "Via Cracovia, 90, 00133 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.85153,
+  "lng": 12.62945,
+  "precision": "address"
+ },
+ "irf_3bba3996786f99": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_dde0e353c571eb": {
+  "sig": "||Trento|Trentino-Alto Adige",
+  "lat": 46.06642,
+  "lng": 11.12576,
+  "precision": "city"
+ },
+ "irf_6a7cdbe72b4a14": {
+  "sig": "Via Francesco Crispi, 90, 00187 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.90545,
+  "lng": 12.48598,
+  "precision": "address"
+ },
+ "irf_7bf8404e9e9d32": {
+  "sig": "Via Gabriele Rossetti, 17, 20145 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47284,
+  "lng": 9.16146,
+  "precision": "address"
+ },
+ "irf_a8618937133ce1": {
+  "sig": "Piazza del Duomo, 17, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46468,
+  "lng": 9.18823,
+  "precision": "address"
+ },
+ "irf_4f1021a0a52585": {
+  "sig": "|||Lazio",
+  "lat": 41.98016,
+  "lng": 12.7668,
+  "precision": "region"
+ },
+ "irf_f8a7d561183dbc": {
+  "sig": "Via Donizetti, 3, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.42697,
+  "lng": 9.06449,
+  "precision": "address"
+ },
+ "irf_49b574077c6a3f": {
+  "sig": "|||Lazio",
+  "lat": 41.98016,
+  "lng": 12.7668,
+  "precision": "region"
+ },
+ "irf_a50a2783efe3cb": {
+  "sig": "|||Piemonte",
+  "lat": 45.06074,
+  "lng": 7.92355,
+  "precision": "region"
+ },
+ "irf_dec726a460ea78": {
+  "sig": "Via Magona, 57023 Cecina LI, Italy|ok|Cecina|Toscana",
+  "lat": 43.31508,
+  "lng": 10.52078,
+  "precision": "address"
+ },
+ "irf_9371be6eee05ef": {
+  "sig": "Via Mario Giuntini, 56023 Cascina PI, Italy|ok|Cascina|Toscana",
+  "lat": 43.68449,
+  "lng": 10.48855,
+  "precision": "address"
+ },
+ "irf_00a23608c8f644": {
+  "sig": "Via Roveredo 20/b, 33170 PORDENONE PN, Italy|ok|Pordenone|Friuli-Venezia Giulia",
+  "lat": 45.99184,
+  "lng": 12.63535,
+  "precision": "address"
+ },
+ "irf_72ef42788b04c4": {
+  "sig": "Via Fratelli Cuzio, 27100 Pavia PV, Italy|ok|Pavia|Lombardia",
+  "lat": 45.19571,
+  "lng": 9.15257,
+  "precision": "address"
+ },
+ "irf_fb1c64be95d2e6": {
+  "sig": "Via Roveredo, 20, 33170 Pordenone PN, Italy|ok|Pordenone|Friuli-Venezia Giulia",
+  "lat": 45.99076,
+  "lng": 12.63541,
+  "precision": "address"
+ },
+ "irf_d639d520089e75": {
+  "sig": "Viale Europa, 00144 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.83234,
+  "lng": 12.46399,
+  "precision": "address"
+ },
+ "irf_40eab5d9c44311": {
+  "sig": "Via Chiossetto, 8, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46426,
+  "lng": 9.20051,
+  "precision": "address"
+ },
+ "irf_791ae2c32a1d1f": {
+  "sig": "Via Chiossetto, 1, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46423,
+  "lng": 9.2,
+  "precision": "address"
+ },
+ "irf_dede189bb6d4dd": {
+  "sig": "|||Lombardia",
+  "lat": 45.57037,
+  "lng": 9.77325,
+  "precision": "region"
+ },
+ "irf_f1a6e9460ca473": {
+  "sig": "Piazza Borromeo, 14, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46331,
+  "lng": 9.18239,
+  "precision": "address"
+ },
+ "irf_7e4f76aea7e8f1": {
+  "sig": "Via Giovanni Durando, 20158 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.50388,
+  "lng": 9.16425,
+  "precision": "address"
+ },
+ "irf_2f665f3c780e9f": {
+  "sig": "Viale Luigi Majno, 18, 20129 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47093,
+  "lng": 9.20573,
+  "precision": "address"
+ },
+ "irf_cb9863bd244696": {
+  "sig": "Corso Regina Margherita, 65, 74016 Massafra TA, Italy|ok|Massafra|Puglia",
+  "lat": 40.58532,
+  "lng": 17.11498,
+  "precision": "address"
+ },
+ "irf_e4ffb7bd879b89": {
+  "sig": "|||Lombardia",
+  "lat": 45.57037,
+  "lng": 9.77325,
+  "precision": "region"
+ },
+ "irf_487e9f327608f2": {
+  "sig": "Via Monte Napoleone, 22, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46974,
+  "lng": 9.19338,
+  "precision": "address"
+ },
+ "irf_494c3ccffc1914": {
+  "sig": "Via Corte d'Appello, 11, 10122 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.07425,
+  "lng": 7.679,
+  "precision": "address"
+ },
+ "irf_45b23ca660e33f": {
+  "sig": "Via Corte d'Appello, 11, 10122 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.07425,
+  "lng": 7.679,
+  "precision": "address"
+ },
+ "irf_ce7e137f1e9fbe": {
+  "sig": "Via Francesco Sforza, 14, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.461,
+  "lng": 9.19631,
+  "precision": "address"
+ },
+ "irf_c6f64be7a81632": {
+  "sig": "Via Filippo Turati, 7, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47456,
+  "lng": 9.19457,
+  "precision": "address"
+ },
+ "irf_183c9412134612": {
+  "sig": "Via Alessandro Paoli, 8, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48601,
+  "lng": 9.19531,
+  "precision": "address"
+ },
+ "irf_39ffd9f466b643": {
+  "sig": "Via Torquato Taramelli, 12, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.49036,
+  "lng": 9.19364,
+  "precision": "address"
+ },
+ "irf_3760a96312a4e7": {
+  "sig": "|||Emilia-Romagna",
+  "lat": 44.5257,
+  "lng": 11.03944,
+  "precision": "region"
+ },
+ "irf_18050e57167499": {
+  "sig": "Piazza Giuseppe Mazzini, 27, 00195 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.91637,
+  "lng": 12.46268,
+  "precision": "address"
+ },
+ "irf_d1ac141ad036ee": {
+  "sig": "Via Preve, 27038 Robbio PV, Italy|ok|Robbio|Lombardia",
+  "lat": 45.29257,
+  "lng": 8.59762,
+  "precision": "address"
+ },
+ "irf_f8f08fdaa8084b": {
+  "sig": "Via Brenta, 24020 Gorle BG, Italy|ok|Gorle|Lombardia",
+  "lat": 45.70514,
+  "lng": 9.7186,
+  "precision": "address"
+ },
+ "irf_3f187b644118f3": {
+  "sig": "Via Alessandria, 230, 00198 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.91482,
+  "lng": 12.50729,
+  "precision": "address"
+ },
+ "irf_8cdfe9f5b8fefb": {
+  "sig": "|||Liguria",
+  "lat": 44.47776,
+  "lng": 8.70263,
+  "precision": "region"
+ },
+ "irf_f7a9a1f31b3de6": {
+  "sig": "Corso Giuseppe Garibaldi, 49, 47121 Forlì FC, Italy|ok|Forlì|Emilia-Romagna",
+  "lat": 44.22267,
+  "lng": 12.03826,
+  "precision": "address"
+ },
+ "irf_4ab6e410768e6b": {
+  "sig": "Piazza Giuseppe Grandi, 20135 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46207,
+  "lng": 9.21996,
+  "precision": "address"
+ },
+ "irf_47239cd58a5b0f": {
+  "sig": "Piazza Poli, 37, 00187 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.9019,
+  "lng": 12.48264,
+  "precision": "address"
+ },
+ "irf_2650b588021f39": {
+  "sig": "Via Giuseppe Di Vittorio, 23, 20068 Peschiera, Italy|unparsed|Peschiera Borromeo|Lombardia",
+  "lat": 45.43185,
+  "lng": 9.31148,
+  "precision": "city"
+ },
+ "irf_065a83cdbc405e": {
+  "sig": "['501 Kings Highway East', 'Suite 400'], 06825 Fairfield CT, Italy|ok|Fairfield|Sicilia",
+  "lat": 37.58779,
+  "lng": 14.15505,
+  "precision": "region"
+ },
+ "irf_52c14d65e508e6": {
+  "sig": "Via Genova Thaon Di Revel, 20159 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4933,
+  "lng": 9.18805,
+  "precision": "address"
+ },
+ "irf_fb77aefe1af142": {
+  "sig": "Tecnopolo d'Abruzzo, SS 17 snc, 67100 L'Aquila AQ, Italy|ok|L'Aquila|Abruzzo",
+  "lat": 42.34892,
+  "lng": 13.39797,
+  "precision": "city"
+ },
+ "irf_9d528613a17e62": {
+  "sig": "|||Emilia-Romagna",
+  "lat": 44.5257,
+  "lng": 11.03944,
+  "precision": "region"
+ },
+ "irf_19b25856e1c150": {
+  "sig": "Via Giuseppe Frua 20, 20146 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46518,
+  "lng": 9.14773,
+  "precision": "address"
+ },
+ "irf_287bb07b9e9a6e": {
+  "sig": "Via della Balduina, 00136 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.92027,
+  "lng": 12.44092,
+  "precision": "address"
+ },
+ "irf_76ac614cedc6eb": {
+  "sig": "Viale Antonio Gramsci, 15c, 80121 Napoli NA, Italy|ok|Napoli|Campania",
+  "lat": 40.83018,
+  "lng": 14.22327,
+  "precision": "address"
+ },
+ "irf_8d3888e1d2967c": {
+  "sig": "Piazza Alcide De Gasperi, 35131 Padova PD, Italy|ok|Padova|Veneto",
+  "lat": 45.4149,
+  "lng": 11.87857,
+  "precision": "address"
+ },
+ "irf_1ee059c831ea01": {
+  "sig": "Via delle Mantellate, 3, 50129 Firenze FI, Italy|ok|Firenze|Toscana",
+  "lat": 43.78215,
+  "lng": 11.25956,
+  "precision": "address"
+ },
+ "irf_5caee423793cee": {
+  "sig": "Piazza Gaudenzio Sella, 1, 13900 Biella BI, Italy|ok|Biella|Piemonte",
+  "lat": 45.56123,
+  "lng": 8.05436,
+  "precision": "address"
+ },
+ "irf_16baef3fa177ff": {
+  "sig": "20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48413,
+  "lng": 9.20138,
+  "precision": "address"
+ },
+ "irf_166e1cc67cfbf0": {
+  "sig": "Corso Italia, 22/4, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45777,
+  "lng": 9.18676,
+  "precision": "address"
+ },
+ "irf_0a97da44fe404a": {
+  "sig": "Corso Venezia, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47265,
+  "lng": 9.20326,
+  "precision": "address"
+ },
+ "irf_aa6ed51615fd7e": {
+  "sig": "Vico Quarto di Viale Sant'Avendrace, 4, 09122 Cagliari CA, Italy|ok|Cagliari|Sardegna",
+  "lat": 39.23116,
+  "lng": 9.0986,
+  "precision": "address"
+ },
+ "irf_356893f546c17e": {
+  "sig": "||Lombardia|Lombardia",
+  "lat": 45.5234,
+  "lng": 9.75995,
+  "precision": "city"
+ },
+ "irf_4f273b543c4d35": {
+  "sig": "Piazza Massari n. 19 –, 70122 Bari BA, Italy|ok|Bari|Puglia",
+  "lat": 41.12578,
+  "lng": 16.86203,
+  "precision": "city"
+ },
+ "irf_211e7e986f3ab5": {
+  "sig": "||Sicilia|Sicilia",
+  "lat": 37.90113,
+  "lng": 15.13621,
+  "precision": "city"
+ },
+ "irf_fce2e8c9a5dc37": {
+  "sig": "Via Maria Vittoria, 10123 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06709,
+  "lng": 7.68663,
+  "precision": "address"
+ },
+ "irf_804929796024aa": {
+  "sig": "Via Maria Vittoria 38, 10123 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06521,
+  "lng": 7.69177,
+  "precision": "address"
+ },
+ "irf_c6b7796934bf74": {
+  "sig": "Via Corte d'Appello, 11, 10122 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.07425,
+  "lng": 7.679,
+  "precision": "address"
+ },
+ "irf_27e2b13cdd3563": {
+  "sig": "Via Borgogna, 5, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46595,
+  "lng": 9.19881,
+  "precision": "address"
+ },
+ "irf_1b9aee990f59ca": {
+  "sig": "Via Rialto, 75, 38068 Rovereto TN, Italy|ok|Rovereto|Trentino-Alto Adige",
+  "lat": 45.88882,
+  "lng": 11.04508,
+  "precision": "address"
+ },
+ "irf_28de27cc3c5e7e": {
+  "sig": "Corso Re Umberto, 65, 10128 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.05726,
+  "lng": 7.66932,
+  "precision": "address"
+ },
+ "irf_34d191a11fb84a": {
+  "sig": "Piazzale Roma, 70125 Bari BA, Italy|ok|Bari|Puglia",
+  "lat": 41.13645,
+  "lng": 16.83819,
+  "precision": "address"
+ },
+ "irf_4926070e3bf3a9": {
+  "sig": "||Puglia|Puglia",
+  "lat": 40.81972,
+  "lng": 16.42278,
+  "precision": "city"
+ },
+ "irf_ddc3b8fe0e6a24": {
+  "sig": "Via San Crispino, 35129 Padova PD, Italy|ok|Padova|Veneto",
+  "lat": 45.41146,
+  "lng": 11.91486,
+  "precision": "address"
+ },
+ "irf_db1f0b4eb41dbf": {
+  "sig": "Via Bruno Serotini, 00189 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.97937,
+  "lng": 12.4102,
+  "precision": "address"
+ },
+ "irf_5f6373f960b156": {
+  "sig": "Via Bruno Serotini 89, 00135 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.97748,
+  "lng": 12.41032,
+  "precision": "address"
+ },
+ "irf_18b16a244e60a3": {
+  "sig": "Corso Vittorio Emanuele, 18, 72015 Fasano BR, Italy|ok|Fasano|Puglia",
+  "lat": 40.83541,
+  "lng": 17.35903,
+  "precision": "address"
+ },
+ "irf_2ca94ddca732fb": {
+  "sig": "Via Francesco Petrarca, 46010 Curtatone MN, Italy|ok|Curtatone|Lombardia",
+  "lat": 45.13663,
+  "lng": 10.72429,
+  "precision": "address"
+ },
+ "irf_2e5dbd9753d394": {
+  "sig": "Piazza del Liberty, 8, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.4656,
+  "lng": 9.19399,
+  "precision": "address"
+ },
+ "irf_684c80cf178dde": {
+  "sig": "Via Vincenzo Forcella, 15, 20144 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45233,
+  "lng": 9.16679,
+  "precision": "address"
+ },
+ "irf_85a52656903330": {
+  "sig": "Via Triboniano, 103, 20156 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.50805,
+  "lng": 9.12527,
+  "precision": "address"
+ },
+ "irf_6792b0f608dd70": {
+  "sig": "Via Sassari, 3, 09123 Cagliari CA, Italy|ok|Cagliari|Sardegna",
+  "lat": 39.21438,
+  "lng": 9.10807,
+  "precision": "address"
+ },
+ "irf_a13e33a473a68f": {
+  "sig": "Via Redipuglia, 24047 Treviglio BG, Italy|ok|Treviglio|Lombardia",
+  "lat": 45.51481,
+  "lng": 9.59474,
+  "precision": "address"
+ },
+ "irf_b0310b44e663c5": {
+  "sig": "Via Bernardo Quaranta, 40, 20139 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.43642,
+  "lng": 9.2052,
+  "precision": "address"
+ },
+ "irf_a54214cbc9e921": {
+  "sig": "Via Bernardo Quaranta, 40, Milano, Italy|unparsed|Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_7156d7f0ca07dc": {
+  "sig": "Via Cernaia, 4, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47381,
+  "lng": 9.18987,
+  "precision": "address"
+ },
+ "irf_768d22849bb049": {
+  "sig": "Via San Martino, 17, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45316,
+  "lng": 9.19033,
+  "precision": "address"
+ },
+ "irf_324eb06a88a961": {
+  "sig": "Via San Martino 17, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45316,
+  "lng": 9.19033,
+  "precision": "address"
+ },
+ "irf_23de183f80a958": {
+  "sig": "Viale Andrea Doria, 48, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48577,
+  "lng": 9.21445,
+  "precision": "address"
+ },
+ "irf_4f1d12a6aa74d6": {
+  "sig": "Viale Carlo Espinasse, 163, 20156 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.50397,
+  "lng": 9.13734,
+  "precision": "address"
+ },
+ "irf_a927ec0b229558": {
+  "sig": "Viale Carlo Espinasse 163 –, 20156 Milan, Italy|unparsed|Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_ebaac8e9e77049": {
+  "sig": "Viale Giuseppe Mazzini, 46, 50132 Firenze FI, Italy|region-mismatch|Basilicata|Basilicata",
+  "lat": 40.6664,
+  "lng": 15.92125,
+  "precision": "city"
+ },
+ "irf_b472f7a2045b5f": {
+  "sig": "||Firenze|Toscana",
+  "lat": 43.7698,
+  "lng": 11.25564,
+  "precision": "city"
+ },
+ "irf_24ae699617fa4c": {
+  "sig": "Via Alfred Ammon, 36, 39042 Bressanone BZ, Italy|ok|Bressanone|Trentino-Alto Adige",
+  "lat": 46.68642,
+  "lng": 11.63641,
+  "precision": "address"
+ },
+ "irf_f2949222f8ebd0": {
+  "sig": "||Bolzano|Trentino-Alto Adige",
+  "lat": 46.49848,
+  "lng": 11.35474,
+  "precision": "city"
+ },
+ "irf_5ee455f5d35e10": {
+  "sig": "Via Jacopo Linussio, 51, 33100 Udine UD, Italy|ok|Udine|Friuli-Venezia Giulia",
+  "lat": 46.01526,
+  "lng": 13.26727,
+  "precision": "address"
+ },
+ "irf_ae8dd71adc7017": {
+  "sig": "Via Giovanni Durando, 38, 20158 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.50632,
+  "lng": 9.16353,
+  "precision": "address"
+ },
+ "irf_ea47785987f771": {
+  "sig": "Strada per Casamassima Km 3, 70010 Valenzano BA, Italy|ok|Valenzano|Puglia",
+  "lat": 41.04533,
+  "lng": 16.88509,
+  "precision": "city"
+ },
+ "irf_5421aee4128e6c": {
+  "sig": "Via Tolara di Sopra, 41, 40064 Ozzano dell'Emilia BO, Italy|ok|Ozzano Dell'Emilia|Emilia-Romagna",
+  "lat": 44.43536,
+  "lng": 11.48796,
+  "precision": "address"
+ },
+ "irf_5246564a70b94b": {
+  "sig": "Strada Vicinale Tre Vasche, 67100 L'Aquila AQ, Italy|region-mismatch|Bologna|Emilia-Romagna",
+  "lat": 44.49382,
+  "lng": 11.34263,
+  "precision": "city"
+ },
+ "irf_709e9e87882e65": {
+  "sig": "Via Aldo Ferraresi, 44122 Ferrara FE, Italy|ok|Ferrara|Emilia-Romagna",
+  "lat": 44.83442,
+  "lng": 11.60148,
+  "precision": "address"
+ },
+ "irf_b4b3feb2fc91fa": {
+  "sig": "Via Quinto Bucci, 47522 Cesena FC, Italy|ok|Cesena|Emilia-Romagna",
+  "lat": 44.1583,
+  "lng": 12.24523,
+  "precision": "address"
+ },
+ "irf_00aaafe2dd50e0": {
+  "sig": "Via Piero Vivarelli, 9/2, 41125 Modena MO, Italy|ok|Modena|Emilia-Romagna",
+  "lat": 44.62831,
+  "lng": 10.94704,
+  "precision": "address"
+ },
+ "irf_afd26bb0b1ff41": {
+  "sig": "Via Vivarelli 2, 41125 Modena MO, Italy|ok|Modena|Emilia-Romagna",
+  "lat": 44.62854,
+  "lng": 10.94978,
+  "precision": "address"
+ },
+ "irf_ec328646cb335f": {
+  "sig": "Strada della Torre della Razza, 29122 Piacenza PC, Italy|ok|Piacenza|Emilia-Romagna",
+  "lat": 45.03885,
+  "lng": 9.75811,
+  "precision": "address"
+ },
+ "irf_e077f6eb746a11": {
+  "sig": "Via Sant'Alberto, 163, 48123 Ravenna RA, Italy|ok|Ravenna|Emilia-Romagna",
+  "lat": 44.43438,
+  "lng": 12.19543,
+  "precision": "address"
+ },
+ "irf_6f399ef44e872c": {
+  "sig": "Via Dario Campana, 71, 47922 Rimini RN, Italy|ok|Rimini|Emilia-Romagna",
+  "lat": 44.05924,
+  "lng": 12.55445,
+  "precision": "address"
+ },
+ "irf_8cb77ea575dc5f": {
+  "sig": "Via Ardito Desio, 00131 Roma RM, Italy|region-mismatch|Rimini|Emilia-Romagna",
+  "lat": 44.05939,
+  "lng": 12.56844,
+  "precision": "city"
+ },
+ "irf_f7d77a699db388": {
+  "sig": "||Roma|Lazio",
+  "lat": 41.89332,
+  "lng": 12.48293,
+  "precision": "city"
+ },
+ "irf_9e82cc714ef3ce": {
+  "sig": "Piazza Leonardo da Vinci, 32, 20133 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47781,
+  "lng": 9.22725,
+  "precision": "address"
+ },
+ "irf_06ef855e04c2d3": {
+  "sig": "Viale Egidio Galbani, 70, 00156 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.93129,
+  "lng": 12.56158,
+  "precision": "address"
+ },
+ "irf_390f33258183bc": {
+  "sig": "||Lazio|Lazio",
+  "lat": 41.86296,
+  "lng": 13.24631,
+  "precision": "city"
+ },
+ "irf_1c88881dc2f138": {
+  "sig": "Viale La Plaia, 15, 09123 Cagliari CA, Italy|ok|Cagliari|Sardegna",
+  "lat": 39.21596,
+  "lng": 9.10348,
+  "precision": "address"
+ },
+ "irf_f33abc138e647e": {
+  "sig": "73100 Lecce LE, Italy|ok|Lecce|Puglia",
+  "lat": 40.35357,
+  "lng": 18.17538,
+  "precision": "address"
+ },
+ "irf_78cbd5891491df": {
+  "sig": "Corso Magenta, 52, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46578,
+  "lng": 9.17369,
+  "precision": "address"
+ },
+ "irf_d3212ce0d8e063": {
+  "sig": "Via Venti Settembre, 34, 20025 Legnano MI, Italy|ok|Legnano|Lombardia",
+  "lat": 45.58847,
+  "lng": 8.90795,
+  "precision": "address"
+ },
+ "irf_2d7e70f427e5ee": {
+  "sig": "Largo Adua, 1, 24128 Bergamo BG, Italy|ok|Bergamo|Lombardia",
+  "lat": 45.69908,
+  "lng": 9.66051,
+  "precision": "address"
+ },
+ "irf_3cfd011c7c2c85": {
+  "sig": "Via Gaetano Negri, 1, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46515,
+  "lng": 9.18465,
+  "precision": "address"
+ },
+ "irf_3f88f51c979853": {
+  "sig": "Via Fiorentina, 1, 53100 Siena SI, Italy|ok|Siena|Toscana",
+  "lat": 43.33386,
+  "lng": 11.30896,
+  "precision": "address"
+ },
+ "irf_cfce4948511f07": {
+  "sig": "Milano|unparsed|Toscana|Toscana",
+  "lat": 42.59944,
+  "lng": 11.29174,
+  "precision": "city"
+ },
+ "irf_008b96364e4626": {
+  "sig": "Via Passirio, 15, 38121 Trento TN, Italy|ok|Trento|Trentino-Alto Adige",
+  "lat": 46.10116,
+  "lng": 11.11196,
+  "precision": "address"
+ },
+ "irf_2690f548967f8f": {
+  "sig": "Via Biaena, 38068 Rovereto TN, Italy|ok|Rovereto|Trentino-Alto Adige",
+  "lat": 45.88904,
+  "lng": 11.02858,
+  "precision": "address"
+ },
+ "irf_960da78fa43b0d": {
+  "sig": "Via Fortunato Zeni, 8, 38068 Rovereto TN, Italy|ok|Rovereto|Trentino-Alto Adige",
+  "lat": 45.89085,
+  "lng": 11.02856,
+  "precision": "address"
+ },
+ "irf_1bc99b8454a6df": {
+  "sig": "Via di Torre Argentina 21, 00186 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.89636,
+  "lng": 12.47641,
+  "precision": "address"
+ },
+ "irf_7ce75d930dc556": {
+  "sig": "ROMA|unparsed|Lombardia|Lombardia",
+  "lat": 45.5234,
+  "lng": 9.75995,
+  "precision": "city"
+ },
+ "irf_d07edc17a5eea1": {
+  "sig": "Via Carlo Maria Martini, 1, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46386,
+  "lng": 9.19328,
+  "precision": "address"
+ },
+ "irf_b428239f1d5645": {
+  "sig": "Piazza Fontana 1, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46397,
+  "lng": 9.19347,
+  "precision": "address"
+ },
+ "irf_c98a8122ed665f": {
+  "sig": "||Lombardia|Lombardia",
+  "lat": 45.5234,
+  "lng": 9.75995,
+  "precision": "city"
+ },
+ "irf_5a71b408ab3505": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_483baa586acad2": {
+  "sig": "Dorsoduro 2406/C, 30123 Venezia VE, Italy|ok|Venezia|Veneto",
+  "lat": 45.43313,
+  "lng": 12.31903,
+  "precision": "address"
+ },
+ "irf_e3a5d88b3951b3": {
+  "sig": "Via Ormea, 48, 10125 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.0545,
+  "lng": 7.68209,
+  "precision": "address"
+ },
+ "irf_0b9c8acadd9f05": {
+  "sig": "Corso Castelfidardo, 22, 10128 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06669,
+  "lng": 7.65965,
+  "precision": "address"
+ },
+ "irf_164f2ac4a690b3": {
+  "sig": "Via Filippo Turati, 34, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47659,
+  "lng": 9.19551,
+  "precision": "address"
+ },
+ "irf_f6daaf404294e0": {
+  "sig": "Via Francesco Caracciolo, 17 –, 80122 Napoli NA, Italy|ok|Napoli|Campania",
+  "lat": 40.82715,
+  "lng": 14.22044,
+  "precision": "address"
+ },
+ "irf_26ef5836b2dea5": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_34268a5918c961": {
+  "sig": "Via delle Acacie 10, 00171 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.88884,
+  "lng": 12.57162,
+  "precision": "address"
+ },
+ "irf_6fe10d1481d5ca": {
+  "sig": "||Lombardia|Lombardia",
+  "lat": 45.5234,
+  "lng": 9.75995,
+  "precision": "city"
+ },
+ "irf_ecde6e8788c626": {
+  "sig": "||Bergamo|Lombardia",
+  "lat": 45.69449,
+  "lng": 9.66987,
+  "precision": "city"
+ },
+ "irf_9cc2a6889f2d60": {
+  "sig": "||Como|Lombardia",
+  "lat": 45.81156,
+  "lng": 9.08304,
+  "precision": "city"
+ },
+ "irf_2b73179cdb96c6": {
+  "sig": "Corso Venezia, 48, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.47282,
+  "lng": 9.20366,
+  "precision": "address"
+ },
+ "irf_3df1a873ce3717": {
+  "sig": "Via Davide Gagliardo, 7, 16043 Chiavari GE, Italy|ok|Chiavari|Liguria",
+  "lat": 44.31479,
+  "lng": 9.32439,
+  "precision": "address"
+ },
+ "irf_a62568dc102263": {
+  "sig": "||Veneto|Veneto",
+  "lat": 45.99786,
+  "lng": 12.29647,
+  "precision": "city"
+ },
+ "irf_c5222573333375": {
+  "sig": "Via Privata Giovannino De Grassi, 11, 20123 Milan, Italy|unparsed|Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_d48513d8ba47ef": {
+  "sig": "Via Saragozza, 1, 40122 Bologna BO, Italy|ok|Bologna|Emilia-Romagna",
+  "lat": 44.49045,
+  "lng": 11.33763,
+  "precision": "address"
+ },
+ "irf_8679cbe2ce415c": {
+  "sig": "Via Irnerio, 28, 40126 Bologna BO, Italy|ok|Bologna|Emilia-Romagna",
+  "lat": 44.49964,
+  "lng": 11.35122,
+  "precision": "address"
+ },
+ "irf_ee6a2830c22dda": {
+  "sig": "Via Marsala, 29h, 00185 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.9014,
+  "lng": 12.50353,
+  "precision": "address"
+ },
+ "irf_71b5c5f657a6c9": {
+  "sig": "Via Irnerio, 28, 40126 Bologna BO, Italy|ok|Bologna|Emilia-Romagna",
+  "lat": 44.49964,
+  "lng": 11.35122,
+  "precision": "address"
+ },
+ "irf_efcfabcc4b84fb": {
+  "sig": "C.so Garibaldi 19/A, 33170 Pordenone PN, Italy|ok|Pordenone|Friuli-Venezia Giulia",
+  "lat": 45.95984,
+  "lng": 12.65709,
+  "precision": "address"
+ },
+ "irf_8c8e79770bc442": {
+  "sig": "Via di Affogalasino 34, 00148 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.85451,
+  "lng": 12.43539,
+  "precision": "address"
+ },
+ "irf_cae662172fd450": {
+  "sig": "Via Bergognone 34, 20144 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.45285,
+  "lng": 9.16369,
+  "precision": "address"
+ },
+ "irf_0e27150cb1fc10": {
+  "sig": "Via Moretta, 30 –, 10139 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06891,
+  "lng": 7.65109,
+  "precision": "address"
+ },
+ "irf_383270d6ec9dc9": {
+  "sig": "Corso Barolo 48, 12051 Alba CN, Italy|ok|Alba|Piemonte",
+  "lat": 44.68025,
+  "lng": 7.99748,
+  "precision": "address"
+ },
+ "irf_5a24f64a207df9": {
+  "sig": "Via Nicolò Odero 13, 00154 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.86171,
+  "lng": 12.48669,
+  "precision": "address"
+ },
+ "irf_e05001cf116ad7": {
+  "sig": "Via Francesco Negri 51/53, 00154 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.87024,
+  "lng": 12.48248,
+  "precision": "address"
+ },
+ "irf_3c1bb0b71de292": {
+  "sig": "Via Principe di Belmonte, 93, 90139 Palermo PA, Italy|ok|Palermo|Sicilia",
+  "lat": 38.12408,
+  "lng": 13.35769,
+  "precision": "address"
+ },
+ "irf_397532f3dac70a": {
+  "sig": "Corso Castelfidardo 22, 10128 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06669,
+  "lng": 7.65965,
+  "precision": "address"
+ },
+ "irf_4c41ad05830273": {
+  "sig": "Via Arcivescovo Calabiana 6, 20139 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.44414,
+  "lng": 9.20848,
+  "precision": "address"
+ },
+ "irf_2131262e42888b": {
+  "sig": "Via Agostino da Montefeltro 2, 10134 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.05024,
+  "lng": 7.66924,
+  "precision": "address"
+ },
+ "irf_3a4053dc34f8dc": {
+  "sig": "Via San Francesco da Paola 17, 10123 Torino TO, Italy|ok|Torino|Piemonte",
+  "lat": 45.06563,
+  "lng": 7.68717,
+  "precision": "address"
+ },
+ "irf_659009390a2407": {
+  "sig": "||Roma|Lazio",
+  "lat": 41.89332,
+  "lng": 12.48293,
+  "precision": "city"
+ },
+ "irf_a6c49d763a98b6": {
+  "sig": "Via Filippo Sassetti, 32, 20124 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48655,
+  "lng": 9.19396,
+  "precision": "address"
+ },
+ "irf_3d94811a0c5dcf": {
+  "sig": "Via Manfredo Camperio, 4A, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46626,
+  "lng": 9.18347,
+  "precision": "address"
+ },
+ "irf_fb93e692cafa7c": {
+  "sig": "Corso Monforte, 38, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46728,
+  "lng": 9.20349,
+  "precision": "address"
+ },
+ "irf_3f3ab2d80557d1": {
+  "sig": "Corso Magenta, 59, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46562,
+  "lng": 9.17292,
+  "precision": "address"
+ },
+ "irf_8a75b37ba3763f": {
+  "sig": "Galleria San Babila, 4/B, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46631,
+  "lng": 9.19827,
+  "precision": "address"
+ },
+ "irf_6df8b621b7d70c": {
+  "sig": "Via San Prospero, 2, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46611,
+  "lng": 9.18593,
+  "precision": "address"
+ },
+ "irf_bb9e795f9d0fde": {
+  "sig": "Via del Molo, 65 A/R, 16128 Genova GE, Italy|ok|Genova|Liguria",
+  "lat": 44.4066,
+  "lng": 8.92731,
+  "precision": "address"
+ },
+ "irf_9cb7ed447f1a19": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_12e064c6775d22": {
+  "sig": "Piazza Borromeo, 14, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46331,
+  "lng": 9.18239,
+  "precision": "address"
+ },
+ "irf_6a90cbce018046": {
+  "sig": "Corso Italia, 22, 20122 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.39945,
+  "lng": 8.91673,
+  "precision": "address"
+ },
+ "irf_fa65facbfa1328": {
+  "sig": "Via Porro Lambertenghi, 7, 20159 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.48937,
+  "lng": 9.1846,
+  "precision": "address"
+ },
+ "irf_8593150dfeb697": {
+  "sig": "Via di Torre Argentina, 21, 00186 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.89636,
+  "lng": 12.47641,
+  "precision": "address"
+ },
+ "irf_08e46da1e77128": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_2794eda0e76d89": {
+  "sig": "Via Privata Giovannino de Grassi, 11, 20123 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46442,
+  "lng": 9.17124,
+  "precision": "address"
+ }
+}

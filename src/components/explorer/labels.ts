@@ -1,7 +1,7 @@
 import { PROVINCES, REGIONS } from '@/lib/geo/territories';
 import type { Locale } from '@/lib/i18n/config';
 import type { PublicPlayer } from '@/lib/data/schema';
-import { CATEGORY_BY_KEY, STAGE_BY_KEY, type CategoryKey } from '@/lib/data/taxonomy';
+import { CATEGORY_BY_KEY, type CategoryKey } from '@/lib/data/taxonomy';
 
 export const REGION_BY_SLUG = new Map(REGIONS.map((r) => [r.slug, r]));
 export const PROVINCE_BY_SLUG = new Map(PROVINCES.map((p) => [p.slug, p]));
@@ -22,13 +22,6 @@ export const primaryCategory = (p: PublicPlayer): CategoryKey => p.categories[0]
 export const categoryColor = (k: CategoryKey) => CATEGORY_BY_KEY[k].color;
 export const categoryName = (k: CategoryKey, locale: Locale) => CATEGORY_BY_KEY[k].label[locale];
 
-export function stageRange(p: PublicPlayer, locale: Locale): string | null {
-  if (!p.stages.length) return null;
-  const sorted = [...p.stages].sort((a, b) => STAGE_BY_KEY[a].order - STAGE_BY_KEY[b].order);
-  const first = STAGE_BY_KEY[sorted[0]!].label[locale];
-  const last = STAGE_BY_KEY[sorted[sorted.length - 1]!].label[locale];
-  return sorted.length === 1 ? first : `${first} → ${last}`;
-}
 
 export function initials(name: string) {
   const words = name

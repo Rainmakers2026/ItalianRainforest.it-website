@@ -7,7 +7,7 @@ Fonti analizzate: sito legacy `italian-innovation-map.vercel.app` (IT/EN, embed)
 | Voce | Esito |
 |---|---|
 | Dove sono i dati | I record Airtable grezzi sono **embedded nel payload RSC** della pagina legacy (prop `records`). Esiste anche una shared view pubblica Airtable (`appclGHOJ6BcDnXoS / shr9H8maUkI7SHoYu`) usata come iframe. |
-| Accesso usato | Solo **GET** pubblici. Nessuna chiamata di scrittura, nessun token. Snapshot salvato in `data/snapshot/legacy-records.json` (`npm run data:snapshot`). |
+| Accesso usato | Solo **GET** pubblici. Nessuna chiamata di scrittura, nessun token. (Snapshot legacy sostituito il 16/11/2026 dal database IRF: vedi §4c.) |
 | Record | **467** (412 attivi, 54 inattivi, 1 senza stato) → 464 dopo deduplica. |
 | Colonne pubbliche | `Company Name`, `Status`, `Website`, `Countries of investment`, `Stage of Investment/Development`, `Hashtags`, `Account Type`, `Created`. **Solo queste 8.** |
 | Geografia | **Assente.** Nessun campo città/regione/provincia/coordinate. Il filtro "Country" del legacy è in realtà *Countries of investment* (dove il player investe), non la sede. |
@@ -33,14 +33,21 @@ Fonti analizzate: sito legacy `italian-innovation-map.vercel.app` (IT/EN, embed)
 - Token brand Rainmakers rilevati: navy `#1b3a5c`, indigo/Savoia `#4b61d1`, periwinkle `#7b92e8`, cyan `#2596be`, deep `#0a1828`, font Roboto. Il sito Rainmakers è dark.
 - Scelta: IRF condivide famiglia cromatica e tono, ma usa un sistema proprio (superfici chiare editoriali/dati, Manrope, metafora rete→nodi→radici), con "Un'iniziativa di Rainmakers" in hero, Who e footer.
 
-## 4. Immagini di riferimento
-| Immagine | Uso | Esito |
+## 4. Immagini (aggiornato su richiesta del cliente)
+Si usano **esattamente le immagini fornite**, senza modifiche all'artwork (`npm run images:prepare <cartella>`):
+| Immagine | Sezione | Trattamento |
 |---|---|---|
-| Albero luminoso con persone (4.webp) | WHY | Ridisegnata come `public/visuals/why.svg`: "Italy as a living network" generata dai confini ISTAT reali, niente glow/fantasy. |
-| Italia con player luminosi (1.webp) | COME | Ridisegnata come `public/visuals/how.svg`: regioni, cluster per categoria, collegamenti internazionali. |
-| Ecosistema IT / EN (3.webp, 2.webp) | PER CHI | Usate come fornite, variante per lingua (mai testo tradotto sopra l'immagine), servite AVIF/WebP responsive da `next/image`. |
+| Albero luminoso (4.webp) | Perché | Copiata così com'è; bordi sfumati via CSS |
+| Italia con i player (1.webp) | Come | Già trasparente, copiata così com'è |
+| Ecosistema IT / EN (3.webp, 2.webp) | Per chi | Rimosso solo lo sfondo bianco esterno (flood fill dai bordi + color-to-alpha); cerchio centrale ed etichette intatti. Variante per lingua. |
 
-Le visual sono **illustrazioni**: i nodi sono centroidi di provincia, non dati sui player (dichiarato negli alt).
+Logo: è il marchio di rainmakers.it (stessa geometria, misurata su `/brand/logo-mark-white.png`) con il manico sostituito da tronco e radici. Usato in header, footer, favicon (`src/app/icon.svg`) e apple-icon.
+
+## 4b. Player reali georeferenziati
+10 player del dataset hanno indirizzo, coordinate e descrizione verificati su fonti pubbliche (`data/enrichment/verified-players.json`, con fonti e data di verifica): CDP Venture Capital, H-Farm, Cariplo Factory, I3P, PoliHub, LVenture Group, Italian Angels for Growth, Fondazione Toscana Life Sciences, Nana Bianca, Impact Hub Bari. Le posizioni dimostrative sono disattivate (`IRF_GEO_DEMO=false`): sulla mappa compaiono solo dati reali.
+
+## 4c. Database IRF (16/11/2026)
+Il dataset legacy e l’arricchimento editoriale sono stati sostituiti dall’export del database IRF (`data/source/irf-database.csv`, stesse colonne della base Airtable "Rainmakers OS"): **621 abilitatori unici** (export del 17/11/2026: 623 righe, 2 righe modello scartate), 15 tipologie di player, 522 loghi verificati (493 file unici), 469 player georeferenziati (371 da indirizzo, 70 da città, 28 da regione), 152 senza regione. Dettaglio e righe da correggere in [data-quality.md](data-quality.md); schema in [data-schema.md](data-schema.md).
 
 ## 5. Primo audit copy / SEO / GEO (pre-copy)
 Problemi del copy legacy:

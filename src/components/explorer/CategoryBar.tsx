@@ -7,62 +7,60 @@ import { facetCounts } from '@/lib/filters';
 import { formatNumber } from '@/lib/i18n/config';
 import { useExplorer } from './ExplorerProvider';
 
-/**
- * Category legend + filter. Hover/focus highlights the category on the map
- * (no filtering); click toggles a persistent filter. Counts reflect the other
- * active filters and never shift layout (tabular numbers, fixed chip shape).
- */
-export function CategoryBar({ source, interactiveHover = true }: { source: 'map' | 'database'; interactiveHover?: boolean }) {
-  const { players, filters, setFilters, setHoverCategory, locale, t, hoverCategory } = useExplorer();
-  const counts = useMemo(() => facetCounts(players, filters, 'categories'), [players, filters]);
-  const visible = CATEGORIES.filter((c) => (counts.get(c.key) ?? 0) > 0 || filters.categories.includes(c.key));
+/** Ink or white, whichever reads better on the category colour (WCAG relative luminance). */
+function textOn(hex: string) {
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  const L = 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
+  return (1.05 / (L + 0.05) >= (L + 0.05) / 0.0783 ? '#ffffff' : '#14304f');
+}
 
-  const toggle = (key: CategoryKey) => {
-    const has = filters.categories.includes(key);
-    setFilters({ categories: has ? filters.categories.filter((c) => c !== key) : [...filters.categories, key] }, source);
-  };
+/**
+ * Category legend. Not a filter (filtering lives in the toolbar's category
+ * select): hover/focus a pill to light up that category on the map and dim
+ * every other player. Every category is always listed, with live counts.
+ */
+export function CategoryBar() {
+  const { players, filters, setHoverCategory, locale, t, hoverCategory } = useExplorer();
+  const counts = useMemo(() => facetCounts(players, filters, 'categories'), [players, filters]);
+
   const hover = (key: CategoryKey | null) => {
     // Touch devices emulate mouseenter on tap: only real hover devices preview.
-    if (!interactiveHover || (key && !window.matchMedia('(hover: hover)').matches)) return;
+    if (key && !window.matchMedia('(hover: hover)').matches) return;
     setHoverCategory(key);
     if (key) track('map_category_hover', { category: key });
   };
 
   return (
-    <div
-      role="group"
+    <ul
       aria-label={t.explorer.category}
+      title={t.map.categoriesHint}
       className="scrollbar-thin -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 md:flex-wrap md:overflow-visible"
+      onMouseLeave={() => hover(null)}
     >
-      {visible.map((c) => {
-        const active = filters.categories.includes(c.key);
-        const dim = hoverCategory && hoverCategory !== c.key;
+      {CATEGORIES.filter((c) => c.key !== 'unclassified' || counts.get(c.key)).map((c) => {
+        const n = counts.get(c.key) ?? 0;
+        const dim = hoverCategory !== null && hoverCategory !== c.key;
+        const on = hoverCategory === c.key;
         return (
-          <button
+          <li
             key={c.key}
-            type="button"
-            aria-pressed={active}
-            onClick={() => toggle(c.key)}
+            tabIndex={0}
             onMouseEnter={() => hover(c.key)}
-            onMouseLeave={() => hover(null)}
-            onFocus={() => hover(c.key)}
-            onBlur={() => hover(null)}
-            className={`group inline-flex min-h-9 shrink-0 items-center gap-2 rounded-full border px-3 text-[0.8125rem] font-semibold transition-[background-color,border-color,opacity] duration-150 ${
-              active ? 'border-navy bg-navy text-white' : 'border-line bg-white text-ink hover:border-line-strong'
-            } ${dim ? 'opacity-60' : ''}`}
+            onFocus={() => setHoverCategory(c.key)}
+            onBlur={() => setHoverCategory(null)}
+            style={{ background: c.color, color: textOn(c.color) }}
+            className={`inline-flex min-h-7 shrink-0 cursor-default items-center gap-1.5 rounded-full px-2.5 text-[0.75rem] leading-none font-bold whitespace-nowrap transition-[opacity,transform,filter,box-shadow] duration-200 select-none ${
+              dim ? 'opacity-30 saturate-50' : ''
+            } ${on ? 'scale-105 shadow-[0_8px_18px_-8px_rgb(20_45_74/0.7)]' : ''} ${n === 0 ? 'opacity-50' : ''}`}
           >
-            <span
-              className="size-2.5 rounded-full ring-2 ring-white/80"
-              style={{ background: c.color, boxShadow: active ? '0 0 0 1px rgba(255,255,255,.6)' : undefined }}
-              aria-hidden="true"
-            />
-            <span className="whitespace-nowrap">{c.label[locale]}</span>
-            <span className={`min-w-[2ch] text-right tabular-nums ${active ? 'text-white/80' : 'text-subtle'}`}>
-              {formatNumber(counts.get(c.key) ?? 0, locale)}
-            </span>
-          </button>
+            {c.label[locale]}
+            <span className="tabular-nums opacity-80">{formatNumber(n, locale)}</span>
+          </li>
         );
       })}
-    </div>
+    </ul>
   );
 }

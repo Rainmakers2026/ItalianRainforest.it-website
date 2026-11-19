@@ -6,10 +6,13 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
 import { ITALY_BBOX } from '@/lib/geo/territories';
-import { CATEGORIES } from '@/lib/data/taxonomy';
+import type { PublicPlayer } from '@/lib/data/schema';
+import { CATEGORIES, CATEGORY_BY_KEY } from '@/lib/data/taxonomy';
+import type { Locale } from '@/lib/i18n/config';
+import { fmt } from '@/lib/i18n';
 import { Icon } from '../ui/Icon';
 import { useExplorer } from './ExplorerProvider';
-import { PROVINCE_BY_SLUG, REGION_BY_SLUG } from './labels';
+import { REGION_BY_SLUG } from './labels';
 
 const MAPLIBRE_VERSION = '6.15.0';
 maplibregl.setWorkerUrl(`/vendor/maplibre-gl-worker-${MAPLIBRE_VERSION}.mjs`);
@@ -27,33 +30,111 @@ const EMPTY: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: 
 const reducedMotion = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const canHover = () => typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches;
 
+/** Hover tooltip content, built with DOM APIs (never innerHTML: names come from the data). */
+function tipFor(p: PublicPlayer, locale: Locale) {
+  const cat = CATEGORY_BY_KEY[p.categories[0]!];
+  const root = document.createElement('div');
+  root.className = 'irf-tip-body';
+  root.style.setProperty('--tip-color', cat.color);
+  const name = document.createElement('strong');
+  name.textContent = p.name;
+  const type = document.createElement('span');
+  type.textContent = cat.label[locale] + (p.categories.length > 1 ? ` +${p.categories.length - 1}` : '');
+  root.append(name, type);
+  return root;
+}
+/**
+ * Players geocoded to the same spot (city or region centre) are fanned out on a small
+ * golden-angle spiral so each one stays visible and clickable. Deterministic.
+ */
+function spread(players: PublicPlayer[]) {
+  const groups = new Map<string, PublicPlayer[]>();
+  for (const p of players) {
+    const k = `${p.location!.lat!.toFixed(4)},${p.location!.lng!.toFixed(4)}`;
+    groups.set(k, [...(groups.get(k) ?? []), p]);
+  }
+  const out = new Map<string, [number, number]>();
+  for (const list of groups.values()) {
+    list.forEach((p, i) => {
+      const { lat, lng } = p.location as { lat: number; lng: number };
+      if (i === 0) return out.set(p.id, [lng, lat]);
+      const r = 0.0032 * Math.sqrt(i);
+      const a = i * 2.39996;
+      out.set(p.id, [lng + (r * Math.cos(a)) / Math.cos((lat * Math.PI) / 180), lat + r * Math.sin(a)]);
+    });
+  }
+  return out;
+}
+
+/** Logo marker (DOM, built without innerHTML). */
+/**
+ * Round logo badge (DOM, built without innerHTML): the logo in colour on a white disc —
+ * light artwork on navy — ringed in the player-type colour, with the name in a label
+ * that appears above it on hover/focus.
+ */
+function logoMarker(p: PublicPlayer) {
+  const el = document.createElement('button');
+  el.type = 'button';
+  el.className = `irf-logo-marker${p.logo!.tone === 'light' ? ' is-dark' : ''}`;
+  el.style.setProperty('--c', CATEGORY_BY_KEY[p.categories[0]!].color);
+  el.setAttribute('aria-label', p.name);
+  const img = document.createElement('img');
+  img.src = p.logo!.src;
+  img.alt = '';
+  img.decoding = 'async';
+  img.draggable = false;
+  const name = document.createElement('span');
+  name.className = 'irf-logo-name';
+  name.textContent = p.name;
+  el.append(img, name);
+  // MapLibre positions the outer element with an inline transform: the badge animates inside it.
+  const pin = document.createElement('div');
+  pin.className = 'irf-logo-pin';
+  pin.append(el);
+  return { pin, el };
+}
+/** Badge diameter by zoom: tiny on the country view, bigger as you zoom in. */
+const logoSize = (z: number) => (z < 6 ? 22 : z < 7.5 ? 26 : z < 9 ? 32 : z < 11 ? 40 : 46);
+
+function tipText(text: string) {
+  const root = document.createElement('div');
+  root.className = 'irf-tip-body irf-tip-cluster';
+  root.textContent = text;
+  return root;
+}
+
 export default function MapCanvas() {
-  const { results, hoverCategory, highlightId, previewId, setPreviewId, openPlayer, filters, byId, t, locale } = useExplorer();
+  const { results, hoverCategory, highlightId, previewId, setPreviewId, openPlayer, filters, byId, t, locale, mapRef: sharedMapRef } = useExplorer();
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MLMap | null>(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const hovered = useRef<string | null>(null);
   // Latest callbacks for map event handlers registered once.
-  const cb = useRef({ setPreviewId, openPlayer });
+  const cb = useRef({ setPreviewId, openPlayer, byId });
   useEffect(() => {
-    cb.current = { setPreviewId, openPlayer };
-  }, [setPreviewId, openPlayer]);
+    cb.current = { setPreviewId, openPlayer, byId };
+  }, [setPreviewId, openPlayer, byId]);
 
+  const located = useMemo(() => results.filter((p) => p.location?.lat != null && p.location?.lng != null), [results]);
+  const coords = useMemo(() => spread(located), [located]);
   const fc = useMemo<GeoJSON.FeatureCollection>(
     () => ({
       type: 'FeatureCollection',
-      features: results
-        .filter((p) => p.location?.lat != null && p.location?.lng != null)
-        .map((p) => ({
-          type: 'Feature',
-          id: p.id,
-          geometry: { type: 'Point', coordinates: [p.location!.lng!, p.location!.lat!] },
-          properties: { id: p.id, cat: p.categories[0], cats: `|${p.categories.join('|')}|` },
-        })),
+      features: located.map((p) => ({
+        type: 'Feature',
+        id: p.id,
+        geometry: { type: 'Point', coordinates: coords.get(p.id)! },
+        properties: { id: p.id, cat: p.categories[0], cats: `|${p.categories.join('|')}|` },
+      })),
     }),
-    [results],
+    [located, coords],
   );
+  const [logosOn, setLogosOn] = useState(false);
+  const locatedRef = useRef(located);
+  useEffect(() => {
+    locatedRef.current = located;
+  }, [located]);
 
   // --- Init -------------------------------------------------------------------
   useEffect(() => {
@@ -142,6 +223,7 @@ export default function MapCanvas() {
       return;
     }
     mapRef.current = map;
+    sharedMapRef.current = map;
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
     map.addControl(
       new maplibregl.AttributionControl({ compact: true, customAttribution: '© ISTAT / openpolis · Natural Earth · MapLibre' }),
@@ -154,8 +236,8 @@ export default function MapCanvas() {
         type: 'geojson',
         data: EMPTY,
         cluster: true,
-        clusterRadius: 44,
-        clusterMaxZoom: 9,
+        clusterRadius: 34,
+        clusterMaxZoom: 8,
         clusterProperties: CLUSTER_PROPS,
         promoteId: 'id',
       });
@@ -229,6 +311,8 @@ export default function MapCanvas() {
         },
       });
 
+      const tip = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 14, maxWidth: '280px', className: 'irf-tip' });
+
       const setHover = (id: string | null) => {
         if (hovered.current === id) return;
         if (hovered.current) map.setFeatureState({ source: 'players', id: hovered.current }, { hover: false });
@@ -241,6 +325,9 @@ export default function MapCanvas() {
         if (!id || !canHover()) return;
         map.getCanvas().style.cursor = 'pointer';
         if (hovered.current !== id) {
+          const p = cb.current.byId.get(id);
+          const f = e.features?.[0];
+          if (p && f) tip.setLngLat((f.geometry as GeoJSON.Point).coordinates as [number, number]).setDOMContent(tipFor(p, locale)).addTo(map);
           setHover(id);
           cb.current.setPreviewId(id);
           track('map_player_hover', { player: id });
@@ -248,6 +335,7 @@ export default function MapCanvas() {
       });
       map.on('mouseleave', 'points', () => {
         map.getCanvas().style.cursor = '';
+        tip.remove();
         setHover(null);
       });
       map.on('click', 'points', (e) => {
@@ -271,8 +359,19 @@ export default function MapCanvas() {
           duration: reducedMotion() ? 0 : 450,
         });
       });
-      map.on('mouseenter', 'clusters', () => (map.getCanvas().style.cursor = 'pointer'));
-      map.on('mouseleave', 'clusters', () => (map.getCanvas().style.cursor = ''));
+      map.on('mousemove', 'clusters', (e) => {
+        const f = e.features?.[0];
+        if (!f || !canHover()) return;
+        map.getCanvas().style.cursor = 'pointer';
+        tip
+          .setLngLat((f.geometry as GeoJSON.Point).coordinates as [number, number])
+          .setDOMContent(tipText(fmt(t.map.cluster, { n: f.properties.point_count as number })))
+          .addTo(map);
+      });
+      map.on('mouseleave', 'clusters', () => {
+        map.getCanvas().style.cursor = '';
+        tip.remove();
+      });
       map.on('click', (e) => {
         const hit = map.queryRenderedFeatures(e.point, { layers: ['points', 'clusters'] });
         if (!hit.length && !canHover()) {
@@ -280,6 +379,58 @@ export default function MapCanvas() {
           cb.current.setPreviewId(null);
         }
       });
+      // Logos on the map: once few enough single points are on screen, each shows its logo.
+      const markers = new Map<string, maplibregl.Marker>();
+      const syncLogos = () => {
+        const feats = map.queryRenderedFeatures({ layers: ['points'] });
+        // Greedy placement: a logo appears only where it doesn't cover another badge, so a
+        // crowded view shows fewer logos (the coloured dot stays for the others) and every
+        // zoom step reveals more. Logos already on screen keep their place (no flicker).
+        const size = logoSize(map.getZoom());
+        container.current?.style.setProperty('--logo-size', `${size}px`);
+        const ids = new Set<string>();
+        const placed: { x: number; y: number }[] = [];
+        const ordered = [...feats].sort((a, b) => (markers.has(b.properties?.id) ? 1 : 0) - (markers.has(a.properties?.id) ? 1 : 0));
+        for (const f of ordered) {
+          const id = f.properties?.id as string;
+          if (ids.has(id) || !cb.current.byId.get(id)?.logo) continue;
+          const pt = map.project((f.geometry as GeoJSON.Point).coordinates as [number, number]);
+          if (placed.some((q) => Math.hypot(q.x - pt.x, q.y - pt.y) < size + 4)) continue;
+          placed.push(pt);
+          ids.add(id);
+        }
+        for (const [id, m] of markers) {
+          if (!ids.has(id)) {
+            m.remove();
+            markers.delete(id);
+          }
+        }
+        for (const f of feats) {
+          const id = f.properties?.id as string;
+          if (!ids.has(id) || markers.has(id)) continue;
+          const p = cb.current.byId.get(id);
+          if (!p?.logo) continue;
+          const { pin, el } = logoMarker(p);
+          el.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            if (canHover()) cb.current.openPlayer(id, 'map');
+            else cb.current.setPreviewId(id);
+          });
+          el.addEventListener('mouseenter', () => {
+            if (canHover()) cb.current.setPreviewId(id);
+          });
+          markers.set(
+            id,
+            new maplibregl.Marker({ element: pin, anchor: 'center' })
+              .setLngLat((f.geometry as GeoJSON.Point).coordinates as [number, number])
+              .addTo(map),
+          );
+        }
+        setLogosOn(markers.size > 0);
+      };
+      map.on('idle', syncLogos);
+      // Resize the badges live while zooming (placement is refreshed on idle).
+      map.on('zoom', () => container.current?.style.setProperty('--logo-size', `${logoSize(map.getZoom())}px`));
       setReady(true);
     });
 
@@ -289,6 +440,7 @@ export default function MapCanvas() {
       ro.disconnect();
       map.remove();
       mapRef.current = null;
+      sharedMapRef.current = null;
     };
     // Init once; translated strings are stable for the page lifetime.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -345,13 +497,20 @@ export default function MapCanvas() {
     const map = mapRef.current;
     if (!ready || !map) return;
     const region = filters.region ?? '';
-    const province = filters.province ?? '';
     map.setFilter('region-active', ['==', ['get', 'slug'], region]);
     map.setFilter('region-active-line', ['==', ['get', 'slug'], region]);
-    map.setFilter('province-active-line', ['==', ['get', 'slug'], province]);
-    const bbox = (province && PROVINCE_BY_SLUG.get(province)?.bbox) || (region && REGION_BY_SLUG.get(region)?.bbox) || ITALY_BBOX;
-    map.fitBounds(bbox as [number, number, number, number], { padding: 32, duration: reducedMotion() ? 0 : 650, maxZoom: 10 });
-  }, [ready, filters.region, filters.province]);
+    // A city zooms onto its players; otherwise the region, otherwise Italy.
+    let bbox = ((region && REGION_BY_SLUG.get(region)?.bbox) || ITALY_BBOX) as [number, number, number, number];
+    if (filters.city) {
+      const pts = locatedRef.current.map((p) => [p.location!.lng!, p.location!.lat!] as const);
+      if (pts.length) {
+        const xs = pts.map((p) => p[0]);
+        const ys = pts.map((p) => p[1]);
+        bbox = [Math.min(...xs) - 0.03, Math.min(...ys) - 0.02, Math.max(...xs) + 0.03, Math.max(...ys) + 0.02];
+      }
+    }
+    map.fitBounds(bbox, { padding: 32, duration: reducedMotion() ? 0 : 650, maxZoom: filters.city ? 12 : 10 });
+  }, [ready, filters.region, filters.city]);
 
   const resetView = () => mapRef.current?.fitBounds(ITALY_BBOX, { padding: 24, duration: reducedMotion() ? 0 : 650 });
 
@@ -375,6 +534,11 @@ export default function MapCanvas() {
       >
         <Icon name="target" size={16} />
       </button>
+      {ready && !logosOn && (
+        <p className="pointer-events-none absolute top-2.5 left-2.5 z-10 hidden rounded-full bg-white/90 px-3 py-1 text-[0.75rem] font-semibold text-muted shadow-sm md:block">
+          {t.map.logosHint}
+        </p>
+      )}
       {!ready && (
         <div className="absolute inset-0 flex items-center justify-center bg-mist/70">
           <span className="text-sm font-semibold text-muted">{t.map.loadingMap}</span>
