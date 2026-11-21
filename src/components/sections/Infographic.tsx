@@ -3,27 +3,47 @@ import type { PublicPlayer } from '@/lib/data/schema';
 import { CATEGORY_BY_KEY, CATEGORY_FAMILIES, type CategoryKey } from '@/lib/data/taxonomy';
 import { HTML_LANG, type Locale } from '@/lib/i18n/config';
 import { fmt, type Dictionary } from '@/lib/i18n';
+import { OutboundLink } from '../OutboundLink';
 import { Icon, type IconName } from '../ui/Icon';
 import { SectionHeader } from './SectionHeader';
 
 type Item = Pick<PublicPlayer, 'id' | 'name' | 'logo' | 'website'>;
 
-/** Logo without a frame. White/pale artwork is rendered dark so it reads on white. */
-function Tile({ p }: { p: Item }) {
+/**
+ * Logo without a frame, linked to the organisation's website (new tab). White/pale
+ * artwork is rendered dark so it reads on white.
+ */
+function Tile({ p, visit }: { p: Item; visit: string }) {
+  const art = p.logo ? (
+    <img
+      src={p.logo.onLight ?? p.logo.src}
+      alt={p.name}
+      width={p.logo.w ?? undefined}
+      height={p.logo.h ?? undefined}
+      loading="lazy"
+      decoding="async"
+      className="max-h-10 w-auto max-w-full object-contain"
+    />
+  ) : (
+    <span className="line-clamp-2 text-center text-[0.75rem] leading-tight font-bold text-ink">{p.name}</span>
+  );
+  const box = 'flex h-14 w-full items-center justify-center rounded-xl px-1.5 transition-transform duration-200';
   return (
-    <li title={p.name} className="flex h-14 items-center justify-center px-1.5 transition-transform duration-200 hover:scale-110">
-      {p.logo ? (
-        <img
-          src={p.logo.onLight ?? p.logo.src}
-          alt={p.name}
-          width={p.logo.w ?? undefined}
-          height={p.logo.h ?? undefined}
-          loading="lazy"
-          decoding="async"
-          className="max-h-10 w-auto max-w-full object-contain"
-        />
+    <li className="flex">
+      {p.website ? (
+        <OutboundLink
+          href={p.website}
+          event="outbound_player_website"
+          props={{ player: p.id, from: 'infographic' }}
+          title={`${p.name} · ${visit}`}
+          className={`${box} hover:scale-110 focus-visible:scale-110`}
+        >
+          {art}
+        </OutboundLink>
       ) : (
-        <span className="line-clamp-2 text-center text-[0.75rem] leading-tight font-bold text-ink">{p.name}</span>
+        <span title={p.name} className={box}>
+          {art}
+        </span>
       )}
     </li>
   );
@@ -94,7 +114,7 @@ export function Infographic({ players, locale, t, families }: { players: PublicP
                       </h4>
                       <ul className="grid grid-cols-[repeat(auto-fill,minmax(6.25rem,1fr))] gap-x-2 gap-y-1">
                         {items.map((p) => (
-                          <Tile key={p.id} p={p} />
+                          <Tile key={p.id} p={p} visit={t.visit} />
                         ))}
                       </ul>
                     </section>

@@ -20,7 +20,8 @@
     "data:import": "node scripts/import-irf-csv.mjs",
     "data:geocode": "node scripts/geocode-irf.mjs && node scripts/import-irf-csv.mjs",
     "infographic:build": "node scripts/build-infographic.mts",
-    "brand:prepare": "node scripts/prepare-brand.mjs"
+    "brand:prepare": "node scripts/prepare-brand.mjs",
+    "logos:scrape": "node scripts/scrape-logos.mjs"
   },
   "dependencies": {
     "jspdf": "4.2.1",

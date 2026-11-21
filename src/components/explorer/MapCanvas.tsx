@@ -7,7 +7,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
 import { ITALY_BBOX } from '@/lib/geo/territories';
 import type { PublicPlayer } from '@/lib/data/schema';
-import { CATEGORIES, CATEGORY_BY_KEY } from '@/lib/data/taxonomy';
+import { CATEGORIES, CATEGORY_BY_KEY, type CategoryKey } from '@/lib/data/taxonomy';
+import { TYPE_ICON, typeBadgeSvg } from '@/lib/data/typeIcons';
 import type { Locale } from '@/lib/i18n/config';
 import { fmt } from '@/lib/i18n';
 import { Icon } from '../ui/Icon';
@@ -26,6 +27,30 @@ const COLOR_BY_CAT = [
 const CLUSTER_PROPS = Object.fromEntries(
   CATEGORIES.map((c) => [`c_${c.key}`, ['+', ['case', ['in', `|${c.key}|`, ['get', 'cats']], 1, 0]]]),
 );
+/** Cluster badge = its most represented player type ("c_k >= every other c_j"). */
+const DOMINANT_CAT = [
+  'case',
+  ...CATEGORIES.flatMap((c) => [
+    ['all', ...CATEGORIES.filter((o) => o.key !== c.key).map((o) => ['>=', ['get', `c_${c.key}`], ['get', `c_${o.key}`]])],
+    c.key,
+  ]),
+  'unclassified',
+] as unknown as ExpressionSpecification;
+const DOMINANT_ICON = ['concat', 'type-', DOMINANT_CAT] as unknown as ExpressionSpecification;
+/** From this zoom the players' own logos replace the player-type badges. */
+const LOGO_ZOOM = 7;
+/** Type badge sprite: 40 css px, drawn at 2× for sharp edges. */
+const BADGE_PX = 40;
+const loadSvg = (svg: string) =>
+  new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  });
+/** White rounded pill (stretchable) behind the cluster counts. */
+const PILL_SVG =
+  '<svg xmlns="http://www.w3.org/2000/svg" width="44" height="36" viewBox="0 0 44 36"><rect x="1.5" y="1.5" width="41" height="33" rx="16.5" fill="#fff" stroke="#14304F" stroke-opacity=".18" stroke-width="2"/></svg>';
 const EMPTY: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] };
 const reducedMotion = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const canHover = () => typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches;
@@ -72,6 +97,20 @@ function spread(players: PublicPlayer[]) {
  * light artwork on navy — ringed in the player-type colour, with the name in a label
  * that appears above it on hover/focus.
  */
+/** The player-type face the logo badge grows out of (inline SVG, built with DOM APIs). */
+function typeFace(key: CategoryKey) {
+  const face = document.createElement('span');
+  face.className = 'irf-logo-type';
+  face.setAttribute('aria-hidden', 'true');
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  const path = document.createElementNS(ns, 'path');
+  path.setAttribute('d', TYPE_ICON[key]);
+  svg.append(path);
+  face.append(svg);
+  return face;
+}
 function logoMarker(p: PublicPlayer) {
   const el = document.createElement('button');
   el.type = 'button';
@@ -86,15 +125,16 @@ function logoMarker(p: PublicPlayer) {
   const name = document.createElement('span');
   name.className = 'irf-logo-name';
   name.textContent = p.name;
-  el.append(img, name);
+  // Starts as the player-type badge, which flips away to reveal the logo (CSS).
+  el.append(typeFace(p.categories[0]!), img, name);
   // MapLibre positions the outer element with an inline transform: the badge animates inside it.
   const pin = document.createElement('div');
   pin.className = 'irf-logo-pin';
   pin.append(el);
   return { pin, el };
 }
-/** Badge diameter by zoom: tiny on the country view, bigger as you zoom in. */
-const logoSize = (z: number) => (z < 6 ? 22 : z < 7.5 ? 26 : z < 9 ? 32 : z < 11 ? 40 : 46);
+/** Logo badge diameter by zoom: grows as you zoom in. */
+const logoSize = (z: number) => (z < 8 ? 34 : z < 9 ? 40 : z < 10.5 ? 48 : 56);
 
 function tipText(text: string) {
   const root = document.createElement('div');
@@ -231,7 +271,7 @@ export default function MapCanvas() {
     );
     map.on('error', (e) => console.warn('[map]', e.error?.message));
 
-    map.on('load', () => {
+    map.on('load', async () => {
       map.addSource('players', {
         type: 'geojson',
         data: EMPTY,
@@ -243,33 +283,32 @@ export default function MapCanvas() {
       });
       map.addSource('highlight', { type: 'geojson', data: EMPTY });
 
+      // Player-type badges (sprites generated from the IRF pictograms).
+      try {
+        await Promise.all([
+          ...CATEGORIES.map(async (c) => map.addImage(`type-${c.key}`, await loadSvg(typeBadgeSvg(c.key, BADGE_PX * 2)), { pixelRatio: 2 })),
+          loadSvg(PILL_SVG).then((img) =>
+            map.addImage('count-pill', img, { pixelRatio: 2, stretchX: [[18, 26]], stretchY: [[16, 20]], content: [12, 6, 32, 30] }),
+          ),
+        ]);
+      } catch (err) {
+        console.warn('[map] type badges unavailable', err);
+      }
+
+      // Country view: every group of players is one translucent navy badge of its main
+      // player type, with the count in a white pill.
       map.addLayer({
         id: 'clusters',
-        type: 'circle',
+        type: 'symbol',
         source: 'players',
         filter: ['has', 'point_count'],
-        paint: {
-          'circle-color': '#14304F',
-          'circle-radius': ['step', ['get', 'point_count'], 13, 10, 16, 30, 20, 80, 25],
-          'circle-stroke-color': '#FFFFFF',
-          'circle-stroke-width': 2,
-          'circle-opacity': 0.92,
-          'circle-opacity-transition': { duration: 160 },
-          'circle-stroke-opacity-transition': { duration: 160 },
+        layout: {
+          'icon-image': DOMINANT_ICON,
+          'icon-size': ['step', ['get', 'point_count'], 0.85, 10, 0.98, 30, 1.12, 80, 1.28],
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true,
         },
-      });
-      map.addLayer({
-        id: 'cluster-halo',
-        type: 'circle',
-        source: 'players',
-        filter: ['has', 'point_count'],
-        paint: {
-          'circle-color': 'transparent',
-          'circle-radius': ['step', ['get', 'point_count'], 19, 10, 23, 30, 28, 80, 34],
-          'circle-stroke-color': '#4B61D1',
-          'circle-stroke-width': 1,
-          'circle-stroke-opacity': 0.25,
-        },
+        paint: { 'icon-opacity': 1, 'icon-opacity-transition': { duration: 160 } },
       });
       map.addLayer({
         id: 'cluster-count',
@@ -279,24 +318,49 @@ export default function MapCanvas() {
         layout: {
           'text-field': ['get', 'point_count_abbreviated'],
           'text-font': ['irf-bold'],
-          'text-size': 12,
+          'text-size': 11,
+          // Top-right of the badge, which grows with the count.
+          'text-offset': [
+            'step',
+            ['get', 'point_count'],
+            ['literal', [1.25, -1.15]],
+            10,
+            ['literal', [1.4, -1.3]],
+            30,
+            ['literal', [1.6, -1.5]],
+            80,
+            ['literal', [1.8, -1.7]],
+          ],
           'text-allow-overlap': true,
+          'text-ignore-placement': true,
+          'icon-image': 'count-pill',
+          'icon-text-fit': 'both',
+          'icon-text-fit-padding': [1, 4, 1, 4],
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true,
         },
-        paint: { 'text-color': '#FFFFFF', 'text-opacity-transition': { duration: 160 } },
+        paint: {
+          'text-color': '#14304F',
+          'text-opacity-transition': { duration: 160 },
+          'icon-opacity-transition': { duration: 160 },
+        },
       });
+      // Single players: their type badge; it fades out where the logo takes over
+      // (feature-state "logo", set by syncLogos below).
       map.addLayer({
         id: 'points',
-        type: 'circle',
+        type: 'symbol',
         source: 'players',
         filter: ['!', ['has', 'point_count']],
+        layout: {
+          'icon-image': ['concat', 'type-', ['get', 'cat']],
+          'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.6, LOGO_ZOOM, 0.66, 11, 0.8],
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true,
+        },
         paint: {
-          'circle-color': COLOR_BY_CAT,
-          'circle-radius': ['case', ['boolean', ['feature-state', 'hover'], false], 9, 6.5],
-          'circle-stroke-color': '#FFFFFF',
-          'circle-stroke-width': ['case', ['boolean', ['feature-state', 'hover'], false], 2.5, 1.6],
-          'circle-radius-transition': { duration: 150 },
-          'circle-opacity-transition': { duration: 160 },
-          'circle-stroke-opacity-transition': { duration: 160 },
+          'icon-opacity': ['case', ['boolean', ['feature-state', 'logo'], false], 0, 1],
+          'icon-opacity-transition': { duration: 380 },
         },
       });
       map.addLayer({
@@ -381,8 +445,24 @@ export default function MapCanvas() {
       });
       // Logos on the map: once few enough single points are on screen, each shows its logo.
       const markers = new Map<string, maplibregl.Marker>();
+      const setLogoState = (id: string, logo: boolean) => {
+        try {
+          map.setFeatureState({ source: 'players', id }, { logo });
+        } catch {
+          /* feature no longer in the source */
+        }
+      };
+      /** Removes a logo with a short exit while its type badge fades back in. */
+      const dropMarker = (id: string, m: maplibregl.Marker) => {
+        markers.delete(id);
+        setLogoState(id, false);
+        if (reducedMotion()) return void m.remove();
+        m.getElement().classList.add('is-leaving');
+        window.setTimeout(() => m.remove(), 220);
+      };
       const syncLogos = () => {
-        const feats = map.queryRenderedFeatures({ layers: ['points'] });
+        // Below LOGO_ZOOM the map speaks in player types only.
+        const feats = map.getZoom() >= LOGO_ZOOM ? map.queryRenderedFeatures({ layers: ['points'] }) : [];
         // Greedy placement: a logo appears only where it doesn't cover another badge, so a
         // crowded view shows fewer logos (the coloured dot stays for the others) and every
         // zoom step reveals more. Logos already on screen keep their place (no flicker).
@@ -399,12 +479,7 @@ export default function MapCanvas() {
           placed.push(pt);
           ids.add(id);
         }
-        for (const [id, m] of markers) {
-          if (!ids.has(id)) {
-            m.remove();
-            markers.delete(id);
-          }
-        }
+        for (const [id, m] of markers) if (!ids.has(id)) dropMarker(id, m);
         for (const f of feats) {
           const id = f.properties?.id as string;
           if (!ids.has(id) || markers.has(id)) continue;
@@ -419,6 +494,7 @@ export default function MapCanvas() {
           el.addEventListener('mouseenter', () => {
             if (canHover()) cb.current.setPreviewId(id);
           });
+          setLogoState(id, true);
           markers.set(
             id,
             new maplibregl.Marker({ element: pin, anchor: 'center' })
@@ -429,6 +505,10 @@ export default function MapCanvas() {
         setLogosOn(markers.size > 0);
       };
       map.on('idle', syncLogos);
+      // Zooming back out past the threshold turns the logos back into type badges at once.
+      map.on('zoomend', () => {
+        if (map.getZoom() < LOGO_ZOOM && markers.size) syncLogos();
+      });
       // Resize the badges live while zooming (placement is refreshed on idle).
       map.on('zoom', () => container.current?.style.setProperty('--logo-size', `${logoSize(map.getZoom())}px`));
       setReady(true);
@@ -456,24 +536,21 @@ export default function MapCanvas() {
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map) return;
-    const pointOpacity: ExpressionSpecification | number = hoverCategory
-      ? ['case', ['in', `|${hoverCategory}|`, ['get', 'cats']], 1, 0.14]
-      : 1;
-    const clusterOpacity: ExpressionSpecification | number = hoverCategory
-      ? ['case', ['>', ['get', `c_${hoverCategory}`], 0], 0.95, 0.18]
-      : 0.92;
-    map.setPaintProperty('points', 'circle-opacity', pointOpacity);
-    map.setPaintProperty('points', 'circle-stroke-opacity', pointOpacity);
-    map.setPaintProperty('clusters', 'circle-opacity', clusterOpacity);
-    map.setPaintProperty('clusters', 'circle-stroke-opacity', clusterOpacity);
-    map.setPaintProperty('cluster-count', 'text-opacity', hoverCategory ? ['case', ['>', ['get', `c_${hoverCategory}`], 0], 1, 0.3] : 1);
-    map.setPaintProperty(
-      'clusters',
-      'circle-color',
-      hoverCategory
-        ? ['case', ['>', ['get', `c_${hoverCategory}`], 0], CATEGORIES.find((c) => c.key === hoverCategory)!.color, '#14304F']
-        : '#14304F',
-    );
+    const dim = (inCat: ExpressionSpecification, low: number): ExpressionSpecification | number =>
+      hoverCategory ? ['case', inCat, 1, low] : 1;
+    const inPoint: ExpressionSpecification = ['in', `|${hoverCategory}|`, ['get', 'cats']];
+    const inCluster: ExpressionSpecification = ['>', ['get', `c_${hoverCategory}`], 0];
+    map.setPaintProperty('points', 'icon-opacity', [
+      'case',
+      ['boolean', ['feature-state', 'logo'], false],
+      0,
+      dim(inPoint, 0.14),
+    ] as ExpressionSpecification);
+    map.setPaintProperty('clusters', 'icon-opacity', dim(inCluster, 0.18));
+    map.setPaintProperty('cluster-count', 'text-opacity', dim(inCluster, 0.3));
+    map.setPaintProperty('cluster-count', 'icon-opacity', dim(inCluster, 0.3));
+    // A cluster holding the hovered type shows that type's badge.
+    map.setLayoutProperty('clusters', 'icon-image', hoverCategory ? ['case', inCluster, `type-${hoverCategory}`, DOMINANT_ICON] : DOMINANT_ICON);
   }, [ready, hoverCategory]);
 
   // --- Highlight ring for the row hovered in the list or the previewed player --

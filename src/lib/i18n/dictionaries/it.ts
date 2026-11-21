@@ -396,6 +396,7 @@ const it = {
     downloadHint: 'PNG ad alta risoluzione · {n} player',
     count: '{n} player',
     family: 'Abilitatori {name}',
+    visit: 'apri il sito web',
     note: 'Ogni organizzazione compare una sola volta, nella sua tipologia principale. I loghi sono dei rispettivi titolari.',
   },
   faq: {

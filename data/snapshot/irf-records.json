@@ -1,6 +1,6 @@
 {
  "source": "irf-database.csv",
- "importedAt": "2026-11-17T13:20:27.587Z",
+ "importedAt": "2026-11-21T17:50:20.702Z",
  "exportDate": "2026-11-17",
  "records": [
   {
@@ -400,6 +400,14 @@
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/daecd669dd782b54.webp",
+     "onLight": null,
+     "w": 150,
+     "h": 97,
+     "tone": "dark",
+     "scrapedFrom": "https://www.a11venture.it/risorse/logo.png?v=1794499167"
+    },
     "Latitude": 45.44659,
     "Longitude": 9.20437,
     "GEO PRECISION": "address"
@@ -1332,6 +1340,14 @@
     ],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "SI",
+    "LOGO": {
+     "src": "/logos/players/d9a50ef4511161ca.webp",
+     "onLight": null,
+     "w": 583,
+     "h": 129,
+     "tone": "dark",
+     "scrapedFrom": "inline svg"
+    },
     "Latitude": 41.81663,
     "Longitude": 12.49033,
     "GEO PRECISION": "address"
@@ -2239,6 +2255,14 @@
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "SI",
+    "LOGO": {
+     "src": "/logos/players/34bae198b77d6152.webp",
+     "onLight": null,
+     "w": 640,
+     "h": 354,
+     "tone": "dark",
+     "scrapedFrom": "inline svg"
+    },
     "Latitude": 45.45911,
     "Longitude": 9.19105,
     "GEO PRECISION": "address"
@@ -2852,6 +2876,14 @@
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/8fc0b7513136d41f.webp",
+     "onLight": "/logos/players/8fc0b7513136d41f-d.webp",
+     "w": 640,
+     "h": 278,
+     "tone": "light",
+     "scrapedFrom": "https://factoryplus.eu/wp-content/uploads/2024/10/logo.svg"
+    },
     "Latitude": 45.45187,
     "Longitude": 9.16251,
     "GEO PRECISION": "address"
@@ -3897,6 +3929,14 @@
     ],
     "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
+    "LOGO": {
+     "src": "/logos/players/86d6184f58d26f7c.webp",
+     "onLight": null,
+     "w": 640,
+     "h": 145,
+     "tone": "dark",
+     "scrapedFrom": "https://images.squarespace-cdn.com/content/v1/6931591f836b8c279fafcad5/cf35094d-0078-42a2-9969-81cb5a78812e/Logo_Positivo%402x.png?format=1500w"
+    },
     "Latitude": 41.89332,
     "Longitude": 12.48293,
     "GEO PRECISION": "city"
@@ -5026,6 +5066,14 @@
     ],
     "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
+    "LOGO": {
+     "src": "/logos/players/d898bc2c689a7f44.webp",
+     "onLight": null,
+     "w": 640,
+     "h": 83,
+     "tone": "dark",
+     "scrapedFrom": "inline svg"
+    },
     "Latitude": 45.48655,
     "Longitude": 9.19396,
     "GEO PRECISION": "address"
@@ -5578,6 +5626,14 @@
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/a516d22add2e15c1.webp",
+     "onLight": null,
+     "w": 102,
+     "h": 126,
+     "tone": "dark",
+     "scrapedFrom": "https://featventures.com/wp-content/uploads/fbrfg/apple-touch-icon.png"
+    },
     "Latitude": 46.0628,
     "Longitude": 11.124,
     "GEO PRECISION": "address"
@@ -7547,7 +7603,15 @@
     "CITY": null,
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
-    "LOGO FLAG": "NO"
+    "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/15913e277dc7113c.webp",
+     "onLight": null,
+     "w": 299,
+     "h": 133,
+     "tone": "dark",
+     "scrapedFrom": "https://www.iban.it/wp-content/uploads/2019/09/iban-blu.png"
+    }
    }
   },
   {
@@ -9878,6 +9942,14 @@
     ],
     "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
+    "LOGO": {
+     "src": "/logos/players/13bd2061ca4bbc27.webp",
+     "onLight": null,
+     "w": 640,
+     "h": 74,
+     "tone": "dark",
+     "scrapedFrom": "https://www.maritime-ventures.com/assets/brand/Logo_MaritimeVentures.svg"
+    },
     "Latitude": 44.4066,
     "Longitude": 8.92731,
     "GEO PRECISION": "address"
@@ -10802,6 +10874,14 @@
     ],
     "STATUS": "ACTIVE",
     "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/3ba6a2be4b4f38ac.webp",
+     "onLight": null,
+     "w": 640,
+     "h": 112,
+     "tone": "dark",
+     "scrapedFrom": "https://nextstepaccelerator.com/wp-content/uploads/2022/06/NextStep_logo.png"
+    },
     "Latitude": 45.46561,
     "Longitude": 9.19712,
     "GEO PRECISION": "address"
@@ -10945,6 +11025,14 @@
     ],
     "STATUS": "ACTIVE",
     "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/38ae9f38b4bb11ea.webp",
+     "onLight": null,
+     "w": 640,
+     "h": 234,
+     "tone": "dark",
+     "scrapedFrom": "https://www.novaventures.it/wp-content/themes/startup_pro/images/logo_nova.svg"
+    },
     "Latitude": 45.46518,
     "Longitude": 9.14773,
     "GEO PRECISION": "address"
@@ -11799,6 +11887,14 @@
     ],
     "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
+    "LOGO": {
+     "src": "/logos/players/aa05e66545372076.webp",
+     "onLight": null,
+     "w": 640,
+     "h": 120,
+     "tone": "dark",
+     "scrapedFrom": "https://www.peekaboovision.com/wp-content/uploads/2023/05/peekaboo-logotipo-colored-black.png"
+    },
     "Latitude": 45.46468,
     "Longitude": 9.18823,
     "GEO PRECISION": "address"
@@ -13413,6 +13509,14 @@
     ],
     "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
+    "LOGO": {
+     "src": "/logos/players/a5d0523f29fae4c4.webp",
+     "onLight": "/logos/players/a5d0523f29fae4c4-d.webp",
+     "w": 532,
+     "h": 505,
+     "tone": "light",
+     "scrapedFrom": "https://scientifica.vc/wp-content/uploads/2026/07/logo-negative-scientifica.png"
+    },
     "Latitude": 42.34892,
     "Longitude": 13.39797,
     "GEO PRECISION": "city"
@@ -13682,6 +13786,14 @@
     ],
     "STATUS": "ACTIVE",
     "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/ad45821315050000.webp",
+     "onLight": null,
+     "w": 640,
+     "h": 257,
+     "tone": "dark",
+     "scrapedFrom": "https://www.sella.ventures/documents/54488075/0/loghi+sella+%281%29.png/27b32ab0-8823-7b7b-80f0-777881d6385b?version=1.0&t=1752568461171"
+    },
     "Latitude": 45.56123,
     "Longitude": 8.05436,
     "GEO PRECISION": "address"
@@ -16772,7 +16884,15 @@
     "CITY": null,
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
-    "LOGO FLAG": "NO"
+    "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/f342c744f10dbe66.webp",
+     "onLight": null,
+     "w": 640,
+     "h": 124,
+     "tone": "dark",
+     "scrapedFrom": "https://www.coastercowo.com/wp/wp-content/uploads/2016/09/Coaster-name_SMALL-1.png"
+    }
    }
   },
   {
@@ -16972,7 +17092,15 @@
     "CITY": null,
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
-    "LOGO FLAG": "NO"
+    "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/6f7517718fd03a54.webp",
+     "onLight": "/logos/players/6f7517718fd03a54-d.webp",
+     "w": 324,
+     "h": 86,
+     "tone": "light",
+     "scrapedFrom": "https://www.iforumroma.com/assets/images/logo.webp"
+    }
    }
   },
   {
@@ -17018,7 +17146,15 @@
     "CITY": null,
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
-    "LOGO FLAG": "NO"
+    "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/5cdbe152ee2fd6e9.webp",
+     "onLight": null,
+     "w": 246,
+     "h": 45,
+     "tone": "dark",
+     "scrapedFrom": "https://limes.farm/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo_limes.e121ffdf.png&w=640&q=75"
+    }
    }
   },
   {

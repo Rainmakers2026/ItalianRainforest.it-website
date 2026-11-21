@@ -398,6 +398,7 @@ const en: Dictionary = {
     downloadHint: 'High-resolution PNG · {n} players',
     count: '{n} players',
     family: '{name}',
+    visit: 'open the website',
     note: 'Each organisation appears once, under its main player type. Logos belong to their respective owners.',
   },
   faq: {

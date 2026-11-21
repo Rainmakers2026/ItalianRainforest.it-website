@@ -60,7 +60,11 @@ async function loadLookups(): Promise<Lookups> {
     }
   };
   return {
-    logos: await read('logos.json', (j: { logos: Lookups['logos'] }) => j.logos, {}),
+    // Logos scraped from the players' websites only fill the gaps of the curated set.
+    logos: {
+      ...(await read('logos-scraped.json', (j: { logos: Lookups['logos'] }) => j.logos, {})),
+      ...(await read('logos.json', (j: { logos: Lookups['logos'] }) => j.logos, {})),
+    },
     geo: await read('geocode-cache.json', (j: Lookups['geo']) => j, {}),
   };
 }
