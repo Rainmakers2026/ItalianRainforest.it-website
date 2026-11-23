@@ -27,6 +27,9 @@ export const TYPE_ICON: Record<CategoryKey, string> = {
     'M9 11.5a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4ZM2.8 20.5c.4-3.4 3-5.6 6.2-5.6s5.8 2.2 6.2 5.6M15.8 5.3a3.2 3.2 0 0 1 0 6M18 14.9c1.9.8 3 2.8 3.2 5.6',
   // family house
   'family-office': 'M3 11.2 12 4l9 7.2M5.5 9.6V20.5h13V9.6M10 20.5v-5.2h4v5.2',
+  // stacked coins
+  investor:
+    'M4 6.5C4 5.1 7.6 4 12 4s8 1.1 8 2.5S16.4 9 12 9 4 7.9 4 6.5Zm0 0v5c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5v-5M4 11.5v5c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5v-5',
   // institution
   institution: 'M3 21h18M5 21V10.5m4.67 10.5V10.5m4.66 10.5V10.5M19 21V10.5M2 10.5 12 4l10 6.5',
   // network of nodes

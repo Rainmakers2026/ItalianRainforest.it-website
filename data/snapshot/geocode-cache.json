@@ -2968,5 +2968,23 @@
   "lat": 45.46442,
   "lng": 9.17124,
   "precision": "address"
+ },
+ "irf_329ea03a9d72f1": {
+  "sig": "Via Romanello da Forlì 25, 00176 Roma RM, Italy|ok|Roma|Lazio",
+  "lat": 41.88997,
+  "lng": 12.53255,
+  "precision": "address"
+ },
+ "irf_be1c65b2ffbda8": {
+  "sig": "||Milano|Lombardia",
+  "lat": 45.46419,
+  "lng": 9.18963,
+  "precision": "city"
+ },
+ "irf_3e988b035114fe": {
+  "sig": "Via Monte Napoleone 21, 20121 Milano MI, Italy|ok|Milano|Lombardia",
+  "lat": 45.46898,
+  "lng": 9.19421,
+  "precision": "address"
  }
 }

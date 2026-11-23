@@ -7,6 +7,8 @@
 // image wins. Results go to data/snapshot/logos-scraped.json (merged by the data layer
 // and by import-irf-csv.mjs, never overriding curated logos) and public/logos/players.
 // --sheet writes a contact sheet to review the results by eye.
+// data/snapshot/logo-sources.json adds hand-checked logo sources (players with no website
+// or a wrong one), aliases for duplicated records and rejected results.
 import { execFile } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -179,10 +181,39 @@ const scraped = existsSync(outPath) ? JSON.parse(await readFile(outPath, 'utf8')
 const outDir = path.join(root, 'public/logos/players');
 await mkdir(outDir, { recursive: true });
 
+// Hand-checked logo sources, aliases of duplicated records and rejected results.
+const srcPath = path.join(root, 'data/snapshot/logo-sources.json');
+const extra = existsSync(srcPath) ? JSON.parse(await readFile(srcPath, 'utf8')) : {};
+const lower = (o) => new Map(Object.entries(o ?? {}).map(([k, v]) => [k.toLowerCase(), v]));
+const sources = lower(extra.sources);
+const aliases = lower(extra.aliases);
+const rejected = new Set((extra.reject ?? []).map((n) => n.toLowerCase()));
+const byName = new Map(records.map((r) => [r.fields['COMPANY NAME'].toLowerCase(), r]));
+for (const n of rejected) {
+  const r = byName.get(n);
+  if (r && scraped[r.id]) {
+    delete scraped[r.id];
+    console.log(`rejected ${r.fields['COMPANY NAME']}`);
+  }
+}
+for (const [n, target] of aliases) {
+  const r = byName.get(n);
+  const t = byName.get(target.toLowerCase());
+  const logo = t && (curated[t.id] ?? scraped[t.id]);
+  if (r && logo && !curated[r.id]) {
+    const { scrapedFrom, ...rest } = logo;
+    scraped[r.id] = { ...rest, scrapedFrom: `alias of ${t.fields['COMPANY NAME']}` };
+    console.log(`alias ${r.fields['COMPANY NAME']} ← ${t.fields['COMPANY NAME']}`);
+  }
+}
+const siteOf = (r) => sources.get(r.fields['COMPANY NAME'].toLowerCase()) ?? r.fields.WEBSITE;
+
 const todo = records.filter((r) => {
   const name = r.fields['COMPANY NAME'].toLowerCase();
   if (only.size) return only.has(name);
-  return !curated[r.id] && !scraped[r.id] && r.fields.WEBSITE && !skip.has(name) && !NOT_OWN_SITE.test(r.fields.WEBSITE);
+  if (curated[r.id] || scraped[r.id] || skip.has(name) || rejected.has(name)) return false;
+  if (sources.has(name)) return true;
+  return !!r.fields.WEBSITE && !NOT_OWN_SITE.test(r.fields.WEBSITE);
 });
 console.log(`${todo.length} players to scrape`);
 const done = [];
@@ -191,11 +222,13 @@ await Promise.all(
     while (todo.length) {
       const r = todo.shift();
       const name = r.fields['COMPANY NAME'];
-      let site = r.fields.WEBSITE.trim();
+      let site = siteOf(r).trim();
       if (!/^https?:/i.test(site)) site = `https://${site}`;
       try {
-        const page = await get(site);
-        const cs = candidates(page.buf.toString('utf8'), page.url, name);
+        // A source may point straight at the logo file (picked by hand from the site).
+        const direct = /\.(svg|png|webp|jpe?g)(\?|$)/i.test(site);
+        const page = direct ? null : await get(site);
+        const cs = direct ? [{ kind: 'url', url: site, score: 100 }] : candidates(page.buf.toString('utf8'), page.url, name);
         let hit = null;
         for (const c of cs.slice(0, 8)) {
           try {

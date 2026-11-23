@@ -132,6 +132,18 @@ export const CATEGORIES = [
       en: 'Firms managing family wealth that also invest in innovation.',
     },
   },
+  {
+    key: 'investor',
+    family: 'financial',
+    source: ['INVESTOR', 'Investor'],
+    color: '#D9893F',
+    label: { it: 'Investitori', en: 'Investors' },
+    short: { it: 'Investitori', en: 'Investors' },
+    definition: {
+      it: 'Altri investitori in startup: fondi di trasferimento tecnologico, holding e network di investimento.',
+      en: 'Other startup investors: tech-transfer funds, holdings and investment networks.',
+    },
+  },
   // ── Environmental enablers
   {
     key: 'institution',
@@ -232,7 +244,7 @@ export const categoryLabel = (key: CategoryKey, locale: Locale) => CATEGORY_BY_K
 export const CATEGORY_FAMILIES = [
   { key: 'personal', icon: 'book', color: '#0B8A78', categories: ['programs', 'training'] },
   { key: 'business', icon: 'rocket', color: '#1F5FBF', categories: ['incubator', 'venture-builder', 'science-park'] },
-  { key: 'financial', icon: 'coins', color: '#C2410C', categories: ['vc', 'cvc', 'angels', 'crowdfunding', 'family-office'] },
+  { key: 'financial', icon: 'coins', color: '#C2410C', categories: ['vc', 'cvc', 'angels', 'crowdfunding', 'family-office', 'investor'] },
   { key: 'environmental', icon: 'landmark', color: '#1E6B3A', categories: ['institution', 'associations', 'media', 'coworking'] },
 ] as const satisfies readonly { key: string; icon: string; color: string; categories: readonly CategoryKey[] }[];
 export type FamilyKey = (typeof CATEGORY_FAMILIES)[number]['key'];

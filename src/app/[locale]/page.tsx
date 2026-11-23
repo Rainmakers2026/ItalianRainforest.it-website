@@ -84,7 +84,7 @@ export default async function Home({ params }: PageProps<'/[locale]'>) {
         <What t={t.what} locale={locale} stats={stats} />
         <ForWhom t={t.forWhom} locale={locale} />
         <Who t={t.who} />
-        <Partners t={t.partners} />
+        <Partners t={t.partners} locale={locale} closeLabel={t.a11y.close} />
         <LazyExplorer
           locale="en"
           t={explorerStrings}

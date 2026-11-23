@@ -136,6 +136,134 @@
    "h": 45,
    "tone": "dark",
    "scrapedFrom": "https://limes.farm/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo_limes.e121ffdf.png&w=640&q=75"
+  },
+  "irf_4f1021a0a52585": {
+   "src": "/logos/players/aa05e66545372076.webp",
+   "onLight": null,
+   "w": 640,
+   "h": 120,
+   "tone": "dark",
+   "scrapedFrom": "https://www.peekaboovision.com/wp-content/uploads/2023/05/peekaboo-logotipo-colored-black.png"
+  },
+  "irf_329ea03a9d72f1": {
+   "src": "/logos/players/38d9638bacac3feb.webp",
+   "onLight": null,
+   "w": 115,
+   "h": 165,
+   "tone": "dark",
+   "scrapedFrom": "https://www.needsassociation.it/wp-content/uploads/2025/08/logo-ridotto-classico-1.png"
+  },
+  "irf_be1c65b2ffbda8": {
+   "src": "/logos/players/f7900dc0f965d211.webp",
+   "onLight": "/logos/players/f7900dc0f965d211-d.webp",
+   "w": 640,
+   "h": 371,
+   "tone": "light",
+   "scrapedFrom": "https://thepeoplesroom.it/assets/figma-updated/composites/home-about-wordmark-original.svg"
+  },
+  "irf_3e988b035114fe": {
+   "src": "/logos/players/b5bad4d24806f3eb.webp",
+   "onLight": "/logos/players/b5bad4d24806f3eb-d.webp",
+   "w": 146,
+   "h": 167,
+   "tone": "light",
+   "scrapedFrom": "https://efficiens.it/wp-content/uploads/2025/07/Efficiens_Logo.svg"
+  },
+  "irf_a6c9ef18d0d5e7": {
+   "src": "/logos/players/1e33884860937ebf.webp",
+   "onLight": null,
+   "w": 320,
+   "h": 296,
+   "tone": "dark",
+   "scrapedFrom": "alias of Techbricks"
+  },
+  "irf_bcb81ef5cb1426": {
+   "src": "/logos/players/0e5f31cd3cf1bb22.webp",
+   "onLight": null,
+   "w": 296,
+   "h": 219,
+   "tone": "dark",
+   "scrapedFrom": "alias of Italian Angels for Biotech"
+  },
+  "irf_34c1bb06fa4e4a": {
+   "src": "/logos/players/b01a1bb52b2e35ea.webp",
+   "onLight": null,
+   "w": 640,
+   "h": 390,
+   "tone": "dark",
+   "scrapedFrom": "alias of CDP Venture Capital"
+  },
+  "irf_2f665f3c780e9f": {
+   "src": "/logos/players/ff892bb495352ffb.webp",
+   "onLight": null,
+   "w": 600,
+   "h": 550,
+   "tone": "dark",
+   "scrapedFrom": "alias of Primo Capital SGR"
+  },
+  "irf_aca7db2187cc4d": {
+   "src": "/logos/players/bc9a5e38488e4228.webp",
+   "onLight": null,
+   "w": 65,
+   "h": 127,
+   "tone": "dark",
+   "scrapedFrom": "https://www.equiterspa.com/wp-content/uploads/fbrfg/apple-touch-icon.png"
+  },
+  "irf_e8a8fc1c1b4f1f": {
+   "src": "/logos/players/03dc5fde4757d303.webp",
+   "onLight": "/logos/players/03dc5fde4757d303-d.webp",
+   "w": 168,
+   "h": 142,
+   "tone": "light",
+   "scrapedFrom": "https://www.ismea.it/flex/TemplatesUSR/assets/R-23/img/logo-ismea.png"
+  },
+  "irf_90242b47d22adb": {
+   "src": "/logos/players/0c715136a9a0c28e.webp",
+   "onLight": null,
+   "w": 479,
+   "h": 578,
+   "tone": "dark",
+   "scrapedFrom": "https://pts.unipv.it/wp-content/uploads/2021/04/LOGO-PTS-768x833.png"
+  },
+  "irf_766bedb8da34b4": {
+   "src": "/logos/players/fae052e1f23bbc45.webp",
+   "onLight": null,
+   "w": 180,
+   "h": 180,
+   "tone": "dark",
+   "scrapedFrom": "https://p3ventures.it/apple-icon.png?apple-icon.04-b7hylvr94u.png"
+  },
+  "irf_03e2f471a0525c": {
+   "src": "/logos/players/ce58cf6593b0aff7.webp",
+   "onLight": null,
+   "w": 471,
+   "h": 292,
+   "tone": "dark",
+   "scrapedFrom": "https://angels4impact.net/wp-content/uploads/2026/11/angels4impact-logo.svg"
+  },
+  "irf_4a369eef6d555c": {
+   "src": "/logos/players/c81ba4d4174b6b75.webp",
+   "onLight": "/logos/players/c81ba4d4174b6b75-d.webp",
+   "w": 365,
+   "h": 421,
+   "tone": "light",
+   "scrapedFrom": "inline svg"
+  },
+  "irf_c6f64be7a81632": {
+   "src": "/logos/players/1793fdf35b6fc3f8.webp",
+   "onLight": null,
+   "w": 640,
+   "h": 180,
+   "tone": "dark",
+   "scrapedFrom": "https://longterm.redfish.capital/wp-content/uploads/2023/05/Redfish_Capital_Partners.svg"
+  },
+  "irf_441468b1f9ceef": {
+   "src": "/logos/players/c15d1494c5500cd5.webp",
+   "onLight": null,
+   "w": 248,
+   "h": 246,
+   "tone": "dark",
+   "scrapedFrom": "https://www.opstart.it/frontend/assets/icons/square-opstart.svg"
   }
  }
 }

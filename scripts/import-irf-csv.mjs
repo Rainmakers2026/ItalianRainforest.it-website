@@ -137,7 +137,8 @@ for (const [key, r] of seen) {
   const enablerTypes = types.filter((t) => t !== 'STARTUP');
   if (types.length && !enablerTypes.length) { report.startupOnly.push(name); continue; }
 
-  let description = clean(r[C.description]);
+  // Internal CRM notes ("| CHELONIA ITALIA — STATUS CONTATTO: …") are never published.
+  let description = clean((r[C.description] ?? '').replace(/\s*\|?\s*CHELONIA ITALIA\b[\s\S]*$/i, ''));
   if (description && JUNK_DESCRIPTION.some((re) => re.test(description))) { report.junkDescription.push(name); description = null; }
 
   const regionRaw = clean(r[C.region]);

@@ -1,0 +1,25 @@
+{
+ "_about": "Logo sources for players whose database WEBSITE is missing or is not their own site. Used only by scripts/scrape-logos.mjs to fetch the logo: the WEBSITE shown on the site is not changed. 'sources': company name -> official site (checked by hand). 'aliases': company name -> another record of the same organisation whose logo is reused. 'reject': logos scraped by mistake (e.g. the hosting platform's logo), never published.",
+ "sources": {
+  "Opstart": "https://www.opstart.it/frontend/assets/icons/square-opstart.svg",
+  "Patrimon Cube": "https://patrimoncube.it/",
+  "Angels 4 Impact": "https://angels4impact.net/",
+  "Red Fish LongTerm Capital": "https://longterm.redfish.capital/wp-content/uploads/2023/05/Redfish_Capital_Partners.svg",
+  "Parco Tecnologico Padano": "https://www.ptp.it/",
+  "Parco Tecnico Scientifico Pavia": "https://pts.unipv.it/",
+  "Italeaf": "https://www.italeaf.com/",
+  "P3 Ventures": "https://p3ventures.it/",
+  "Italian Founders Fund": "https://italianfoundersfund.com/",
+  "Equiter": "https://www.equiterspa.com/",
+  "Ismea": "https://www.ismea.it/"
+ },
+ "aliases": {
+  "Techbrics": "Techbricks",
+  "Italians Angels for Biotech": "Italian Angels for Biotech",
+  "CDP Tech Transfer": "CDP Venture Capital",
+  "Primomiglio": "Primo Capital SGR"
+ },
+ "reject": [
+  "Investinit"
+ ]
+}

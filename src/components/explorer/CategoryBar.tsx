@@ -40,7 +40,7 @@ export function CategoryBar() {
       className="scrollbar-thin -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 md:flex-wrap md:overflow-visible"
       onMouseLeave={() => hover(null)}
     >
-      {CATEGORIES.filter((c) => c.key !== 'unclassified' || counts.get(c.key)).map((c) => {
+      {CATEGORIES.filter((c) => (c.key !== 'unclassified' && c.key !== 'other') || counts.get(c.key)).map((c) => {
         const n = counts.get(c.key) ?? 0;
         const dim = hoverCategory !== null && hoverCategory !== c.key;
         const on = hoverCategory === c.key;

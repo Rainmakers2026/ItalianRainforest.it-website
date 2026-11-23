@@ -183,6 +183,13 @@ const en: Dictionary = {
     placeholderNote: 'Partner logos will be published here as soon as they are confirmed.',
     cta: 'Become a partner',
     subject: 'Italian Rainforest partnership',
+    open: 'Partner profile: {name}',
+    kindLabel: 'Type',
+    sinceLabel: 'Active since',
+    websiteLabel: 'Website',
+    visit: 'Visit the website',
+    moreTitle: 'More coming soon',
+    moreText: 'New partners on the way!',
   },
   explorer: {
     loading: 'Loading data…',

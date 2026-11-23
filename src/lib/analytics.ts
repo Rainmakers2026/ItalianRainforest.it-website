@@ -25,6 +25,8 @@ export type AnalyticsEvent =
   | 'embed_code_copy'
   | 'language_switch'
   | 'outbound_player_website'
+  | 'partner_open'
+  | 'partner_outbound'
   | 'rainmakers_outbound'
   | 'update_form_submit'
   | 'update_form_success';

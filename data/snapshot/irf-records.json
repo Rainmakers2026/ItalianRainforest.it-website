@@ -1,6 +1,6 @@
 {
  "source": "irf-database.csv",
- "importedAt": "2026-11-21T17:50:20.702Z",
+ "importedAt": "2026-11-23T10:41:55.076Z",
  "exportDate": "2026-11-17",
  "records": [
   {
@@ -3188,7 +3188,14 @@
     "REGION": "Piemonte",
     "PROVINCE": "TO",
     "CITY": "Torino",
-    "INDUSTRY": [],
+    "INDUSTRY": [
+     "Biopharma",
+     "Life Sciences",
+     "Oncologia",
+     "Immunologia",
+     "Malattie Rare",
+     "Biotech"
+    ],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "SI",
     "LOGO": {
@@ -3893,7 +3900,7 @@
     "PROVINCE": "MI",
     "CITY": "Milano",
     "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/63a973f35240b579.webp",
@@ -4330,7 +4337,16 @@
     "REGION": "Lazio",
     "PROVINCE": "RM",
     "CITY": "Roma",
-    "INDUSTRY": [],
+    "INDUSTRY": [
+     "Space",
+     "Health",
+     "Climate",
+     "Deep Tech",
+     "Hardware",
+     "New Space",
+     "Quantum",
+     "Semiconductors"
+    ],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "SI",
     "LOGO": {
@@ -4945,7 +4961,16 @@
     "REGION": "Lazio",
     "PROVINCE": "RM",
     "CITY": "Roma",
-    "INDUSTRY": [],
+    "INDUSTRY": [
+     "Open Innovation",
+     "Corporate Innovation",
+     "Startup Scouting",
+     "Co-Innovazione",
+     "Proof of Concept",
+     "Innovation Management",
+     "Digital Transformation",
+     "Impact Measurement"
+    ],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "SI",
     "LOGO": {
@@ -4967,14 +4992,23 @@
     "WEBSITE": "https://www.elis.org/en/open-italy/",
     "SHORT DESCRIPTION": "Elis Open Italy is an innovation-ecosystem player with source category: Incubators & Accelerators.",
     "PLAYER TYPE": [
-     "VENTURE BUILDER/STARTUP STUDIO"
+     "INCUBATOR/ACCELERATOR"
     ],
     "ADDRESS": "Via Sandro Sandri, 81, 00159 Roma RM, Italy",
     "ADDRESS CHECK": "ok",
     "REGION": "Lazio",
     "PROVINCE": "RM",
     "CITY": "Roma",
-    "INDUSTRY": [],
+    "INDUSTRY": [
+     "Open Innovation",
+     "Corporate Innovation",
+     "Startup Scouting",
+     "Co-Innovazione",
+     "Proof of Concept",
+     "Innovation Management",
+     "Digital Transformation",
+     "Impact Measurement"
+    ],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "SI",
     "LOGO": {
@@ -5289,6 +5323,14 @@
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/bc9a5e38488e4228.webp",
+     "onLight": null,
+     "w": 65,
+     "h": 127,
+     "tone": "dark",
+     "scrapedFrom": "https://www.equiterspa.com/wp-content/uploads/fbrfg/apple-touch-icon.png"
+    },
     "Latitude": 45.06792,
     "Longitude": 7.68272,
     "GEO PRECISION": "address"
@@ -5396,7 +5438,39 @@
     "REGION": "Lazio",
     "PROVINCE": "RM",
     "CITY": "Roma",
-    "INDUSTRY": [],
+    "INDUSTRY": [
+     "Tecnologie Abilitanti",
+     "Robotica Automazione",
+     "Cleantech",
+     "MedTech",
+     "Droni",
+     "Robots Industriali",
+     "Air Taxi",
+     "Robot di Servizio",
+     "Veicoli Autonomi",
+     "Esoscheletri",
+     "Robot Agricoli",
+     "Robot per La Logistica",
+     "Edge AI",
+     "Advanced Computing",
+     "Chips",
+     "Quantum Computing",
+     "Tecnologie Laser",
+     "Sensori",
+     "Fotonica",
+     "AI Applicata alla Ricerca e alla Diagnosi",
+     "Tecnologie di Imaging & Diagnostica",
+     "Lab-On-Chips",
+     "Robotica per La Riabilitazione",
+     "Robotica Chirurgica",
+     "Tecnologie Dell'Idrogeno",
+     "Accumulo di Energia",
+     "Batterie e Capacitori",
+     "Carbon Capture",
+     "Graphene",
+     "Polimeri da Fonti Rinnovabili",
+     "Soluzioni di Economia Circolare"
+    ],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "SI",
     "LOGO": {
@@ -7916,7 +7990,7 @@
     "PROVINCE": null,
     "CITY": "Avellino",
     "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/799bf8b5d5c12dc9.webp",
@@ -8008,7 +8082,13 @@
     "REGION": "Lombardia",
     "PROVINCE": "MI",
     "CITY": "Milano",
-    "INDUSTRY": [],
+    "INDUSTRY": [
+     "Hardware",
+     "Industrial",
+     "Advanced Manufacturing",
+     "Robotics",
+     "IoT"
+    ],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "NO",
     "Latitude": 45.46725,
@@ -8171,7 +8251,7 @@
     "PROVINCE": "PU",
     "CITY": "Pesaro",
     "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/8d8534a24be3f1b3.webp",
@@ -8471,7 +8551,15 @@
     "CITY": null,
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
-    "LOGO FLAG": "NO"
+    "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/03dc5fde4757d303.webp",
+     "onLight": "/logos/players/03dc5fde4757d303-d.webp",
+     "w": 168,
+     "h": 142,
+     "tone": "light",
+     "scrapedFrom": "https://www.ismea.it/flex/TemplatesUSR/assets/R-23/img/logo-ismea.png"
+    }
    }
   },
   {
@@ -8929,7 +9017,7 @@
     "PROVINCE": null,
     "CITY": null,
     "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/b4c365866719162a.webp",
@@ -10437,7 +10525,13 @@
     "REGION": "Lombardia",
     "PROVINCE": "MI",
     "CITY": "Milano",
-    "INDUSTRY": [],
+    "INDUSTRY": [
+     "Cleantech",
+     "Climate-Tech",
+     "Deep Tech Ambito Green",
+     "Forte Impatto Ambientale",
+     "Climate"
+    ],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "SI",
     "LOGO": {
@@ -11393,7 +11487,15 @@
     "CITY": null,
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
-    "LOGO FLAG": "NO"
+    "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/c15d1494c5500cd5.webp",
+     "onLight": null,
+     "w": 248,
+     "h": 246,
+     "tone": "dark",
+     "scrapedFrom": "https://www.opstart.it/frontend/assets/icons/square-opstart.svg"
+    }
    }
   },
   {
@@ -11691,6 +11793,14 @@
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/0c715136a9a0c28e.webp",
+     "onLight": null,
+     "w": 479,
+     "h": 578,
+     "tone": "dark",
+     "scrapedFrom": "https://pts.unipv.it/wp-content/uploads/2021/04/LOGO-PTS-768x833.png"
+    },
     "Latitude": 45.30315,
     "Longitude": 9.47987,
     "GEO PRECISION": "address"
@@ -11834,7 +11944,14 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
+    "INDUSTRY": [
+     "Deep Tech",
+     "Climate",
+     "Fintech",
+     "Cybersecurity",
+     "Deep Tech 4.0",
+     "Sustainability"
+    ],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "SI",
     "LOGO": {
@@ -12844,6 +12961,14 @@
     "INDUSTRY": [],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "NO",
+    "LOGO": {
+     "src": "/logos/players/1793fdf35b6fc3f8.webp",
+     "onLight": null,
+     "w": 640,
+     "h": 180,
+     "tone": "dark",
+     "scrapedFrom": "https://longterm.redfish.capital/wp-content/uploads/2023/05/Redfish_Capital_Partners.svg"
+    },
     "Latitude": 45.47456,
     "Longitude": 9.19457,
     "GEO PRECISION": "address"
@@ -15731,7 +15856,12 @@
     "REGION": "Lombardia",
     "PROVINCE": "MI",
     "CITY": "Legnano",
-    "INDUSTRY": [],
+    "INDUSTRY": [
+     "SaaS",
+     "AI",
+     "Hardware",
+     "Robotics"
+    ],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "SI",
     "LOGO": {
@@ -16323,7 +16453,16 @@
     "REGION": "Campania",
     "PROVINCE": "NA",
     "CITY": "Napoli",
-    "INDUSTRY": [],
+    "INDUSTRY": [
+     "Servizi Finanziari",
+     "Hardware",
+     "Prestiti e Investimenti",
+     "Produzione",
+     "Media e Intrattenimento",
+     "Scienze e Ingegneria",
+     "Software",
+     "Agnostic"
+    ],
     "STATUS": "DA VERIFICARE",
     "LOGO FLAG": "SI",
     "LOGO": {
@@ -16795,8 +16934,10 @@
     "REGION": "Friuli-Venezia Giulia",
     "PROVINCE": "PN",
     "CITY": "Pordenone",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/7997ac92a2cab531.webp",
@@ -16824,8 +16965,10 @@
     "REGION": "Lazio",
     "PROVINCE": "RM",
     "CITY": "Roma",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/e2a8e4e159a6af0b.webp",
@@ -16853,8 +16996,12 @@
     "REGION": "Lombardia",
     "PROVINCE": "MI",
     "CITY": "Milano",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Arts & Culture",
+     "Creative Industries",
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/35da3cb0dedc1992.webp",
@@ -16882,8 +17029,10 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "NO",
     "LOGO": {
      "src": "/logos/players/f342c744f10dbe66.webp",
@@ -16909,8 +17058,12 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Cultural Heritage",
+     "Museum Digitalization",
+     "Software & Digital Services"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/ea3a6f2b0896950c.webp",
@@ -16935,8 +17088,12 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": "Milano",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Design & Creative Industries",
+     "Innovation",
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/40c230da5e535583.webp",
@@ -16961,8 +17118,10 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/db277da66118cea9.webp",
@@ -16987,8 +17146,10 @@
     "REGION": "Piemonte",
     "PROVINCE": "TO",
     "CITY": "Torino",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/c7d1a53f4c9c0fc3.webp",
@@ -17016,8 +17177,10 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "NO"
    }
   },
@@ -17035,8 +17198,10 @@
     "REGION": "Piemonte",
     "PROVINCE": "CN",
     "CITY": "Alba",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/aff3ea058a1fb770.webp",
@@ -17064,8 +17229,10 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/3524198ad949bdac.webp",
@@ -17090,8 +17257,11 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Serviced Offices",
+     "Flexible Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "NO",
     "LOGO": {
      "src": "/logos/players/6f7517718fd03a54.webp",
@@ -17110,7 +17280,6 @@
     "WEBSITE": "https://www.interazionicreative.com/",
     "SHORT DESCRIPTION": null,
     "PLAYER TYPE": [
-     "ALTRI ABILITATORI",
      "COWORKING"
     ],
     "ADDRESS": null,
@@ -17118,8 +17287,12 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces",
+     "Arts & Culture",
+     "Creative Industries"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/dd67c57e83cee0ab.webp",
@@ -17144,8 +17317,10 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "NO",
     "LOGO": {
      "src": "/logos/players/5cdbe152ee2fd6e9.webp",
@@ -17164,7 +17339,6 @@
     "WEBSITE": "http://www.millepiani.eu/",
     "SHORT DESCRIPTION": null,
     "PLAYER TYPE": [
-     "ALTRI ABILITATORI",
      "COWORKING"
     ],
     "ADDRESS": "Via Nicolò Odero 13, 00154 Roma RM, Italy",
@@ -17172,8 +17346,11 @@
     "REGION": "Lazio",
     "PROVINCE": "RM",
     "CITY": "Roma",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces",
+     "Training & Events"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/52292493bfef8322.webp",
@@ -17201,8 +17378,10 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "NO"
    }
   },
@@ -17220,8 +17399,10 @@
     "REGION": "Lazio",
     "PROVINCE": "RM",
     "CITY": "Roma",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/ba850d3f2ee196cc.webp",
@@ -17249,8 +17430,11 @@
     "REGION": "Sicilia",
     "PROVINCE": "PA",
     "CITY": "Palermo",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces",
+     "Events"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/6888dd2daa03f73a.webp",
@@ -17278,8 +17462,12 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Flexible Workspaces",
+     "Serviced Offices",
+     "Coworking"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "NO"
    }
   },
@@ -17297,8 +17485,10 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "NO"
    }
   },
@@ -17316,8 +17506,10 @@
     "REGION": "Piemonte",
     "PROVINCE": "TO",
     "CITY": "Torino",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/35a34cce19286db7.webp",
@@ -17345,8 +17537,12 @@
     "REGION": "Lombardia",
     "PROVINCE": "MI",
     "CITY": "Milano",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Corporate Training",
+     "STEM Education",
+     "Design & Innovation"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/91ae60bd5e4819b7.webp",
@@ -17374,8 +17570,10 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "NO"
    }
   },
@@ -17393,8 +17591,12 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Healthcare Facilities",
+     "Flexible Medical Offices",
+     "Wellness"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/8020683d7060d283.webp",
@@ -17419,8 +17621,10 @@
     "REGION": "Piemonte",
     "PROVINCE": "TO",
     "CITY": "Torino",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/25a8750634b3a5a2.webp",
@@ -17448,8 +17652,11 @@
     "REGION": "Piemonte",
     "PROVINCE": "TO",
     "CITY": "Torino",
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces",
+     "Flexible Offices"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/81db25ce05a519a3.webp",
@@ -17477,8 +17684,10 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "NO"
    }
   },
@@ -17496,8 +17705,11 @@
     "REGION": null,
     "PROVINCE": null,
     "CITY": null,
-    "INDUSTRY": [],
-    "STATUS": "DA VERIFICARE",
+    "INDUSTRY": [
+     "Coworking & Shared Workspaces",
+     "Flexible Offices"
+    ],
+    "STATUS": "ACTIVE",
     "LOGO FLAG": "SI",
     "LOGO": {
      "src": "/logos/players/b34ff97834cecfc5.webp",
@@ -17505,6 +17717,399 @@
      "w": 44,
      "h": 44,
      "tone": "dark"
+    }
+   }
+  },
+  {
+   "id": "irf_4f1021a0a52585",
+   "fields": {
+    "COMPANY NAME": "Peekaboo Società Benefit Srl",
+    "WEBSITE": "https://peekaboo.vision",
+    "SHORT DESCRIPTION": "Peekaboo Società Benefit Srl is an innovation-ecosystem player described in the source database as: where ideas grow.",
+    "PLAYER TYPE": [
+     "VENTURE BUILDER/STARTUP STUDIO"
+    ],
+    "ADDRESS": null,
+    "ADDRESS CHECK": null,
+    "REGION": "Lazio",
+    "PROVINCE": null,
+    "CITY": null,
+    "INDUSTRY": [
+     "Generalista"
+    ],
+    "STATUS": "DA VERIFICARE",
+    "LOGO FLAG": "SI",
+    "LOGO": {
+     "src": "/logos/players/aa05e66545372076.webp",
+     "onLight": null,
+     "w": 640,
+     "h": 120,
+     "tone": "dark",
+     "scrapedFrom": "https://www.peekaboovision.com/wp-content/uploads/2023/05/peekaboo-logotipo-colored-black.png"
+    },
+    "Latitude": 41.98016,
+    "Longitude": 12.7668,
+    "GEO PRECISION": "region"
+   }
+  },
+  {
+   "id": "irf_2f665f3c780e9f",
+   "fields": {
+    "COMPANY NAME": "Primomiglio",
+    "WEBSITE": null,
+    "SHORT DESCRIPTION": "Primo Miglio is an accelerator of responsible startups that supports new businesses with personalized paths, specialized consultations, funding, and networking opportunities. They focus on integrating corporate social responsibility to promote a healthy and conscious economy.",
+    "PLAYER TYPE": [
+     "VC"
+    ],
+    "ADDRESS": "Viale Luigi Majno, 18, 20129 Milano MI, Italy",
+    "ADDRESS CHECK": "ok",
+    "REGION": "Lombardia",
+    "PROVINCE": "MI",
+    "CITY": "Milano",
+    "INDUSTRY": [],
+    "STATUS": "DA VERIFICARE",
+    "LOGO FLAG": "SI",
+    "LOGO": {
+     "src": "/logos/players/ff892bb495352ffb.webp",
+     "onLight": null,
+     "w": 600,
+     "h": 550,
+     "tone": "dark",
+     "scrapedFrom": "alias of Primo Capital SGR"
+    },
+    "Latitude": 45.47093,
+    "Longitude": 9.20573,
+    "GEO PRECISION": "address"
+   }
+  },
+  {
+   "id": "irf_329ea03a9d72f1",
+   "fields": {
+    "COMPANY NAME": "Needs Startup Association",
+    "WEBSITE": "https://www.needsassociation.it/",
+    "SHORT DESCRIPTION": "Associazione ETS dedicata allo sviluppo dell’ecosistema startup italiano tramite advocacy, rapporti istituzionali, eventi, informazione, formazione e collaborazioni.",
+    "PLAYER TYPE": [
+     "ASSOCIATIONS"
+    ],
+    "ADDRESS": "Via Romanello da Forlì 25, 00176 Roma RM, Italy",
+    "ADDRESS CHECK": "ok",
+    "REGION": "Lazio",
+    "PROVINCE": "RM",
+    "CITY": "Roma",
+    "INDUSTRY": [
+     "Startup Ecosystem",
+     "Innovation Advocacy",
+     "Events & Education"
+    ],
+    "STATUS": "ACTIVE",
+    "LOGO FLAG": null,
+    "LOGO": {
+     "src": "/logos/players/38d9638bacac3feb.webp",
+     "onLight": null,
+     "w": 115,
+     "h": 165,
+     "tone": "dark",
+     "scrapedFrom": "https://www.needsassociation.it/wp-content/uploads/2025/08/logo-ridotto-classico-1.png"
+    },
+    "Latitude": 41.88997,
+    "Longitude": 12.53255,
+    "GEO PRECISION": "address"
+   }
+  },
+  {
+   "id": "irf_be1c65b2ffbda8",
+   "fields": {
+    "COMPANY NAME": "The People’s Room",
+    "WEBSITE": "https://thepeoplesroom.it/",
+    "SHORT DESCRIPTION": "Hub di innovazione e wellbeing con coworking a Milano, zona Isola, segnalato come appena aperto. Il sito presenta community, coworking, move, fuel, recharge e media; la pagina pubblica risulta ancora “coming soon”.",
+    "PLAYER TYPE": [
+     "COWORKING"
+    ],
+    "ADDRESS": null,
+    "ADDRESS CHECK": null,
+    "REGION": "Lombardia",
+    "PROVINCE": null,
+    "CITY": "Milano",
+    "INDUSTRY": [
+     "Coworking",
+     "Wellbeing",
+     "Community"
+    ],
+    "STATUS": "ACTIVE",
+    "LOGO FLAG": null,
+    "LOGO": {
+     "src": "/logos/players/f7900dc0f965d211.webp",
+     "onLight": "/logos/players/f7900dc0f965d211-d.webp",
+     "w": 640,
+     "h": 371,
+     "tone": "light",
+     "scrapedFrom": "https://thepeoplesroom.it/assets/figma-updated/composites/home-about-wordmark-original.svg"
+    },
+    "Latitude": 45.46419,
+    "Longitude": 9.18963,
+    "GEO PRECISION": "city"
+   }
+  },
+  {
+   "id": "irf_3e988b035114fe",
+   "fields": {
+    "COMPANY NAME": "Efficiens Venture Studio",
+    "WEBSITE": "https://efficiens.it/",
+    "SHORT DESCRIPTION": "Venture studio attivo in food retail, longevity, real estate, communication & PR e piattaforme AI B2B. Secondo la presentazione diretta, holding in fundraising con 7 aziende controllate e diverse partecipazioni di minoranza.",
+    "PLAYER TYPE": [
+     "VENTURE BUILDER/STARTUP STUDIO"
+    ],
+    "ADDRESS": "Via Monte Napoleone 21, 20121 Milano MI, Italy",
+    "ADDRESS CHECK": "ok",
+    "REGION": "Lombardia",
+    "PROVINCE": "MI",
+    "CITY": "Milano",
+    "INDUSTRY": [
+     "Venture Building",
+     "Food Retail",
+     "Longevity",
+     "Real Estate",
+     "Communication & PR",
+     "B2B AI Platforms"
+    ],
+    "STATUS": "ACTIVE",
+    "LOGO FLAG": null,
+    "LOGO": {
+     "src": "/logos/players/b5bad4d24806f3eb.webp",
+     "onLight": "/logos/players/b5bad4d24806f3eb-d.webp",
+     "w": 146,
+     "h": 167,
+     "tone": "light",
+     "scrapedFrom": "https://efficiens.it/wp-content/uploads/2025/07/Efficiens_Logo.svg"
+    },
+    "Latitude": 45.46898,
+    "Longitude": 9.19421,
+    "GEO PRECISION": "address"
+   }
+  },
+  {
+   "id": "irf_bcb81ef5cb1426",
+   "fields": {
+    "COMPANY NAME": "Italians Angels for Biotech",
+    "WEBSITE": null,
+    "SHORT DESCRIPTION": null,
+    "PLAYER TYPE": [
+     "INVESTOR"
+    ],
+    "ADDRESS": null,
+    "ADDRESS CHECK": null,
+    "REGION": null,
+    "PROVINCE": null,
+    "CITY": null,
+    "INDUSTRY": [
+     "Biotech",
+     "Life Science"
+    ],
+    "STATUS": "DA VERIFICARE",
+    "LOGO FLAG": null,
+    "LOGO": {
+     "src": "/logos/players/0e5f31cd3cf1bb22.webp",
+     "onLight": null,
+     "w": 296,
+     "h": 219,
+     "tone": "dark",
+     "scrapedFrom": "alias of Italian Angels for Biotech"
+    }
+   }
+  },
+  {
+   "id": "irf_a6c9ef18d0d5e7",
+   "fields": {
+    "COMPANY NAME": "Techbrics",
+    "WEBSITE": null,
+    "SHORT DESCRIPTION": null,
+    "PLAYER TYPE": [
+     "INVESTOR"
+    ],
+    "ADDRESS": null,
+    "ADDRESS CHECK": null,
+    "REGION": null,
+    "PROVINCE": null,
+    "CITY": null,
+    "INDUSTRY": [
+     "Space",
+     "Climate",
+     "Mobility",
+     "Foodtech",
+     "Spacetech",
+     "Greentech",
+     "Energy",
+     "Smartmobility"
+    ],
+    "STATUS": "DA VERIFICARE",
+    "LOGO FLAG": null,
+    "LOGO": {
+     "src": "/logos/players/1e33884860937ebf.webp",
+     "onLight": null,
+     "w": 320,
+     "h": 296,
+     "tone": "dark",
+     "scrapedFrom": "alias of Techbricks"
+    }
+   }
+  },
+  {
+   "id": "irf_34c1bb06fa4e4a",
+   "fields": {
+    "COMPANY NAME": "CDP Tech Transfer",
+    "WEBSITE": null,
+    "SHORT DESCRIPTION": null,
+    "PLAYER TYPE": [
+     "INVESTOR"
+    ],
+    "ADDRESS": null,
+    "ADDRESS CHECK": null,
+    "REGION": null,
+    "PROVINCE": null,
+    "CITY": null,
+    "INDUSTRY": [
+     "Agritech",
+     "Foodtech",
+     "Biotech",
+     "Climate",
+     "Hardware",
+     "Deep Tech",
+     "Aerospace",
+     "Pharma",
+     "Environment",
+     "Robotics"
+    ],
+    "STATUS": "DA VERIFICARE",
+    "LOGO FLAG": null,
+    "LOGO": {
+     "src": "/logos/players/b01a1bb52b2e35ea.webp",
+     "onLight": null,
+     "w": 640,
+     "h": 390,
+     "tone": "dark",
+     "scrapedFrom": "alias of CDP Venture Capital"
+    }
+   }
+  },
+  {
+   "id": "irf_766bedb8da34b4",
+   "fields": {
+    "COMPANY NAME": "P3 Ventures",
+    "WEBSITE": null,
+    "SHORT DESCRIPTION": null,
+    "PLAYER TYPE": [
+     "INVESTOR"
+    ],
+    "ADDRESS": null,
+    "ADDRESS CHECK": null,
+    "REGION": null,
+    "PROVINCE": null,
+    "CITY": null,
+    "INDUSTRY": [
+     "Fintech",
+     "SaaS",
+     "AI",
+     "Industrial",
+     "Hardware",
+     "Mobility",
+     "Automotive"
+    ],
+    "STATUS": "DA VERIFICARE",
+    "LOGO FLAG": null,
+    "LOGO": {
+     "src": "/logos/players/fae052e1f23bbc45.webp",
+     "onLight": null,
+     "w": 180,
+     "h": 180,
+     "tone": "dark",
+     "scrapedFrom": "https://p3ventures.it/apple-icon.png?apple-icon.04-b7hylvr94u.png"
+    }
+   }
+  },
+  {
+   "id": "irf_be8094e06a3ebb",
+   "fields": {
+    "COMPANY NAME": "Cliffs",
+    "WEBSITE": null,
+    "SHORT DESCRIPTION": null,
+    "PLAYER TYPE": [
+     "INVESTOR"
+    ],
+    "ADDRESS": null,
+    "ADDRESS CHECK": null,
+    "REGION": null,
+    "PROVINCE": null,
+    "CITY": null,
+    "INDUSTRY": [
+     "Biotecnologie",
+     "Elettronica di Consumo",
+     "Beni di Consumo",
+     "Hardware",
+     "Tecnologia Dell'Informazione",
+     "Produzione",
+     "Scienza e Ingegneria",
+     "Software"
+    ],
+    "STATUS": "DA VERIFICARE",
+    "LOGO FLAG": null
+   }
+  },
+  {
+   "id": "irf_03e2f471a0525c",
+   "fields": {
+    "COMPANY NAME": "Angels 4 Impact",
+    "WEBSITE": null,
+    "SHORT DESCRIPTION": null,
+    "PLAYER TYPE": [
+     "INVESTOR"
+    ],
+    "ADDRESS": null,
+    "ADDRESS CHECK": null,
+    "REGION": null,
+    "PROVINCE": null,
+    "CITY": null,
+    "INDUSTRY": [],
+    "STATUS": "DA VERIFICARE",
+    "LOGO FLAG": null,
+    "LOGO": {
+     "src": "/logos/players/ce58cf6593b0aff7.webp",
+     "onLight": null,
+     "w": 471,
+     "h": 292,
+     "tone": "dark",
+     "scrapedFrom": "https://angels4impact.net/wp-content/uploads/2026/11/angels4impact-logo.svg"
+    }
+   }
+  },
+  {
+   "id": "irf_4a369eef6d555c",
+   "fields": {
+    "COMPANY NAME": "Italian Founders Fund",
+    "WEBSITE": null,
+    "SHORT DESCRIPTION": null,
+    "PLAYER TYPE": [
+     "INVESTOR"
+    ],
+    "ADDRESS": null,
+    "ADDRESS CHECK": null,
+    "REGION": null,
+    "PROVINCE": null,
+    "CITY": null,
+    "INDUSTRY": [
+     "Agnostic",
+     "SaaS",
+     "Tech",
+     "B2B SaaS"
+    ],
+    "STATUS": "DA VERIFICARE",
+    "LOGO FLAG": null,
+    "LOGO": {
+     "src": "/logos/players/c81ba4d4174b6b75.webp",
+     "onLight": "/logos/players/c81ba4d4174b6b75-d.webp",
+     "w": 365,
+     "h": 421,
+     "tone": "light",
+     "scrapedFrom": "inline svg"
     }
    }
   }

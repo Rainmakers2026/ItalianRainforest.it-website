@@ -181,6 +181,13 @@ const it = {
     placeholderNote: 'I loghi dei partner saranno pubblicati qui appena confermati.',
     cta: 'Diventa partner',
     subject: 'Partnership Italian Rainforest',
+    open: 'Scheda del partner {name}',
+    kindLabel: 'Tipologia',
+    sinceLabel: 'Attivo dal',
+    websiteLabel: 'Sito web',
+    visit: 'Visita il sito',
+    moreTitle: 'More coming soon',
+    moreText: 'A breve nuovi partner!',
   },
   explorer: {
     loading: 'Caricamento dei dati…',
