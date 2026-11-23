@@ -91,16 +91,10 @@ function spread(players: PublicPlayer[]) {
   return out;
 }
 
-/** Logo marker (DOM, built without innerHTML). */
-/**
- * Round logo badge (DOM, built without innerHTML): the logo in colour on a white disc —
- * light artwork on navy — ringed in the player-type colour, with the name in a label
- * that appears above it on hover/focus.
- */
-/** The player-type face the logo badge grows out of (inline SVG, built with DOM APIs). */
+/** The player-type face of the medal (inline SVG, built with DOM APIs). */
 function typeFace(key: CategoryKey) {
   const face = document.createElement('span');
-  face.className = 'irf-logo-type';
+  face.className = 'irf-coin-face irf-coin-front';
   face.setAttribute('aria-hidden', 'true');
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(ns, 'svg');
@@ -111,22 +105,51 @@ function typeFace(key: CategoryKey) {
   face.append(svg);
   return face;
 }
+/**
+ * Logo box inside the round badge: the largest rectangle of the logo's proportions that
+ * fits the disc (so wide wordmarks stay legible), as % of the diameter.
+ */
+function logoBox(w: number | null, h: number | null) {
+  const a = w && h ? w / h : 1;
+  const d = 0.84;
+  let bw = d / Math.sqrt(1 + 1 / (a * a));
+  let bh = bw / a;
+  if (bh > 0.64) (bh = 0.64), (bw = bh * a);
+  return { w: `${(bw * 100).toFixed(1)}%`, h: `${(bh * 100).toFixed(1)}%` };
+}
+/**
+ * Round logo badge (DOM, built without innerHTML), shaped as a medal: the front is the
+ * navy player-type badge (same as the map sprite), which turns over to show the back —
+ * the logo in colour, centred on white, ringed in the logo's own main colour. The name
+ * appears above it on hover/focus.
+ */
 function logoMarker(p: PublicPlayer) {
+  const logo = p.logo!;
   const el = document.createElement('button');
   el.type = 'button';
-  el.className = `irf-logo-marker${p.logo!.tone === 'light' ? ' is-dark' : ''}`;
-  el.style.setProperty('--c', CATEGORY_BY_KEY[p.categories[0]!].color);
+  el.className = 'irf-logo-marker';
+  el.style.setProperty('--c', logo.color ?? '#1B3A5C');
   el.setAttribute('aria-label', p.name);
+  const coin = document.createElement('span');
+  coin.className = 'irf-coin';
+  const back = document.createElement('span');
+  // White artwork: its navy-recoloured variant; without one, a navy back keeps it readable.
+  const pale = logo.tone === 'light';
+  back.className = `irf-coin-face irf-coin-back${pale && !logo.onLight ? ' is-dark' : ''}`;
   const img = document.createElement('img');
-  img.src = p.logo!.src;
+  img.src = (pale && logo.onLight) || logo.src;
   img.alt = '';
   img.decoding = 'async';
   img.draggable = false;
+  const box = logoBox(logo.w, logo.h);
+  img.style.width = box.w;
+  img.style.height = box.h;
+  back.append(img);
+  coin.append(typeFace(p.categories[0]!), back);
   const name = document.createElement('span');
   name.className = 'irf-logo-name';
   name.textContent = p.name;
-  // Starts as the player-type badge, which flips away to reveal the logo (CSS).
-  el.append(typeFace(p.categories[0]!), img, name);
+  el.append(coin, name);
   // MapLibre positions the outer element with an inline transform: the badge animates inside it.
   const pin = document.createElement('div');
   pin.className = 'irf-logo-pin';
@@ -134,13 +157,51 @@ function logoMarker(p: PublicPlayer) {
   return { pin, el };
 }
 /** Logo badge diameter by zoom: grows as you zoom in. */
-const logoSize = (z: number) => (z < 8 ? 34 : z < 9 ? 40 : z < 10.5 ? 48 : 56);
+const logoSize = (z: number) => (z < 8 ? 46 : z < 9 ? 54 : z < 10.5 ? 64 : 72);
+/** Rendered size of the type sprite at a zoom (see the "points" layer icon-size). */
+const spriteSize = (z: number) => BADGE_PX * (z <= LOGO_ZOOM ? 0.66 : z >= 11 ? 0.8 : 0.66 + ((z - LOGO_ZOOM) / (11 - LOGO_ZOOM)) * 0.14);
+/** Duration (ms) of the medal turning back on zoom-out (see globals.css). */
+const FLIP_BACK_MS = 320;
 
 function tipText(text: string) {
   const root = document.createElement('div');
   root.className = 'irf-tip-body irf-tip-cluster';
   root.textContent = text;
   return root;
+}
+
+/**
+ * One label per city with players on the map: placed just south of the city's fan of
+ * badges (see spread) so the name is not hidden under them. Bigger cities win collisions.
+ */
+const REGION_NAMES = new Set([...REGION_BY_SLUG.values()].flatMap((r) => [r.it.toLowerCase(), r.en.toLowerCase()]));
+function cityLabels(players: PublicPlayer[]): GeoJSON.FeatureCollection {
+  const cities = new Map<string, { name: string; n: number; spots: Map<string, { lng: number; lat: number; n: number }> }>();
+  for (const p of players) {
+    const l = p.location!;
+    // City centre only (a region-level position, or a region name typed as city, is no city).
+    if (!l.city || l.precision === 'region' || REGION_NAMES.has(l.city.toLowerCase())) continue;
+    const key = l.city.toLowerCase();
+    const c = cities.get(key) ?? { name: l.city, n: 0, spots: new Map() };
+    c.n++;
+    const k = `${l.lat!.toFixed(4)},${l.lng!.toFixed(4)}`;
+    const spot = c.spots.get(k) ?? { lng: l.lng!, lat: l.lat!, n: 0 };
+    spot.n++;
+    c.spots.set(k, spot);
+    cities.set(key, c);
+  }
+  return {
+    type: 'FeatureCollection',
+    features: [...cities.values()].map((c) => {
+      const centre = [...c.spots.values()].sort((a, b) => b.n - a.n)[0]!;
+      const r = 0.0032 * Math.sqrt(Math.max(centre.n - 1, 0));
+      return {
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [centre.lng, centre.lat - r] },
+        properties: { name: c.name, n: c.n },
+      };
+    }),
+  };
 }
 
 export default function MapCanvas() {
@@ -170,6 +231,7 @@ export default function MapCanvas() {
     }),
     [located, coords],
   );
+  const cities = useMemo(() => cityLabels(located), [located]);
   const [logosOn, setLogosOn] = useState(false);
   const locatedRef = useRef(located);
   useEffect(() => {
@@ -214,6 +276,7 @@ export default function MapCanvas() {
             europe: { type: 'geojson', data: `${origin}/geo/europe.json` },
             regions: { type: 'geojson', data: `${origin}/geo/italy-regions.json` },
             provinces: { type: 'geojson', data: `${origin}/geo/italy-provinces.json` },
+            'region-labels': { type: 'geojson', data: `${origin}/geo/italy-region-labels.json` },
           },
           layers: [
             { id: 'bg', type: 'background', paint: { 'background-color': '#DCE4F1' } },
@@ -254,6 +317,31 @@ export default function MapCanvas() {
               filter: ['==', ['get', 'slug'], ''],
               paint: { 'line-color': '#4B61D1', 'line-width': 1.4, 'line-dasharray': [2, 1.2] },
             },
+            // Region names on the country view; they give way to the city names on zoom-in.
+            {
+              id: 'region-labels',
+              type: 'symbol',
+              source: 'region-labels',
+              maxzoom: 7.4,
+              layout: {
+                'text-field': ['get', 'name'],
+                'text-font': ['irf-bold'],
+                'text-size': ['interpolate', ['linear'], ['zoom'], 4.5, 9, 6, 11.5, 7, 13],
+                'text-transform': 'uppercase',
+                'text-letter-spacing': 0.12,
+                'text-max-width': 7,
+                'text-padding': 2,
+                // Moves around the cluster badges instead of hiding under them.
+                'text-variable-anchor': ['center', 'top', 'bottom', 'left', 'right'],
+                'text-radial-offset': 1.4,
+              },
+              paint: {
+                'text-color': '#6F7D99',
+                'text-halo-color': 'rgba(255,255,255,0.92)',
+                'text-halo-width': 1.4,
+                'text-opacity': ['interpolate', ['linear'], ['zoom'], 6.8, 1, 7.4, 0],
+              },
+            },
           ],
         },
       });
@@ -282,6 +370,31 @@ export default function MapCanvas() {
         promoteId: 'id',
       });
       map.addSource('highlight', { type: 'geojson', data: EMPTY });
+      map.addSource('cities', { type: 'geojson', data: EMPTY });
+      // Names of the cities where the listed players are, from the regional view inward.
+      map.addLayer({
+        id: 'city-labels',
+        type: 'symbol',
+        source: 'cities',
+        minzoom: 6,
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-font': ['irf-bold'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 6, ['step', ['get', 'n'], 10, 10, 11.5, 50, 13], 10, ['step', ['get', 'n'], 12.5, 10, 14, 50, 15.5]],
+          'text-anchor': 'top',
+          // Below the badges, which grow with the zoom.
+          'text-offset': ['interpolate', ['linear'], ['zoom'], 6, ['literal', [0, 1.2]], 7, ['literal', [0, 2.2]], 9, ['literal', [0, 2.4]], 11, ['literal', [0, 2.7]]],
+          'symbol-sort-key': ['-', 0, ['get', 'n']],
+          'text-padding': 3,
+          'text-max-width': 9,
+        },
+        paint: {
+          'text-color': '#14304F',
+          'text-halo-color': 'rgba(255,255,255,0.95)',
+          'text-halo-width': 1.6,
+          'text-opacity': ['interpolate', ['linear'], ['zoom'], 6, 0, 6.6, 1],
+        },
+      });
 
       // Player-type badges (sprites generated from the IRF pictograms).
       try {
@@ -306,7 +419,8 @@ export default function MapCanvas() {
           'icon-image': DOMINANT_ICON,
           'icon-size': ['step', ['get', 'point_count'], 0.85, 10, 0.98, 30, 1.12, 80, 1.28],
           'icon-allow-overlap': true,
-          'icon-ignore-placement': true,
+          // Place names make way for the badges.
+          'icon-ignore-placement': false,
         },
         paint: { 'icon-opacity': 1, 'icon-opacity-transition': { duration: 160 } },
       });
@@ -360,7 +474,8 @@ export default function MapCanvas() {
         },
         paint: {
           'icon-opacity': ['case', ['boolean', ['feature-state', 'logo'], false], 0, 1],
-          'icon-opacity-transition': { duration: 380 },
+          // Instant: the medal's front face takes the sprite's place pixel for pixel.
+          'icon-opacity-transition': { duration: 0 },
         },
       });
       map.addLayer({
@@ -452,13 +567,24 @@ export default function MapCanvas() {
           /* feature no longer in the source */
         }
       };
-      /** Removes a logo with a short exit while its type badge fades back in. */
+      /** Turns the medal back to its type face, then hands over to the map sprite. */
       const dropMarker = (id: string, m: maplibregl.Marker) => {
         markers.delete(id);
-        setLogoState(id, false);
-        if (reducedMotion()) return void m.remove();
+        if (reducedMotion()) {
+          setLogoState(id, false);
+          return void m.remove();
+        }
         m.getElement().classList.add('is-leaving');
-        window.setTimeout(() => m.remove(), 220);
+        window.setTimeout(() => {
+          if (!markers.has(id)) setLogoState(id, false);
+          m.remove();
+        }, FLIP_BACK_MS);
+      };
+      /** Medal start size = the type sprite's, so the turn starts from the very same badge. */
+      const setSizes = () => {
+        const z = map.getZoom();
+        container.current?.style.setProperty('--logo-size', `${logoSize(z)}px`);
+        container.current?.style.setProperty('--coin-from', (spriteSize(z) / logoSize(z)).toFixed(3));
       };
       const syncLogos = () => {
         // Below LOGO_ZOOM the map speaks in player types only.
@@ -467,7 +593,7 @@ export default function MapCanvas() {
         // crowded view shows fewer logos (the coloured dot stays for the others) and every
         // zoom step reveals more. Logos already on screen keep their place (no flicker).
         const size = logoSize(map.getZoom());
-        container.current?.style.setProperty('--logo-size', `${size}px`);
+        setSizes();
         const ids = new Set<string>();
         const placed: { x: number; y: number }[] = [];
         const ordered = [...feats].sort((a, b) => (markers.has(b.properties?.id) ? 1 : 0) - (markers.has(a.properties?.id) ? 1 : 0));
@@ -510,7 +636,7 @@ export default function MapCanvas() {
         if (map.getZoom() < LOGO_ZOOM && markers.size) syncLogos();
       });
       // Resize the badges live while zooming (placement is refreshed on idle).
-      map.on('zoom', () => container.current?.style.setProperty('--logo-size', `${logoSize(map.getZoom())}px`));
+      map.on('zoom', setSizes);
       setReady(true);
     });
 
@@ -530,7 +656,8 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!ready) return;
     (mapRef.current?.getSource('players') as GeoJSONSource | undefined)?.setData(fc);
-  }, [ready, fc]);
+    (mapRef.current?.getSource('cities') as GeoJSONSource | undefined)?.setData(cities);
+  }, [ready, fc, cities]);
 
   // --- Category hover: emphasise the category, dim everything else -------------
   useEffect(() => {

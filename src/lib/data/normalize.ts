@@ -172,9 +172,9 @@ function normalizeLogo(v: unknown): PlayerLogo | null {
       : null;
   }
   if (v && typeof v === 'object' && 'src' in v) {
-    const l = v as { src: unknown; w?: unknown; h?: unknown; tone?: unknown; onLight?: unknown };
+    const l = v as { src: unknown; w?: unknown; h?: unknown; tone?: unknown; onLight?: unknown; color?: unknown };
     return typeof l.src === 'string'
-      ? { src: l.src, w: num(l.w), h: num(l.h), tone: l.tone === 'light' ? 'light' : 'dark', onLight: typeof l.onLight === 'string' ? l.onLight : null }
+      ? { src: l.src, w: num(l.w), h: num(l.h), tone: l.tone === 'light' ? 'light' : 'dark', onLight: typeof l.onLight === 'string' ? l.onLight : null, color: typeof l.color === 'string' && /^#[0-9a-f]{6}$/i.test(l.color) ? l.color : null }
       : null;
   }
   return null;

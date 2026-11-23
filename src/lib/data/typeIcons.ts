@@ -1,4 +1,4 @@
-import { CATEGORY_BY_KEY, type CategoryKey } from './taxonomy';
+import type { CategoryKey } from './taxonomy';
 
 /**
  * Pictograms of the player types (24×24 stroke paths, IRF line style). Used by the map
@@ -45,19 +45,17 @@ export const TYPE_ICON: Record<CategoryKey, string> = {
   unclassified: 'M9.3 9a2.7 2.7 0 1 1 3.8 2.5c-.7.3-1.1 1-1.1 1.7v.8M12 17.5h.01',
 };
 
-/** IRF navy used for the translucent type badges. */
-export const TYPE_BADGE_NAVY = '20, 48, 79';
+/** IRF navy of the type badges (disc and ring alike). */
+export const TYPE_BADGE_NAVY = '#1B3A5C';
 
 /**
- * Round type badge as an SVG string (map sprite): translucent IRF navy disc, thin ring in
- * the player-type colour, white pictogram. `px` is the rendered size in device pixels.
+ * Round type badge as an SVG string (map sprite): solid IRF navy disc with a navy ring,
+ * white pictogram. `px` is the rendered size in device pixels.
  */
 export function typeBadgeSvg(key: CategoryKey, px: number) {
-  const color = CATEGORY_BY_KEY[key].color;
   const heavy = key === 'other' || key === 'unclassified';
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${px}" height="${px}" viewBox="0 0 40 40">
-<circle cx="20" cy="20" r="18.2" fill="rgb(${TYPE_BADGE_NAVY})" fill-opacity="0.84" stroke="${color}" stroke-width="2.2"/>
-<circle cx="20" cy="20" r="19.4" fill="none" stroke="#fff" stroke-opacity="0.85" stroke-width="1"/>
+<circle cx="20" cy="20" r="18.6" fill="${TYPE_BADGE_NAVY}" stroke="${TYPE_BADGE_NAVY}" stroke-width="2.2"/>
 <g transform="translate(9.2 9.2) scale(0.9)" fill="none" stroke="#fff" stroke-width="${heavy ? 3.4 : 1.9}" stroke-linecap="round" stroke-linejoin="round"><path d="${TYPE_ICON[key]}"/></g>
 </svg>`;
 }

@@ -23,7 +23,7 @@ import { existsSync } from 'node:fs';
 import { copyFile, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { logoHash, processLogo } from './lib/logo-image.mjs';
+import { logoColor, logoHash, processLogo } from './lib/logo-image.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const csvPath = path.resolve(process.argv[2] ?? path.join(root, 'data/source/irf-database.csv'));
@@ -220,6 +220,22 @@ if (logoDir) {
 const scrapedPath = path.join(root, 'data/snapshot/logos-scraped.json');
 const scraped = existsSync(scrapedPath) ? JSON.parse(await readFile(scrapedPath, 'utf8')).logos : {};
 for (const [id, l] of Object.entries(scraped)) if (!logos[id]) logos[id] = l;
+// Main colour of each logo (ring of its badge on the map), cached by file.
+const colorPath = path.join(root, 'data/snapshot/logo-colors.json');
+const colors = existsSync(colorPath) ? JSON.parse(await readFile(colorPath, 'utf8')) : {};
+for (const [id, l] of Object.entries(logos)) {
+  const shown = (l.tone === 'light' && l.onLight) || l.src;
+  if (!shown.startsWith('/')) continue;
+  if (!colors[shown]) {
+    try {
+      colors[shown] = await logoColor(path.join(root, 'public', shown));
+    } catch {
+      continue;
+    }
+  }
+  logos[id] = { ...l, color: colors[shown] };
+}
+await writeFile(colorPath, JSON.stringify(Object.fromEntries(Object.entries(colors).sort()), null, 1));
 for (const r of records) {
   if (logos[r.id]) r.fields.LOGO = logos[r.id];
   else if (r.fields['LOGO FLAG'] === 'SI') report.logoMissing.push(r.fields['COMPANY NAME']);

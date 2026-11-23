@@ -1,6 +1,6 @@
 {
  "source": "irf-database.csv",
- "importedAt": "2026-11-23T10:41:55.076Z",
+ "importedAt": "2026-11-23T14:43:19.099Z",
  "exportDate": "2026-11-17",
  "records": [
   {
@@ -25,7 +25,8 @@
      "onLight": null,
      "w": 519,
      "h": 590,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#8ec164"
     },
     "Latitude": 41.06492,
     "Longitude": 14.32653,
@@ -56,7 +57,8 @@
      "onLight": null,
      "w": 640,
      "h": 187,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#384c67"
     },
     "Latitude": 45.06518,
     "Longitude": 7.69184,
@@ -89,7 +91,8 @@
      "onLight": "/logos/players/dab0ccacbebb669e-d.webp",
      "w": 88,
      "h": 105,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.06714,
     "Longitude": 7.69616,
@@ -118,7 +121,8 @@
      "onLight": "/logos/players/6cdb2e056984b3bd-d.webp",
      "w": 381,
      "h": 157,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46208,
     "Longitude": 9.18861,
@@ -147,7 +151,8 @@
      "onLight": null,
      "w": 174,
      "h": 169,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#94bd72"
     },
     "Latitude": 45.46811,
     "Longitude": 9.19549,
@@ -176,7 +181,8 @@
      "onLight": null,
      "w": 557,
      "h": 122,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#2d90cf"
     },
     "Latitude": 45.46852,
     "Longitude": 9.22325,
@@ -205,7 +211,8 @@
      "onLight": null,
      "w": 41,
      "h": 46,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#d4af42"
     },
     "Latitude": 45.05018,
     "Longitude": 7.67399,
@@ -234,7 +241,8 @@
      "onLight": null,
      "w": 591,
      "h": 640,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#00953c"
     },
     "Latitude": 45.46135,
     "Longitude": 9.1881,
@@ -267,7 +275,8 @@
      "onLight": "/logos/players/80b8ec6c0e3e0469-d.webp",
      "w": 640,
      "h": 122,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46438,
     "Longitude": 9.18026,
@@ -318,7 +327,8 @@
      "onLight": null,
      "w": 192,
      "h": 192,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#a1bd4d"
     },
     "Latitude": 46.49848,
     "Longitude": 11.35474,
@@ -347,7 +357,8 @@
      "onLight": "/logos/players/877bbaa5fa386ea9-d.webp",
      "w": 629,
      "h": 495,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 41.64071,
     "Longitude": 13.35092,
@@ -376,7 +387,8 @@
      "onLight": null,
      "w": 500,
      "h": 310,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#b61f24"
     },
     "Latitude": 43.83954,
     "Longitude": 10.49557,
@@ -406,7 +418,8 @@
      "w": 150,
      "h": 97,
      "tone": "dark",
-     "scrapedFrom": "https://www.a11venture.it/risorse/logo.png?v=1794499167"
+     "scrapedFrom": "https://www.a11venture.it/risorse/logo.png?v=1794499167",
+     "color": "#dcb301"
     },
     "Latitude": 45.44659,
     "Longitude": 9.20437,
@@ -438,7 +451,8 @@
      "onLight": "/logos/players/f3eb36c3a8f70a8f-d.webp",
      "w": 600,
      "h": 311,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.52024,
     "Longitude": 10.21524,
@@ -467,7 +481,8 @@
      "onLight": null,
      "w": 640,
      "h": 244,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#16355a"
     },
     "Latitude": 43.62049,
     "Longitude": 13.51292,
@@ -501,7 +516,8 @@
      "onLight": null,
      "w": 271,
      "h": 136,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e9022d"
     },
     "Latitude": 43.62049,
     "Longitude": 13.51292,
@@ -530,7 +546,8 @@
      "onLight": "/logos/players/89e3934eeddeaf14-d.webp",
      "w": 640,
      "h": 271,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -556,7 +573,8 @@
      "onLight": null,
      "w": 256,
      "h": 218,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0117e1"
     }
    }
   },
@@ -582,7 +600,8 @@
      "onLight": null,
      "w": 479,
      "h": 640,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#d82634"
     },
     "Latitude": 45.51625,
     "Longitude": 9.26265,
@@ -611,7 +630,8 @@
      "onLight": null,
      "w": 181,
      "h": 33,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#055493"
     },
     "Latitude": 45.51625,
     "Longitude": 9.26265,
@@ -640,7 +660,8 @@
      "onLight": null,
      "w": 150,
      "h": 79,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1a2436"
     }
    }
   },
@@ -666,7 +687,8 @@
      "onLight": null,
      "w": 87,
      "h": 41,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#033296"
     },
     "Latitude": 44.22378,
     "Longitude": 12.05269,
@@ -695,7 +717,8 @@
      "onLight": null,
      "w": 519,
      "h": 640,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#14304F"
     }
    }
   },
@@ -721,7 +744,8 @@
      "onLight": null,
      "w": 640,
      "h": 151,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#010101"
     },
     "Latitude": 45.45627,
     "Longitude": 9.18009,
@@ -750,7 +774,8 @@
      "onLight": null,
      "w": 600,
      "h": 230,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#02513a"
     },
     "Latitude": 45.46618,
     "Longitude": 9.20211,
@@ -779,7 +804,8 @@
      "onLight": null,
      "w": 600,
      "h": 157,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#525a2b"
     },
     "Latitude": 41.91667,
     "Longitude": 12.46325,
@@ -808,7 +834,8 @@
      "onLight": null,
      "w": 640,
      "h": 173,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#094455"
     },
     "Latitude": 45.48363,
     "Longitude": 9.20292,
@@ -837,7 +864,8 @@
      "onLight": null,
      "w": 640,
      "h": 290,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#b43249"
     },
     "Latitude": 41.89662,
     "Longitude": 12.47871,
@@ -866,7 +894,8 @@
      "onLight": null,
      "w": 586,
      "h": 183,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#64a5a3"
     },
     "Latitude": 41.89662,
     "Longitude": 12.47871,
@@ -895,7 +924,8 @@
      "onLight": "/logos/players/e8502b1c3c81a097-d.webp",
      "w": 442,
      "h": 148,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.15338,
     "Longitude": 10.79636,
@@ -931,7 +961,8 @@
      "onLight": null,
      "w": 640,
      "h": 640,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#184a4d"
     },
     "Latitude": 45.4648,
     "Longitude": 9.19393,
@@ -962,7 +993,8 @@
      "onLight": "/logos/players/88bb7121ecffcf16-d.webp",
      "w": 596,
      "h": 600,
-     "tone": "light"
+     "tone": "light",
+     "color": "#fe8d56"
     },
     "Latitude": 44.48981,
     "Longitude": 11.25581,
@@ -991,7 +1023,8 @@
      "onLight": null,
      "w": 160,
      "h": 71,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#136c3a"
     },
     "Latitude": 45.57037,
     "Longitude": 9.77325,
@@ -1020,7 +1053,8 @@
      "onLight": null,
      "w": 639,
      "h": 156,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 45.4688,
     "Longitude": 9.20185,
@@ -1049,7 +1083,8 @@
      "onLight": null,
      "w": 298,
      "h": 71,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#223a83"
     }
    }
   },
@@ -1079,7 +1114,8 @@
      "onLight": null,
      "w": 600,
      "h": 248,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#012f85"
     },
     "Latitude": 41.87898,
     "Longitude": 12.52733,
@@ -1110,7 +1146,8 @@
      "onLight": null,
      "w": 280,
      "h": 121,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#00009b"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -1139,7 +1176,8 @@
      "onLight": null,
      "w": 640,
      "h": 200,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0155bc"
     },
     "Latitude": 41.92222,
     "Longitude": 12.47149,
@@ -1168,7 +1206,8 @@
      "onLight": null,
      "w": 600,
      "h": 98,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 45.45705,
     "Longitude": 9.194,
@@ -1197,7 +1236,8 @@
      "onLight": null,
      "w": 640,
      "h": 288,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#474b3c"
     },
     "Latitude": 45.44948,
     "Longitude": 9.21813,
@@ -1226,7 +1266,8 @@
      "onLight": "/logos/players/5183d2ae8f5f7faf-d.webp",
      "w": 191,
      "h": 320,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.45982,
     "Longitude": 9.18423,
@@ -1255,7 +1296,8 @@
      "onLight": "/logos/players/d1fcf49c2349362b-d.webp",
      "w": 512,
      "h": 120,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -1281,7 +1323,8 @@
      "onLight": null,
      "w": 640,
      "h": 640,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#145772"
     },
     "Latitude": 45.57037,
     "Longitude": 9.77325,
@@ -1313,7 +1356,8 @@
      "onLight": null,
      "w": 256,
      "h": 256,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#252525"
     },
     "Latitude": 45.42063,
     "Longitude": 11.88462,
@@ -1346,7 +1390,8 @@
      "w": 583,
      "h": 129,
      "tone": "dark",
-     "scrapedFrom": "inline svg"
+     "scrapedFrom": "inline svg",
+     "color": "#000000"
     },
     "Latitude": 41.81663,
     "Longitude": 12.49033,
@@ -1375,7 +1420,8 @@
      "onLight": null,
      "w": 640,
      "h": 161,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0e2ad2"
     },
     "Latitude": 41.81663,
     "Longitude": 12.49033,
@@ -1404,7 +1450,8 @@
      "onLight": null,
      "w": 180,
      "h": 180,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#468d2a"
     }
    }
   },
@@ -1430,7 +1477,8 @@
      "onLight": "/logos/players/e634af9262db5e60-d.webp",
      "w": 187,
      "h": 176,
-     "tone": "light"
+     "tone": "light",
+     "color": "#0fdad9"
     }
    }
   },
@@ -1456,7 +1504,8 @@
      "onLight": "/logos/players/d1a87079f8ca9644-d.webp",
      "w": 580,
      "h": 224,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.47107,
     "Longitude": 9.20136,
@@ -1485,7 +1534,8 @@
      "onLight": null,
      "w": 640,
      "h": 87,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#013a72"
     }
    }
   },
@@ -1511,7 +1561,8 @@
      "onLight": null,
      "w": 540,
      "h": 210,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#434343"
     },
     "Latitude": 45.46015,
     "Longitude": 9.19151,
@@ -1540,7 +1591,8 @@
      "onLight": "/logos/players/50bbd3bd96c97d20-d.webp",
      "w": 212,
      "h": 56,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 44.4836,
     "Longitude": 11.34839,
@@ -1569,7 +1621,8 @@
      "onLight": null,
      "w": 403,
      "h": 131,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#01245a"
     },
     "Latitude": 45.4725,
     "Longitude": 9.18524,
@@ -1598,7 +1651,8 @@
      "onLight": null,
      "w": 302,
      "h": 58,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3dc0ef"
     },
     "Latitude": 45.57037,
     "Longitude": 9.77325,
@@ -1627,7 +1681,8 @@
      "onLight": null,
      "w": 154,
      "h": 190,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#b14b55"
     },
     "Latitude": 45.4714,
     "Longitude": 9.1908,
@@ -1675,7 +1730,8 @@
      "onLight": null,
      "w": 128,
      "h": 128,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#2d2a32"
     },
     "Latitude": 45.57037,
     "Longitude": 9.77325,
@@ -1704,7 +1760,8 @@
      "onLight": null,
      "w": 150,
      "h": 42,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#515148"
     },
     "Latitude": 45.46437,
     "Longitude": 9.18197,
@@ -1733,7 +1790,8 @@
      "onLight": null,
      "w": 582,
      "h": 166,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#00303d"
     }
    }
   },
@@ -1761,7 +1819,8 @@
      "onLight": "/logos/players/15dbeb32c41f2973-d.webp",
      "w": 600,
      "h": 118,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46008,
     "Longitude": 9.18625,
@@ -1792,7 +1851,8 @@
      "onLight": null,
      "w": 200,
      "h": 46,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#a8bc44"
     },
     "Latitude": 44.64116,
     "Longitude": 10.93133,
@@ -1821,7 +1881,8 @@
      "onLight": "/logos/players/f43a617eabc965b1-d.webp",
      "w": 640,
      "h": 177,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 41.92033,
     "Longitude": 12.48657,
@@ -1850,7 +1911,8 @@
      "onLight": null,
      "w": 590,
      "h": 131,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#030b74"
     },
     "Latitude": 45.4726,
     "Longitude": 9.19217,
@@ -1900,7 +1962,8 @@
      "onLight": null,
      "w": 255,
      "h": 261,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#900303"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -1929,7 +1992,8 @@
      "onLight": null,
      "w": 253,
      "h": 226,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#00347b"
     }
    }
   },
@@ -1955,7 +2019,8 @@
      "onLight": null,
      "w": 597,
      "h": 316,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#115dfd"
     }
    }
   },
@@ -1981,7 +2046,8 @@
      "onLight": null,
      "w": 600,
      "h": 180,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     }
    }
   },
@@ -2007,7 +2073,8 @@
      "onLight": null,
      "w": 393,
      "h": 92,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#026486"
     },
     "Latitude": 45.69449,
     "Longitude": 9.66987,
@@ -2036,7 +2103,8 @@
      "onLight": null,
      "w": 354,
      "h": 100,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#104a89"
     },
     "Latitude": 45.61221,
     "Longitude": 13.81941,
@@ -2065,7 +2133,8 @@
      "onLight": null,
      "w": 501,
      "h": 640,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#31b7bb"
     },
     "Latitude": 45.44126,
     "Longitude": 7.82625,
@@ -2121,7 +2190,8 @@
      "onLight": null,
      "w": 640,
      "h": 133,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1d3a6d"
     },
     "Latitude": 45.47932,
     "Longitude": 9.19314,
@@ -2150,7 +2220,8 @@
      "onLight": null,
      "w": 501,
      "h": 189,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#125b89"
     }
    }
   },
@@ -2176,7 +2247,8 @@
      "onLight": null,
      "w": 501,
      "h": 189,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#125b89"
     },
     "Latitude": 45.06074,
     "Longitude": 7.92355,
@@ -2205,7 +2277,8 @@
      "onLight": null,
      "w": 640,
      "h": 187,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#8bb8c5"
     },
     "Latitude": 45.46595,
     "Longitude": 9.19881,
@@ -2234,7 +2307,8 @@
      "onLight": "/logos/players/8c5f833d1dd51f55-d.webp",
      "w": 216,
      "h": 125,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -2261,7 +2335,8 @@
      "w": 640,
      "h": 354,
      "tone": "dark",
-     "scrapedFrom": "inline svg"
+     "scrapedFrom": "inline svg",
+     "color": "#000000"
     },
     "Latitude": 45.45911,
     "Longitude": 9.19105,
@@ -2297,7 +2372,8 @@
      "onLight": "/logos/players/6baf5973eaa0cc1d-d.webp",
      "w": 640,
      "h": 104,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     },
     "Latitude": 45.4665,
     "Longitude": 9.18434,
@@ -2326,7 +2402,8 @@
      "onLight": null,
      "w": 640,
      "h": 68,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#03365a"
     }
    }
   },
@@ -2352,7 +2429,8 @@
      "onLight": "/logos/players/403ac46613e7a4eb-d.webp",
      "w": 600,
      "h": 174,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.06776,
     "Longitude": 7.68249,
@@ -2381,7 +2459,8 @@
      "onLight": null,
      "w": 469,
      "h": 86,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#053e64"
     },
     "Latitude": 41.90377,
     "Longitude": 12.47658,
@@ -2410,7 +2489,8 @@
      "onLight": "/logos/players/2345270c36515370-d.webp",
      "w": 597,
      "h": 486,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 46.49278,
     "Longitude": 11.37205,
@@ -2439,7 +2519,8 @@
      "onLight": null,
      "w": 640,
      "h": 65,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ee51ae"
     },
     "Latitude": 45.46434,
     "Longitude": 9.20082,
@@ -2468,7 +2549,8 @@
      "onLight": null,
      "w": 640,
      "h": 159,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000002"
     }
    }
   },
@@ -2494,7 +2576,8 @@
      "onLight": null,
      "w": 524,
      "h": 139,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#010101"
     }
    }
   },
@@ -2520,7 +2603,8 @@
      "onLight": null,
      "w": 565,
      "h": 150,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#4bb74c"
     },
     "Latitude": 45.66403,
     "Longitude": 9.65765,
@@ -2549,7 +2633,8 @@
      "onLight": "/logos/players/a39f2448aee0eae8-d.webp",
      "w": 600,
      "h": 117,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.66403,
     "Longitude": 9.65765,
@@ -2578,7 +2663,8 @@
      "onLight": null,
      "w": 640,
      "h": 127,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#c4178e"
     },
     "Latitude": 41.90713,
     "Longitude": 12.4885,
@@ -2607,7 +2693,8 @@
      "onLight": null,
      "w": 600,
      "h": 210,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#02357a"
     },
     "Latitude": 45.07158,
     "Longitude": 7.68384,
@@ -2636,7 +2723,8 @@
      "onLight": null,
      "w": 640,
      "h": 183,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#bc2c31"
     }
    }
   },
@@ -2662,7 +2750,8 @@
      "onLight": null,
      "w": 192,
      "h": 44,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#afafaf"
     },
     "Latitude": 45.47114,
     "Longitude": 9.20195,
@@ -2691,7 +2780,8 @@
      "onLight": "/logos/players/7db13fff2118bd76-d.webp",
      "w": 89,
      "h": 77,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     }
    }
   },
@@ -2717,7 +2807,8 @@
      "onLight": null,
      "w": 118,
      "h": 143,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f0a928"
     },
     "Latitude": 43.76916,
     "Longitude": 11.26838,
@@ -2746,7 +2837,8 @@
      "onLight": null,
      "w": 118,
      "h": 143,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f0a928"
     },
     "Latitude": 43.7698,
     "Longitude": 11.25564,
@@ -2775,7 +2867,8 @@
      "onLight": null,
      "w": 385,
      "h": 117,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#eb038e"
     },
     "Latitude": 45.46577,
     "Longitude": 9.18329,
@@ -2826,7 +2919,8 @@
      "onLight": null,
      "w": 198,
      "h": 118,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#13b2e8"
     },
     "Latitude": 40.80472,
     "Longitude": 14.17454,
@@ -2855,7 +2949,8 @@
      "onLight": null,
      "w": 245,
      "h": 206,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#00003f"
     }
    }
   },
@@ -2882,7 +2977,8 @@
      "w": 640,
      "h": 278,
      "tone": "light",
-     "scrapedFrom": "https://factoryplus.eu/wp-content/uploads/2024/10/logo.svg"
+     "scrapedFrom": "https://factoryplus.eu/wp-content/uploads/2024/10/logo.svg",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.45187,
     "Longitude": 9.16251,
@@ -2911,7 +3007,8 @@
      "onLight": null,
      "w": 640,
      "h": 164,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 45.46049,
     "Longitude": 9.19865,
@@ -2964,7 +3061,8 @@
      "onLight": null,
      "w": 640,
      "h": 390,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e30613"
     },
     "Latitude": 41.91248,
     "Longitude": 12.50348,
@@ -3000,7 +3098,8 @@
      "onLight": null,
      "w": 71,
      "h": 62,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#035299"
     },
     "Latitude": 45.46987,
     "Longitude": 9.16536,
@@ -3029,7 +3128,8 @@
      "onLight": null,
      "w": 71,
      "h": 62,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#035299"
     },
     "Latitude": 45.46987,
     "Longitude": 9.16536,
@@ -3080,7 +3180,8 @@
      "onLight": null,
      "w": 426,
      "h": 51,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#28375b"
     }
    }
   },
@@ -3106,7 +3207,8 @@
      "onLight": null,
      "w": 600,
      "h": 156,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#6e9eb7"
     },
     "Latitude": 44.13635,
     "Longitude": 12.24224,
@@ -3138,7 +3240,8 @@
      "onLight": null,
      "w": 597,
      "h": 137,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#b3035e"
     },
     "Latitude": 44.83664,
     "Longitude": 10.3429,
@@ -3167,7 +3270,8 @@
      "onLight": null,
      "w": 575,
      "h": 128,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#01017a"
     },
     "Latitude": 44.83664,
     "Longitude": 10.3429,
@@ -3203,7 +3307,8 @@
      "onLight": null,
      "w": 499,
      "h": 123,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1999a4"
     },
     "Latitude": 45.06792,
     "Longitude": 7.68272,
@@ -3232,7 +3337,8 @@
      "onLight": null,
      "w": 640,
      "h": 101,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#b3b757"
     }
    }
   },
@@ -3258,7 +3364,8 @@
      "onLight": "/logos/players/f495f341927c0376-d.webp",
      "w": 600,
      "h": 185,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.09667,
     "Longitude": 7.45625,
@@ -3287,7 +3394,8 @@
      "onLight": null,
      "w": 598,
      "h": 270,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 45.05426,
     "Longitude": 7.68339,
@@ -3321,7 +3429,8 @@
      "onLight": null,
      "w": 340,
      "h": 66,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3031d5"
     },
     "Latitude": 45.46551,
     "Longitude": 7.87527,
@@ -3350,7 +3459,8 @@
      "onLight": "/logos/players/459d5603efd69b5a-d.webp",
      "w": 133,
      "h": 169,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.49052,
     "Longitude": 9.19872,
@@ -3379,7 +3489,8 @@
      "onLight": "/logos/players/65784b494162b0a6-d.webp",
      "w": 640,
      "h": 337,
-     "tone": "light"
+     "tone": "light",
+     "color": "#c1bb03"
     },
     "Latitude": 45.48358,
     "Longitude": 9.2024,
@@ -3408,7 +3519,8 @@
      "onLight": "/logos/players/474002453579b513-d.webp",
      "w": 200,
      "h": 60,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46774,
     "Longitude": 9.17589,
@@ -3437,7 +3549,8 @@
      "onLight": null,
      "w": 256,
      "h": 256,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#035ca7"
     }
    }
   },
@@ -3468,7 +3581,8 @@
      "onLight": null,
      "w": 612,
      "h": 174,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#4acbc7"
     },
     "Latitude": 44.49382,
     "Longitude": 11.34263,
@@ -3516,7 +3630,8 @@
      "onLight": null,
      "w": 325,
      "h": 46,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f95c03"
     }
    }
   },
@@ -3542,7 +3657,8 @@
      "onLight": "/logos/players/d7bc99aca2bcf737-d.webp",
      "w": 640,
      "h": 273,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.69484,
     "Longitude": 9.03577,
@@ -3571,7 +3687,8 @@
      "onLight": null,
      "w": 600,
      "h": 221,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e64611"
     },
     "Latitude": 45.82015,
     "Longitude": 9.06477,
@@ -3600,7 +3717,8 @@
      "onLight": null,
      "w": 600,
      "h": 221,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e64611"
     },
     "Latitude": 41.83461,
     "Longitude": 12.46567,
@@ -3629,7 +3747,8 @@
      "onLight": "/logos/players/822d2dd5faebf6fc-d.webp",
      "w": 599,
      "h": 146,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 42.66129,
     "Longitude": 13.69835,
@@ -3658,7 +3777,8 @@
      "onLight": null,
      "w": 600,
      "h": 142,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#064788"
     }
    }
   },
@@ -3684,7 +3804,8 @@
      "onLight": null,
      "w": 260,
      "h": 57,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#285a93"
     },
     "Latitude": 45.43615,
     "Longitude": 10.99353,
@@ -3713,7 +3834,8 @@
      "onLight": null,
      "w": 292,
      "h": 112,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#213363"
     },
     "Latitude": 45.54674,
     "Longitude": 11.54117,
@@ -3742,7 +3864,8 @@
      "onLight": null,
      "w": 600,
      "h": 94,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 38.10455,
     "Longitude": 13.34951,
@@ -3771,7 +3894,8 @@
      "onLight": null,
      "w": 640,
      "h": 640,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#fc0202"
     },
     "Latitude": 40.81988,
     "Longitude": 14.18509,
@@ -3800,7 +3924,8 @@
      "onLight": null,
      "w": 170,
      "h": 164,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#710100"
     }
    }
   },
@@ -3826,7 +3951,8 @@
      "onLight": null,
      "w": 164,
      "h": 166,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#040404"
     },
     "Latitude": 39.22205,
     "Longitude": 9.11412,
@@ -3855,7 +3981,8 @@
      "onLight": null,
      "w": 100,
      "h": 100,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 41.90029,
     "Longitude": 12.49651,
@@ -3907,7 +4034,8 @@
      "onLight": null,
      "w": 292,
      "h": 68,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ea842c"
     },
     "Latitude": 45.48745,
     "Longitude": 9.20257,
@@ -3942,7 +4070,8 @@
      "w": 640,
      "h": 145,
      "tone": "dark",
-     "scrapedFrom": "https://images.squarespace-cdn.com/content/v1/6931591f836b8c279fafcad5/cf35094d-0078-42a2-9969-81cb5a78812e/Logo_Positivo%402x.png?format=1500w"
+     "scrapedFrom": "https://images.squarespace-cdn.com/content/v1/6931591f836b8c279fafcad5/cf35094d-0078-42a2-9969-81cb5a78812e/Logo_Positivo%402x.png?format=1500w",
+     "color": "#000000"
     },
     "Latitude": 41.89332,
     "Longitude": 12.48293,
@@ -3971,7 +4100,8 @@
      "onLight": null,
      "w": 640,
      "h": 82,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#24388d"
     }
    }
   },
@@ -3999,7 +4129,8 @@
      "onLight": null,
      "w": 600,
      "h": 300,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#00411e"
     },
     "Latitude": 44.69514,
     "Longitude": 10.64199,
@@ -4028,7 +4159,8 @@
      "onLight": null,
      "w": 600,
      "h": 300,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#00411e"
     }
    }
   },
@@ -4058,7 +4190,8 @@
      "onLight": null,
      "w": 60,
      "h": 19,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#666362"
     },
     "Latitude": 45.47687,
     "Longitude": 9.18144,
@@ -4087,7 +4220,8 @@
      "onLight": null,
      "w": 128,
      "h": 109,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f27f32"
     },
     "Latitude": 43.89788,
     "Longitude": 11.10691,
@@ -4141,7 +4275,8 @@
      "onLight": "/logos/players/f780f0c6cfbf669e-d.webp",
      "w": 600,
      "h": 499,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     },
     "Latitude": 45.56296,
     "Longitude": 10.23156,
@@ -4174,7 +4309,8 @@
      "onLight": null,
      "w": 109,
      "h": 54,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#137775"
     },
     "Latitude": 41.91525,
     "Longitude": 12.49536,
@@ -4203,7 +4339,8 @@
      "onLight": null,
      "w": 347,
      "h": 164,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#9550d1"
     },
     "Latitude": 41.98016,
     "Longitude": 12.7668,
@@ -4232,7 +4369,8 @@
      "onLight": null,
      "w": 110,
      "h": 40,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#02ace7"
     },
     "Latitude": 43.45758,
     "Longitude": 11.87795,
@@ -4261,7 +4399,8 @@
      "onLight": "/logos/players/93d5969f2a1e495d-d.webp",
      "w": 597,
      "h": 285,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -4287,7 +4426,8 @@
      "onLight": null,
      "w": 600,
      "h": 188,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#072c56"
     },
     "Latitude": 46.11783,
     "Longitude": 11.10452,
@@ -4316,7 +4456,8 @@
      "onLight": "/logos/players/cbf490c676ffe03d-d.webp",
      "w": 600,
      "h": 166,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 46.11783,
     "Longitude": 11.10452,
@@ -4354,7 +4495,8 @@
      "onLight": "/logos/players/9a85b4978e96ce73-d.webp",
      "w": 251,
      "h": 147,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 41.91424,
     "Longitude": 12.47397,
@@ -4383,7 +4525,8 @@
      "onLight": "/logos/players/500ce626c383d0ab-d.webp",
      "w": 599,
      "h": 112,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -4409,7 +4552,8 @@
      "onLight": "/logos/players/500ce626c383d0ab-d.webp",
      "w": 599,
      "h": 112,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.57037,
     "Longitude": 9.77325,
@@ -4438,7 +4582,8 @@
      "onLight": null,
      "w": 128,
      "h": 128,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#fe1ac9"
     },
     "Latitude": 44.62831,
     "Longitude": 10.94704,
@@ -4467,7 +4612,8 @@
      "onLight": null,
      "w": 108,
      "h": 75,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#4e74b1"
     }
    }
   },
@@ -4493,7 +4639,8 @@
      "onLight": null,
      "w": 640,
      "h": 139,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0f7496"
     },
     "Latitude": 45.44017,
     "Longitude": 9.14608,
@@ -4522,7 +4669,8 @@
      "onLight": null,
      "w": 640,
      "h": 279,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#b4439a"
     },
     "Latitude": 45.43642,
     "Longitude": 9.2052,
@@ -4553,7 +4701,8 @@
      "onLight": null,
      "w": 599,
      "h": 171,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 41.9014,
     "Longitude": 12.50353,
@@ -4582,7 +4731,8 @@
      "onLight": "/logos/players/07acd135ab599b36-d.webp",
      "w": 600,
      "h": 173,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.58192,
     "Longitude": 9.15048,
@@ -4630,7 +4780,8 @@
      "onLight": "/logos/players/8cf507108de014b6-d.webp",
      "w": 640,
      "h": 185,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -4656,7 +4807,8 @@
      "onLight": "/logos/players/8cf507108de014b6-d.webp",
      "w": 640,
      "h": 185,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -4685,7 +4837,8 @@
      "onLight": null,
      "w": 220,
      "h": 23,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#14304F"
     }
    }
   },
@@ -4717,7 +4870,8 @@
      "onLight": null,
      "w": 150,
      "h": 180,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f26759"
     },
     "Latitude": 44.49382,
     "Longitude": 11.34263,
@@ -4749,7 +4903,8 @@
      "onLight": null,
      "w": 128,
      "h": 128,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1079ca"
     },
     "Latitude": 45.56115,
     "Longitude": 8.05442,
@@ -4778,7 +4933,8 @@
      "onLight": "/logos/players/5cf0210e2d70f203-d.webp",
      "w": 640,
      "h": 180,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -4809,7 +4965,8 @@
      "onLight": "/logos/players/78a61af715a658e1-d.webp",
      "w": 600,
      "h": 106,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.51159,
     "Longitude": 9.22407,
@@ -4838,7 +4995,8 @@
      "onLight": null,
      "w": 155,
      "h": 34,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#fb5724"
     },
     "Latitude": 45.43468,
     "Longitude": 9.24135,
@@ -4867,7 +5025,8 @@
      "onLight": "/logos/players/4237d35698b887dd-d.webp",
      "w": 596,
      "h": 179,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.4963,
     "Longitude": 9.20122,
@@ -4896,7 +5055,8 @@
      "onLight": "/logos/players/cd2b7707d150c18b-d.webp",
      "w": 99,
      "h": 55,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -4978,7 +5138,8 @@
      "onLight": null,
      "w": 600,
      "h": 196,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#035271"
     },
     "Latitude": 41.90411,
     "Longitude": 12.54961,
@@ -5016,7 +5177,8 @@
      "onLight": null,
      "w": 600,
      "h": 196,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#035271"
     },
     "Latitude": 41.90411,
     "Longitude": 12.54961,
@@ -5045,7 +5207,8 @@
      "onLight": null,
      "w": 600,
      "h": 148,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#62a60e"
     },
     "Latitude": 45.05981,
     "Longitude": 7.66541,
@@ -5074,7 +5237,8 @@
      "onLight": null,
      "w": 600,
      "h": 306,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#009fe2"
     },
     "Latitude": 44.48365,
     "Longitude": 11.37399,
@@ -5106,7 +5270,8 @@
      "w": 640,
      "h": 83,
      "tone": "dark",
-     "scrapedFrom": "inline svg"
+     "scrapedFrom": "inline svg",
+     "color": "#01010d"
     },
     "Latitude": 45.48655,
     "Longitude": 9.19396,
@@ -5135,7 +5300,8 @@
      "onLight": null,
      "w": 600,
      "h": 218,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#fb530c"
     },
     "Latitude": 37.50236,
     "Longitude": 15.08737,
@@ -5164,7 +5330,8 @@
      "onLight": null,
      "w": 600,
      "h": 218,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#fb530c"
     }
    }
   },
@@ -5190,7 +5357,8 @@
      "onLight": "/logos/players/ab97b143c3c8c0f3-d.webp",
      "w": 600,
      "h": 570,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -5241,7 +5409,8 @@
      "onLight": null,
      "w": 597,
      "h": 176,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#d48658"
     },
     "Latitude": 38.88129,
     "Longitude": 16.4856,
@@ -5270,7 +5439,8 @@
      "onLight": null,
      "w": 600,
      "h": 600,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 45.08713,
     "Longitude": 7.67343,
@@ -5299,7 +5469,8 @@
      "onLight": "/logos/players/49fc293f007aefd3-d.webp",
      "w": 598,
      "h": 134,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     },
     "Latitude": 45.08913,
     "Longitude": 7.67026,
@@ -5329,7 +5500,8 @@
      "w": 65,
      "h": 127,
      "tone": "dark",
-     "scrapedFrom": "https://www.equiterspa.com/wp-content/uploads/fbrfg/apple-touch-icon.png"
+     "scrapedFrom": "https://www.equiterspa.com/wp-content/uploads/fbrfg/apple-touch-icon.png",
+     "color": "#062178"
     },
     "Latitude": 45.06792,
     "Longitude": 7.68272,
@@ -5358,7 +5530,8 @@
      "onLight": null,
      "w": 640,
      "h": 74,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#4c4e4d"
     },
     "Latitude": 45.06777,
     "Longitude": 7.67677,
@@ -5387,7 +5560,8 @@
      "onLight": null,
      "w": 597,
      "h": 209,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e84f1b"
     }
    }
   },
@@ -5417,7 +5591,8 @@
      "onLight": "/logos/players/3425208a1440f637-d.webp",
      "w": 300,
      "h": 56,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46626,
     "Longitude": 9.18347,
@@ -5478,7 +5653,8 @@
      "onLight": "/logos/players/b5d0a3f34ebeacc9-d.webp",
      "w": 640,
      "h": 224,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     },
     "Latitude": 41.89645,
     "Longitude": 12.48287,
@@ -5507,7 +5683,8 @@
      "onLight": null,
      "w": 225,
      "h": 54,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000099"
     }
    }
   },
@@ -5533,7 +5710,8 @@
      "onLight": "/logos/players/a85d88a793dce61b-d.webp",
      "w": 227,
      "h": 62,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b395b"
     },
     "Latitude": 41.88778,
     "Longitude": 12.50955,
@@ -5592,7 +5770,8 @@
      "onLight": null,
      "w": 291,
      "h": 103,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#8cc351"
     },
     "Latitude": 40.86067,
     "Longitude": 14.84398,
@@ -5621,7 +5800,8 @@
      "onLight": null,
      "w": 291,
      "h": 103,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#8cc351"
     },
     "Latitude": 40.83588,
     "Longitude": 14.24877,
@@ -5650,7 +5830,8 @@
      "onLight": "/logos/players/21454e12b559be48-d.webp",
      "w": 561,
      "h": 193,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.44312,
     "Longitude": 9.20432,
@@ -5679,7 +5860,8 @@
      "onLight": null,
      "w": 287,
      "h": 31,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e4b100"
     }
    }
   },
@@ -5706,7 +5888,8 @@
      "w": 102,
      "h": 126,
      "tone": "dark",
-     "scrapedFrom": "https://featventures.com/wp-content/uploads/fbrfg/apple-touch-icon.png"
+     "scrapedFrom": "https://featventures.com/wp-content/uploads/fbrfg/apple-touch-icon.png",
+     "color": "#151515"
     },
     "Latitude": 46.0628,
     "Longitude": 11.124,
@@ -5735,7 +5918,8 @@
      "onLight": null,
      "w": 120,
      "h": 24,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1155a2"
     },
     "Latitude": 40.55138,
     "Longitude": 17.71388,
@@ -5764,7 +5948,8 @@
      "onLight": null,
      "w": 363,
      "h": 422,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#139984"
     }
    }
   },
@@ -5798,7 +5983,8 @@
      "onLight": null,
      "w": 196,
      "h": 58,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#096b66"
     },
     "Latitude": 41.90851,
     "Longitude": 12.50354,
@@ -5827,7 +6013,8 @@
      "onLight": "/logos/players/55cd294ebcc0dc02-d.webp",
      "w": 600,
      "h": 142,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.4609,
     "Longitude": 9.19058,
@@ -5899,7 +6086,8 @@
      "onLight": "/logos/players/5c1dc0960593b883-d.webp",
      "w": 200,
      "h": 85,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 40.81994,
     "Longitude": 14.16846,
@@ -5928,7 +6116,8 @@
      "onLight": null,
      "w": 112,
      "h": 116,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#adafaf"
     },
     "Latitude": 45.49036,
     "Longitude": 9.19364,
@@ -5957,7 +6146,8 @@
      "onLight": null,
      "w": 232,
      "h": 43,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#01567a"
     },
     "Latitude": 45.47562,
     "Longitude": 9.18824,
@@ -5986,7 +6176,8 @@
      "onLight": "/logos/players/c9c437101c79f514-d.webp",
      "w": 598,
      "h": 279,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     },
     "Latitude": 44.49035,
     "Longitude": 11.33766,
@@ -6015,7 +6206,8 @@
      "onLight": "/logos/players/a0cc19ddf9d144e8-d.webp",
      "w": 300,
      "h": 157,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -6041,7 +6233,8 @@
      "onLight": null,
      "w": 640,
      "h": 292,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#4b778f"
     },
     "Latitude": 45.06513,
     "Longitude": 7.67657,
@@ -6070,7 +6263,8 @@
      "onLight": "/logos/players/273780e84f2a627f-d.webp",
      "w": 233,
      "h": 75,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 39.21497,
     "Longitude": 9.11642,
@@ -6099,7 +6293,8 @@
      "onLight": null,
      "w": 261,
      "h": 89,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ddac4a"
     },
     "Latitude": 39.2172,
     "Longitude": 9.11331,
@@ -6128,7 +6323,8 @@
      "onLight": null,
      "w": 640,
      "h": 202,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 46.06642,
     "Longitude": 11.12576,
@@ -6157,7 +6353,8 @@
      "onLight": null,
      "w": 640,
      "h": 270,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#bb7652"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -6186,7 +6383,8 @@
      "onLight": null,
      "w": 597,
      "h": 236,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#c71719"
     },
     "Latitude": 41.89861,
     "Longitude": 12.49784,
@@ -6215,7 +6413,8 @@
      "onLight": "/logos/players/0ee325e462a5867a-d.webp",
      "w": 640,
      "h": 212,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.78779,
     "Longitude": 11.89949,
@@ -6266,7 +6465,8 @@
      "onLight": null,
      "w": 491,
      "h": 151,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#8ab7ca"
     },
     "Latitude": 43.61701,
     "Longitude": 13.5171,
@@ -6295,7 +6495,8 @@
      "onLight": null,
      "w": 185,
      "h": 55,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#6cb34b"
     },
     "Latitude": 38.11989,
     "Longitude": 13.36194,
@@ -6324,7 +6525,8 @@
      "onLight": "/logos/players/eabb07d7cc15841e-d.webp",
      "w": 200,
      "h": 76,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46419,
     "Longitude": 9.16987,
@@ -6353,7 +6555,8 @@
      "onLight": null,
      "w": 588,
      "h": 318,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0c83a5"
     },
     "Latitude": 37.51835,
     "Longitude": 15.10116,
@@ -6382,7 +6585,8 @@
      "onLight": null,
      "w": 90,
      "h": 120,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#024a70"
     },
     "Latitude": 43.33331,
     "Longitude": 11.3028,
@@ -6411,7 +6615,8 @@
      "onLight": null,
      "w": 189,
      "h": 63,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e80102"
     },
     "Latitude": 43.31855,
     "Longitude": 11.33165,
@@ -6440,7 +6645,8 @@
      "onLight": "/logos/players/c9c437101c79f514-d.webp",
      "w": 598,
      "h": 279,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     },
     "Latitude": 45.45643,
     "Longitude": 9.16888,
@@ -6469,7 +6675,8 @@
      "onLight": null,
      "w": 409,
      "h": 82,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#313130"
     },
     "Latitude": 45.49056,
     "Longitude": 9.14557,
@@ -6520,7 +6727,8 @@
      "onLight": null,
      "w": 640,
      "h": 380,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#afafaf"
     },
     "Latitude": 45.06679,
     "Longitude": 7.66278,
@@ -6576,7 +6784,8 @@
      "onLight": null,
      "w": 96,
      "h": 96,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#02768f"
     },
     "Latitude": 45.45512,
     "Longitude": 9.16933,
@@ -6627,7 +6836,8 @@
      "onLight": null,
      "w": 300,
      "h": 106,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0b79ba"
     },
     "Latitude": 45.64101,
     "Longitude": 13.76128,
@@ -6656,7 +6866,8 @@
      "onLight": "/logos/players/d2296cb68b71a4c5-d.webp",
      "w": 340,
      "h": 640,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.48917,
     "Longitude": 9.18493,
@@ -6685,7 +6896,8 @@
      "onLight": null,
      "w": 367,
      "h": 212,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#163b63"
     },
     "Latitude": 44.40726,
     "Longitude": 8.93386,
@@ -6733,7 +6945,8 @@
      "onLight": null,
      "w": 399,
      "h": 144,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f5ac03"
     },
     "Latitude": 43.56172,
     "Longitude": 13.5107,
@@ -6770,7 +6983,8 @@
      "onLight": null,
      "w": 520,
      "h": 625,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3ad001"
     },
     "Latitude": 44.50812,
     "Longitude": 11.30678,
@@ -6801,7 +7015,8 @@
      "onLight": null,
      "w": 101,
      "h": 30,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ef3f44"
     },
     "Latitude": 45.49775,
     "Longitude": 9.18196,
@@ -6835,7 +7050,8 @@
      "onLight": null,
      "w": 406,
      "h": 352,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 45.5019,
     "Longitude": 9.18208,
@@ -6864,7 +7080,8 @@
      "onLight": null,
      "w": 480,
      "h": 473,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ee3e25"
     },
     "Latitude": 45.39304,
     "Longitude": 11.93398,
@@ -6893,7 +7110,8 @@
      "onLight": null,
      "w": 406,
      "h": 265,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3d3d3d"
     },
     "Latitude": 45.40962,
     "Longitude": 11.9012,
@@ -6922,7 +7140,8 @@
      "onLight": null,
      "w": 220,
      "h": 198,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#d7b311"
     },
     "Latitude": 45.05609,
     "Longitude": 7.69607,
@@ -6951,7 +7170,8 @@
      "onLight": "/logos/players/1e9ec1a5f8d59558-d.webp",
      "w": 415,
      "h": 85,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 43.71081,
     "Longitude": 10.39806,
@@ -6980,7 +7200,8 @@
      "onLight": null,
      "w": 600,
      "h": 100,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#2a2928"
     }
    }
   },
@@ -7006,7 +7227,8 @@
      "onLight": "/logos/players/4915a3bf88c03076-d.webp",
      "w": 595,
      "h": 495,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46802,
     "Longitude": 9.17486,
@@ -7035,7 +7257,8 @@
      "onLight": null,
      "w": 200,
      "h": 190,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#4f2c78"
     },
     "Latitude": 45.4379,
     "Longitude": 9.16713,
@@ -7064,7 +7287,8 @@
      "onLight": null,
      "w": 127,
      "h": 93,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#4d7067"
     },
     "Latitude": 45.4379,
     "Longitude": 9.16713,
@@ -7093,7 +7317,8 @@
      "onLight": null,
      "w": 600,
      "h": 137,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#b6050c"
     }
    }
   },
@@ -7119,7 +7344,8 @@
      "onLight": "/logos/players/2e1d35382b629752-d.webp",
      "w": 595,
      "h": 321,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 44.42581,
     "Longitude": 8.86287,
@@ -7148,7 +7374,8 @@
      "onLight": null,
      "w": 194,
      "h": 82,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#34683e"
     },
     "Latitude": 43.09985,
     "Longitude": 12.38254,
@@ -7199,7 +7426,8 @@
      "onLight": null,
      "w": 222,
      "h": 105,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#7092c9"
     },
     "Latitude": 41.89332,
     "Longitude": 12.48293,
@@ -7247,7 +7475,8 @@
      "onLight": null,
      "w": 590,
      "h": 160,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#54879f"
     }
    }
   },
@@ -7273,7 +7502,8 @@
      "onLight": null,
      "w": 200,
      "h": 256,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1430ff"
     },
     "Latitude": 45.52024,
     "Longitude": 10.21524,
@@ -7302,7 +7532,8 @@
      "onLight": null,
      "w": 86,
      "h": 55,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#fd0101"
     },
     "Latitude": 46.06162,
     "Longitude": 11.1144,
@@ -7331,7 +7562,8 @@
      "onLight": null,
      "w": 598,
      "h": 222,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 46.06642,
     "Longitude": 11.12576,
@@ -7360,7 +7592,8 @@
      "onLight": "/logos/players/574289d5962a9256-d.webp",
      "w": 640,
      "h": 129,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.5398,
     "Longitude": 10.22002,
@@ -7389,7 +7622,8 @@
      "onLight": null,
      "w": 90,
      "h": 69,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 45.46331,
     "Longitude": 9.18239,
@@ -7418,7 +7652,8 @@
      "onLight": null,
      "w": 525,
      "h": 176,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1b2340"
     },
     "Latitude": 45.46676,
     "Longitude": 9.18145,
@@ -7491,7 +7726,8 @@
      "onLight": "/logos/players/917d3c6769b7dfef-d.webp",
      "w": 600,
      "h": 376,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 40.68036,
     "Longitude": 14.75945,
@@ -7520,7 +7756,8 @@
      "onLight": null,
      "w": 211,
      "h": 65,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#010101"
     },
     "Latitude": 46.06578,
     "Longitude": 11.15512,
@@ -7549,7 +7786,8 @@
      "onLight": null,
      "w": 266,
      "h": 58,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#cd010c"
     },
     "Latitude": 45.57037,
     "Longitude": 9.77325,
@@ -7597,7 +7835,8 @@
      "onLight": null,
      "w": 600,
      "h": 196,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#00359d"
     }
    }
   },
@@ -7623,7 +7862,8 @@
      "onLight": null,
      "w": 600,
      "h": 196,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#00359d"
     },
     "Latitude": 45.06074,
     "Longitude": 7.92355,
@@ -7654,7 +7894,8 @@
      "onLight": null,
      "w": 640,
      "h": 312,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3caa35"
     },
     "Latitude": 45.46562,
     "Longitude": 9.17292,
@@ -7684,7 +7925,8 @@
      "w": 299,
      "h": 133,
      "tone": "dark",
-     "scrapedFrom": "https://www.iban.it/wp-content/uploads/2019/09/iban-blu.png"
+     "scrapedFrom": "https://www.iban.it/wp-content/uploads/2019/09/iban-blu.png",
+     "color": "#023b65"
     }
    }
   },
@@ -7710,7 +7952,8 @@
      "onLight": null,
      "w": 431,
      "h": 640,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#70b438"
     }
    }
   },
@@ -7736,7 +7979,8 @@
      "onLight": null,
      "w": 599,
      "h": 146,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#02843d"
     },
     "Latitude": 45.47004,
     "Longitude": 9.19772,
@@ -7765,7 +8009,8 @@
      "onLight": null,
      "w": 640,
      "h": 132,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#111622"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -7794,7 +8039,8 @@
      "onLight": "/logos/players/c265680fecb40674-d.webp",
      "w": 600,
      "h": 240,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 46.49848,
     "Longitude": 11.35474,
@@ -7823,7 +8069,8 @@
      "onLight": null,
      "w": 600,
      "h": 172,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3867f0"
     }
    }
   },
@@ -7849,7 +8096,8 @@
      "onLight": null,
      "w": 448,
      "h": 268,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#822a28"
     },
     "Latitude": 41.12578,
     "Longitude": 16.86203,
@@ -7878,7 +8126,8 @@
      "onLight": "/logos/players/50d5678fe0d77a4b-d.webp",
      "w": 640,
      "h": 335,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -7907,7 +8156,8 @@
      "onLight": null,
      "w": 448,
      "h": 268,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#822a28"
     },
     "Latitude": 41.89332,
     "Longitude": 12.48293,
@@ -7936,7 +8186,8 @@
      "onLight": null,
      "w": 554,
      "h": 640,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#585858"
     },
     "Latitude": 45.05018,
     "Longitude": 7.67399,
@@ -7967,7 +8218,8 @@
      "onLight": null,
      "w": 591,
      "h": 640,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#00953b"
     },
     "Latitude": 40.91462,
     "Longitude": 14.79423,
@@ -7997,7 +8249,8 @@
      "onLight": null,
      "w": 216,
      "h": 91,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#050505"
     },
     "Latitude": 40.9142,
     "Longitude": 14.78888,
@@ -8026,7 +8279,8 @@
      "onLight": null,
      "w": 579,
      "h": 231,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 43.77772,
     "Longitude": 11.25968,
@@ -8061,7 +8315,8 @@
      "onLight": null,
      "w": 353,
      "h": 242,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#013971"
     },
     "Latitude": 45.46631,
     "Longitude": 9.19827,
@@ -8118,7 +8373,8 @@
      "onLight": null,
      "w": 587,
      "h": 112,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#2770af"
     },
     "Latitude": 45.88261,
     "Longitude": 11.01996,
@@ -8147,7 +8403,8 @@
      "onLight": null,
      "w": 600,
      "h": 342,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#158ec8"
     }
    }
   },
@@ -8173,7 +8430,8 @@
      "onLight": null,
      "w": 400,
      "h": 46,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#04418c"
     }
    }
   },
@@ -8199,7 +8457,8 @@
      "onLight": "/logos/players/8c59a667b76ecf66-d.webp",
      "w": 47,
      "h": 71,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1a395c"
     },
     "Latitude": 41.89023,
     "Longitude": 12.51787,
@@ -8228,7 +8487,8 @@
      "onLight": null,
      "w": 600,
      "h": 600,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0f1324"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -8258,7 +8518,8 @@
      "onLight": "/logos/players/8d8534a24be3f1b3-d.webp",
      "w": 442,
      "h": 362,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 43.91319,
     "Longitude": 12.90831,
@@ -8287,7 +8548,8 @@
      "onLight": null,
      "w": 640,
      "h": 64,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ff406a"
     },
     "Latitude": 45.49071,
     "Longitude": 9.20485,
@@ -8316,7 +8578,8 @@
      "onLight": "/logos/players/bbaa6d8ce95cf1a4-d.webp",
      "w": 640,
      "h": 217,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.48358,
     "Longitude": 9.2024,
@@ -8345,7 +8608,8 @@
      "onLight": null,
      "w": 164,
      "h": 164,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#9a86af"
     }
    }
   },
@@ -8371,7 +8635,8 @@
      "onLight": "/logos/players/99442df34caa6f6b-d.webp",
      "w": 600,
      "h": 88,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     },
     "Latitude": 45.06858,
     "Longitude": 7.66288,
@@ -8400,7 +8665,8 @@
      "onLight": null,
      "w": 640,
      "h": 208,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#a0ba70"
     },
     "Latitude": 41.93124,
     "Longitude": 12.63066,
@@ -8473,7 +8739,8 @@
      "onLight": null,
      "w": 158,
      "h": 192,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#364697"
     },
     "Latitude": 41.90976,
     "Longitude": 12.49743,
@@ -8502,7 +8769,8 @@
      "onLight": null,
      "w": 598,
      "h": 365,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#017d58"
     },
     "Latitude": 41.90976,
     "Longitude": 12.49743,
@@ -8531,7 +8799,8 @@
      "onLight": "/logos/players/943ff39f08bce679-d.webp",
      "w": 600,
      "h": 330,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -8558,7 +8827,8 @@
      "w": 168,
      "h": 142,
      "tone": "light",
-     "scrapedFrom": "https://www.ismea.it/flex/TemplatesUSR/assets/R-23/img/logo-ismea.png"
+     "scrapedFrom": "https://www.ismea.it/flex/TemplatesUSR/assets/R-23/img/logo-ismea.png",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -8584,7 +8854,8 @@
      "onLight": "/logos/players/bc4184bf9f09c7ba-d.webp",
      "w": 219,
      "h": 77,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 44.47258,
     "Longitude": 8.90593,
@@ -8613,7 +8884,8 @@
      "onLight": "/logos/players/bc4184bf9f09c7ba-d.webp",
      "w": 219,
      "h": 77,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.62079,
     "Longitude": 9.35017,
@@ -8680,7 +8952,8 @@
      "onLight": "/logos/players/ac9d14fe42b37943-d.webp",
      "w": 640,
      "h": 181,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.57037,
     "Longitude": 9.77325,
@@ -8712,7 +8985,8 @@
      "onLight": null,
      "w": 132,
      "h": 59,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#eaaa2f"
     },
     "Latitude": 45.48484,
     "Longitude": 9.20324,
@@ -8741,7 +9015,8 @@
      "onLight": null,
      "w": 296,
      "h": 219,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#66c1d6"
     },
     "Latitude": 45.53113,
     "Longitude": 9.18893,
@@ -8792,7 +9067,8 @@
      "onLight": null,
      "w": 167,
      "h": 50,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 45.46528,
     "Longitude": 9.17311,
@@ -8821,7 +9097,8 @@
      "onLight": null,
      "w": 130,
      "h": 154,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0f70b5"
     },
     "Latitude": 45.46287,
     "Longitude": 9.19681,
@@ -8850,7 +9127,8 @@
      "onLight": "/logos/players/0b27aee355c50e0b-d.webp",
      "w": 600,
      "h": 135,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -8876,7 +9154,8 @@
      "onLight": null,
      "w": 154,
      "h": 50,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1a3556"
     },
     "Latitude": 45.06074,
     "Longitude": 7.92355,
@@ -8905,7 +9184,8 @@
      "onLight": null,
      "w": 640,
      "h": 633,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#039ba5"
     },
     "Latitude": 45.46681,
     "Longitude": 9.1746,
@@ -8936,7 +9216,8 @@
      "onLight": null,
      "w": 166,
      "h": 193,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#011b37"
     },
     "Latitude": 45.46611,
     "Longitude": 9.18593,
@@ -8965,7 +9246,8 @@
      "onLight": null,
      "w": 156,
      "h": 45,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#080202"
     },
     "Latitude": 45.66403,
     "Longitude": 9.65765,
@@ -8994,7 +9276,8 @@
      "onLight": null,
      "w": 600,
      "h": 154,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#d70b17"
     },
     "Latitude": 44.48323,
     "Longitude": 11.34925,
@@ -9024,7 +9307,8 @@
      "onLight": null,
      "w": 640,
      "h": 117,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#003f42"
     }
    }
   },
@@ -9050,7 +9334,8 @@
      "onLight": null,
      "w": 600,
      "h": 398,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#014893"
     },
     "Latitude": 39.21645,
     "Longitude": 9.11139,
@@ -9079,7 +9364,8 @@
      "onLight": null,
      "w": 599,
      "h": 140,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1da9e5"
     },
     "Latitude": 44.87726,
     "Longitude": 7.33945,
@@ -9108,7 +9394,8 @@
      "onLight": null,
      "w": 640,
      "h": 182,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 45.47175,
     "Longitude": 9.18083,
@@ -9137,7 +9424,8 @@
      "onLight": "/logos/players/efd7f6ad94b103c2-d.webp",
      "w": 600,
      "h": 84,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     }
    }
   },
@@ -9163,7 +9451,8 @@
      "onLight": "/logos/players/704c267788e26a29-d.webp",
      "w": 600,
      "h": 209,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -9192,7 +9481,8 @@
      "onLight": null,
      "w": 640,
      "h": 193,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#85118b"
     },
     "Latitude": 44.39331,
     "Longitude": 7.55205,
@@ -9221,7 +9511,8 @@
      "onLight": null,
      "w": 300,
      "h": 140,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#d49847"
     },
     "Latitude": 45.464,
     "Longitude": 9.18203,
@@ -9250,7 +9541,8 @@
      "onLight": null,
      "w": 600,
      "h": 149,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#6879a9"
     },
     "Latitude": 41.91897,
     "Longitude": 12.5114,
@@ -9279,7 +9571,8 @@
      "onLight": "/logos/players/579b0a9744403ec3-d.webp",
      "w": 640,
      "h": 120,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.57037,
     "Longitude": 9.77325,
@@ -9310,7 +9603,8 @@
      "onLight": "/logos/players/8c59a667b76ecf66-d.webp",
      "w": 47,
      "h": 71,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1a395c"
     },
     "Latitude": 41.88819,
     "Longitude": 12.49564,
@@ -9361,7 +9655,8 @@
      "onLight": null,
      "w": 256,
      "h": 256,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#eb6709"
     },
     "Latitude": 45.47653,
     "Longitude": 9.19084,
@@ -9390,7 +9685,8 @@
      "onLight": null,
      "w": 256,
      "h": 256,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#eb6709"
     },
     "Latitude": 45.45962,
     "Longitude": 9.19003,
@@ -9419,7 +9715,8 @@
      "onLight": null,
      "w": 499,
      "h": 399,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1d1d1b"
     }
    }
   },
@@ -9451,7 +9748,8 @@
      "onLight": "/logos/players/0451b9ce19329779-d.webp",
      "w": 520,
      "h": 363,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 46.17192,
     "Longitude": 9.87379,
@@ -9482,7 +9780,8 @@
      "onLight": "/logos/players/d2d327742f68f7ff-d.webp",
      "w": 598,
      "h": 430,
-     "tone": "light"
+     "tone": "light",
+     "color": "#dab02a"
     },
     "Latitude": 44.9165,
     "Longitude": 10.45217,
@@ -9517,7 +9816,8 @@
      "onLight": "/logos/players/f7fe6105ba89f539-d.webp",
      "w": 600,
      "h": 434,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 37.50971,
     "Longitude": 15.09793,
@@ -9551,7 +9851,8 @@
      "onLight": "/logos/players/f3f0a66138a81cfa-d.webp",
      "w": 596,
      "h": 437,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     },
     "Latitude": 45.41003,
     "Longitude": 11.90097,
@@ -9582,7 +9883,8 @@
      "onLight": null,
      "w": 499,
      "h": 399,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1d1d1b"
     },
     "Latitude": 45.57037,
     "Longitude": 9.77325,
@@ -9611,7 +9913,8 @@
      "onLight": null,
      "w": 598,
      "h": 106,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#d0092f"
     },
     "Latitude": 41.91799,
     "Longitude": 12.46957,
@@ -9645,7 +9948,8 @@
      "onLight": null,
      "w": 255,
      "h": 47,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#15614d"
     },
     "Latitude": 45.46814,
     "Longitude": 9.19191,
@@ -9681,7 +9985,8 @@
      "onLight": "/logos/players/88c8fff389f9e8ce-d.webp",
      "w": 132,
      "h": 58,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.06669,
     "Longitude": 7.65965,
@@ -9710,7 +10015,8 @@
      "onLight": null,
      "w": 418,
      "h": 104,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0d559b"
     },
     "Latitude": 44.40525,
     "Longitude": 8.93614,
@@ -9742,7 +10048,8 @@
      "onLight": null,
      "w": 182,
      "h": 60,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#6694a9"
     },
     "Latitude": 45.46995,
     "Longitude": 9.18737,
@@ -9771,7 +10078,8 @@
      "onLight": null,
      "w": 640,
      "h": 209,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#184fa5"
     },
     "Latitude": 45.46841,
     "Longitude": 9.1879,
@@ -9800,7 +10108,8 @@
      "onLight": null,
      "w": 600,
      "h": 153,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#7ca7b8"
     }
    }
   },
@@ -9826,7 +10135,8 @@
      "onLight": null,
      "w": 640,
      "h": 145,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e97816"
     },
     "Latitude": 41.89332,
     "Longitude": 12.48293,
@@ -9855,7 +10165,8 @@
      "onLight": null,
      "w": 399,
      "h": 88,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ed7204"
     },
     "Latitude": 41.90241,
     "Longitude": 12.50501,
@@ -9886,7 +10197,8 @@
      "onLight": "/logos/players/afc1b8845e9cfb1a-d.webp",
      "w": 484,
      "h": 160,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.50414,
     "Longitude": 9.16428,
@@ -9947,7 +10259,8 @@
      "onLight": null,
      "w": 145,
      "h": 73,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#68a88d"
     },
     "Latitude": 45.49071,
     "Longitude": 9.20485,
@@ -9976,7 +10289,8 @@
      "onLight": null,
      "w": 379,
      "h": 390,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#4fbcbd"
     },
     "Latitude": 45.09004,
     "Longitude": 7.68669,
@@ -10005,7 +10319,8 @@
      "onLight": null,
      "w": 60,
      "h": 26,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#48a7c8"
     }
    }
   },
@@ -10036,7 +10351,8 @@
      "w": 640,
      "h": 74,
      "tone": "dark",
-     "scrapedFrom": "https://www.maritime-ventures.com/assets/brand/Logo_MaritimeVentures.svg"
+     "scrapedFrom": "https://www.maritime-ventures.com/assets/brand/Logo_MaritimeVentures.svg",
+     "color": "#008c44"
     },
     "Latitude": 44.4066,
     "Longitude": 8.92731,
@@ -10065,7 +10381,8 @@
      "onLight": null,
      "w": 600,
      "h": 292,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 41.90603,
     "Longitude": 12.49474,
@@ -10094,7 +10411,8 @@
      "onLight": null,
      "w": 188,
      "h": 69,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#274b33"
     },
     "Latitude": 41.90603,
     "Longitude": 12.49474,
@@ -10126,7 +10444,8 @@
      "onLight": null,
      "w": 640,
      "h": 172,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#714994"
     }
    }
   },
@@ -10152,7 +10471,8 @@
      "onLight": null,
      "w": 640,
      "h": 183,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#01003e"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -10181,7 +10501,8 @@
      "onLight": null,
      "w": 441,
      "h": 120,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#6b6b6b"
     }
    }
   },
@@ -10232,7 +10553,8 @@
      "onLight": "/logos/players/481bd281a8e3b7bb-d.webp",
      "w": 640,
      "h": 175,
-     "tone": "light"
+     "tone": "light",
+     "color": "#79bdbf"
     }
    }
   },
@@ -10280,7 +10602,8 @@
      "onLight": "/logos/players/c83abbfd6a1dcf2a-d.webp",
      "w": 538,
      "h": 93,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 44.49675,
     "Longitude": 11.35944,
@@ -10350,7 +10673,8 @@
      "onLight": null,
      "w": 600,
      "h": 199,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f27322"
     },
     "Latitude": 41.82839,
     "Longitude": 12.47266,
@@ -10379,7 +10703,8 @@
      "onLight": null,
      "w": 600,
      "h": 199,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f27322"
     }
    }
   },
@@ -10405,7 +10730,8 @@
      "onLight": "/logos/players/412a9cc4d2670632-d.webp",
      "w": 598,
      "h": 89,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.06817,
     "Longitude": 7.68628,
@@ -10434,7 +10760,8 @@
      "onLight": null,
      "w": 188,
      "h": 147,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3a3a3a"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -10463,7 +10790,8 @@
      "onLight": null,
      "w": 600,
      "h": 108,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#c5ab92"
     },
     "Latitude": 45.46833,
     "Longitude": 9.19998,
@@ -10539,7 +10867,8 @@
      "onLight": null,
      "w": 333,
      "h": 368,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#016da3"
     },
     "Latitude": 45.47538,
     "Longitude": 9.19479,
@@ -10571,7 +10900,8 @@
      "onLight": null,
      "w": 640,
      "h": 269,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#6c97aa"
     }
    }
   },
@@ -10597,7 +10927,8 @@
      "onLight": "/logos/players/8306a40b64990567-d.webp",
      "w": 640,
      "h": 124,
-     "tone": "light"
+     "tone": "light",
+     "color": "#9dc224"
     },
     "Latitude": 45.49704,
     "Longitude": 9.22125,
@@ -10628,7 +10959,8 @@
      "onLight": null,
      "w": 600,
      "h": 516,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#afafaf"
     },
     "Latitude": 45.44386,
     "Longitude": 9.20808,
@@ -10657,7 +10989,8 @@
      "onLight": null,
      "w": 164,
      "h": 34,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#dcaf2a"
     }
    }
   },
@@ -10691,7 +11024,8 @@
      "onLight": null,
      "w": 105,
      "h": 128,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#9167dc"
     },
     "Latitude": 37.50184,
     "Longitude": 15.09091,
@@ -10720,7 +11054,8 @@
      "onLight": null,
      "w": 600,
      "h": 141,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#2eaf98"
     },
     "Latitude": 41.9023,
     "Longitude": 12.48093,
@@ -10749,7 +11084,8 @@
      "onLight": null,
      "w": 116,
      "h": 50,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0b4a31"
     },
     "Latitude": 45.43968,
     "Longitude": 9.16837,
@@ -10778,7 +11114,8 @@
      "onLight": "/logos/players/5e716dd4712a17f5-d.webp",
      "w": 544,
      "h": 155,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 43.77095,
     "Longitude": 11.24287,
@@ -10826,7 +11163,8 @@
      "onLight": null,
      "w": 600,
      "h": 101,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#212492"
     },
     "Latitude": 45.0683,
     "Longitude": 7.68233,
@@ -10855,7 +11193,8 @@
      "onLight": null,
      "w": 600,
      "h": 101,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#212492"
     },
     "Latitude": 45.06669,
     "Longitude": 7.65965,
@@ -10884,7 +11223,8 @@
      "onLight": "/logos/players/09f582c22f5504f6-d.webp",
      "w": 640,
      "h": 170,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -10910,7 +11250,8 @@
      "onLight": null,
      "w": 550,
      "h": 183,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#001e62"
     },
     "Latitude": 41.90931,
     "Longitude": 12.49354,
@@ -10939,7 +11280,8 @@
      "onLight": "/logos/players/6750e5b69777f701-d.webp",
      "w": 300,
      "h": 69,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.43719,
     "Longitude": 12.33459,
@@ -10974,7 +11316,8 @@
      "w": 640,
      "h": 112,
      "tone": "dark",
-     "scrapedFrom": "https://nextstepaccelerator.com/wp-content/uploads/2022/06/NextStep_logo.png"
+     "scrapedFrom": "https://nextstepaccelerator.com/wp-content/uploads/2022/06/NextStep_logo.png",
+     "color": "#1c3261"
     },
     "Latitude": 45.46561,
     "Longitude": 9.19712,
@@ -11003,7 +11346,8 @@
      "onLight": "/logos/players/07acd135ab599b36-d.webp",
      "w": 600,
      "h": 173,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.49759,
     "Longitude": 9.16768,
@@ -11032,7 +11376,8 @@
      "onLight": null,
      "w": 600,
      "h": 275,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 46.47953,
     "Longitude": 11.33119,
@@ -11061,7 +11406,8 @@
      "onLight": null,
      "w": 600,
      "h": 275,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 46.47827,
     "Longitude": 11.33284,
@@ -11090,7 +11436,8 @@
      "onLight": null,
      "w": 600,
      "h": 111,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#011788"
     },
     "Latitude": 45.46792,
     "Longitude": 9.18573,
@@ -11125,7 +11472,8 @@
      "w": 640,
      "h": 234,
      "tone": "dark",
-     "scrapedFrom": "https://www.novaventures.it/wp-content/themes/startup_pro/images/logo_nova.svg"
+     "scrapedFrom": "https://www.novaventures.it/wp-content/themes/startup_pro/images/logo_nova.svg",
+     "color": "#cc2ffe"
     },
     "Latitude": 45.46518,
     "Longitude": 9.14773,
@@ -11181,7 +11529,8 @@
      "onLight": null,
      "w": 600,
      "h": 155,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0700c7"
     },
     "Latitude": 45.4676,
     "Longitude": 9.17509,
@@ -11212,7 +11561,8 @@
      "onLight": null,
      "w": 184,
      "h": 56,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 45.06074,
     "Longitude": 7.92355,
@@ -11241,7 +11591,8 @@
      "onLight": "/logos/players/8c480ab4a62e1e8b-d.webp",
      "w": 600,
      "h": 200,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46642,
     "Longitude": 9.16773,
@@ -11270,7 +11621,8 @@
      "onLight": null,
      "w": 640,
      "h": 75,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#fe1801"
     },
     "Latitude": 45.5308,
     "Longitude": 9.18996,
@@ -11299,7 +11651,8 @@
      "onLight": "/logos/players/36a5ca76873377cf-d.webp",
      "w": 640,
      "h": 258,
-     "tone": "light"
+     "tone": "light",
+     "color": "#b8bd04"
     },
     "Latitude": 39.2179,
     "Longitude": 9.12942,
@@ -11328,7 +11681,8 @@
      "onLight": null,
      "w": 640,
      "h": 66,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#010001"
     },
     "Latitude": 45.40141,
     "Longitude": 9.25762,
@@ -11357,7 +11711,8 @@
      "onLight": null,
      "w": 634,
      "h": 140,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#47994f"
     },
     "Latitude": 43.7625,
     "Longitude": 11.27271,
@@ -11386,7 +11741,8 @@
      "onLight": null,
      "w": 186,
      "h": 88,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#6fb66f"
     }
    }
   },
@@ -11412,7 +11768,8 @@
      "onLight": null,
      "w": 640,
      "h": 206,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0e4c7d"
     }
    }
   },
@@ -11438,7 +11795,8 @@
      "onLight": null,
      "w": 202,
      "h": 286,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#aabe2a"
     },
     "Latitude": 45.47573,
     "Longitude": 9.16769,
@@ -11467,7 +11825,8 @@
      "onLight": null,
      "w": 209,
      "h": 81,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e87e0a"
     }
    }
   },
@@ -11494,7 +11853,8 @@
      "w": 248,
      "h": 246,
      "tone": "dark",
-     "scrapedFrom": "https://www.opstart.it/frontend/assets/icons/square-opstart.svg"
+     "scrapedFrom": "https://www.opstart.it/frontend/assets/icons/square-opstart.svg",
+     "color": "#23d103"
     }
    }
   },
@@ -11529,7 +11889,8 @@
      "onLight": null,
      "w": 640,
      "h": 640,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#69c0d1"
     },
     "Latitude": 45.44027,
     "Longitude": 9.14605,
@@ -11558,7 +11919,8 @@
      "onLight": null,
      "w": 640,
      "h": 100,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#010d99"
     },
     "Latitude": 45.57037,
     "Longitude": 9.77325,
@@ -11590,7 +11952,8 @@
      "onLight": null,
      "w": 640,
      "h": 231,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#010101"
     },
     "Latitude": 45.42743,
     "Longitude": 9.11199,
@@ -11660,7 +12023,8 @@
      "onLight": null,
      "w": 600,
      "h": 283,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#dbad3f"
     }
    }
   },
@@ -11689,7 +12053,8 @@
      "onLight": null,
      "w": 64,
      "h": 64,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#522e71"
     },
     "Latitude": 45.48133,
     "Longitude": 9.20514,
@@ -11718,7 +12083,8 @@
      "onLight": null,
      "w": 600,
      "h": 115,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f40d0d"
     },
     "Latitude": 37.43451,
     "Longitude": 15.04897,
@@ -11747,7 +12113,8 @@
      "onLight": null,
      "w": 640,
      "h": 410,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0088c3"
     },
     "Latitude": 41.78141,
     "Longitude": 12.74667,
@@ -11799,7 +12166,8 @@
      "w": 479,
      "h": 578,
      "tone": "dark",
-     "scrapedFrom": "https://pts.unipv.it/wp-content/uploads/2021/04/LOGO-PTS-768x833.png"
+     "scrapedFrom": "https://pts.unipv.it/wp-content/uploads/2021/04/LOGO-PTS-768x833.png",
+     "color": "#4d84bb"
     },
     "Latitude": 45.30315,
     "Longitude": 9.47987,
@@ -11901,7 +12269,8 @@
      "onLight": null,
      "w": 640,
      "h": 156,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#125ca6"
     },
     "Latitude": 46.06642,
     "Longitude": 11.12576,
@@ -11959,7 +12328,8 @@
      "onLight": "/logos/players/5a71bc5de2d9eee9-d.webp",
      "w": 111,
      "h": 53,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -12010,7 +12380,8 @@
      "w": 640,
      "h": 120,
      "tone": "dark",
-     "scrapedFrom": "https://www.peekaboovision.com/wp-content/uploads/2023/05/peekaboo-logotipo-colored-black.png"
+     "scrapedFrom": "https://www.peekaboovision.com/wp-content/uploads/2023/05/peekaboo-logotipo-colored-black.png",
+     "color": "#1295f3"
     },
     "Latitude": 45.46468,
     "Longitude": 9.18823,
@@ -12042,7 +12413,8 @@
      "onLight": null,
      "w": 600,
      "h": 58,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ef012d"
     }
    }
   },
@@ -12089,7 +12461,8 @@
      "onLight": null,
      "w": 551,
      "h": 330,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ec2923"
     },
     "Latitude": 45.42697,
     "Longitude": 9.06449,
@@ -12118,7 +12491,8 @@
      "onLight": null,
      "w": 640,
      "h": 158,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#00ea6b"
     },
     "Latitude": 41.98016,
     "Longitude": 12.7668,
@@ -12177,7 +12551,8 @@
      "onLight": "/logos/players/022e9cbb9d3cbc62-d.webp",
      "w": 640,
      "h": 127,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.06074,
     "Longitude": 7.92355,
@@ -12211,7 +12586,8 @@
      "onLight": "/logos/players/8ab9a46cdee68c90-d.webp",
      "w": 458,
      "h": 61,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -12240,7 +12616,8 @@
      "onLight": null,
      "w": 640,
      "h": 131,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3fa3dc"
     }
    }
   },
@@ -12266,7 +12643,8 @@
      "onLight": null,
      "w": 640,
      "h": 411,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0196ce"
     },
     "Latitude": 43.31508,
     "Longitude": 10.52078,
@@ -12295,7 +12673,8 @@
      "onLight": null,
      "w": 426,
      "h": 149,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#06a867"
     },
     "Latitude": 43.68449,
     "Longitude": 10.48855,
@@ -12324,7 +12703,8 @@
      "onLight": null,
      "w": 599,
      "h": 214,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ff6913"
     }
    }
   },
@@ -12350,7 +12730,8 @@
      "onLight": null,
      "w": 593,
      "h": 116,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#d2292d"
     },
     "Latitude": 45.99184,
     "Longitude": 12.63535,
@@ -12379,7 +12760,8 @@
      "onLight": null,
      "w": 599,
      "h": 214,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ff6913"
     },
     "Latitude": 45.19571,
     "Longitude": 9.15257,
@@ -12430,7 +12812,8 @@
      "onLight": null,
      "w": 593,
      "h": 116,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#d2292d"
     }
    }
   },
@@ -12456,7 +12839,8 @@
      "onLight": null,
      "w": 300,
      "h": 107,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#6db1cf"
     }
    }
   },
@@ -12482,7 +12866,8 @@
      "onLight": null,
      "w": 600,
      "h": 127,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#c10018"
     },
     "Latitude": 41.83234,
     "Longitude": 12.46399,
@@ -12511,7 +12896,8 @@
      "onLight": null,
      "w": 387,
      "h": 50,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0446b5"
     }
    }
   },
@@ -12537,7 +12923,8 @@
      "onLight": null,
      "w": 600,
      "h": 112,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0266fb"
     },
     "Latitude": 45.46426,
     "Longitude": 9.20051,
@@ -12568,7 +12955,8 @@
      "onLight": "/logos/players/89ce126292710afe-d.webp",
      "w": 640,
      "h": 90,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46423,
     "Longitude": 9.2,
@@ -12616,7 +13004,8 @@
      "onLight": null,
      "w": 640,
      "h": 279,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#b4449a"
     },
     "Latitude": 45.57037,
     "Longitude": 9.77325,
@@ -12652,7 +13041,8 @@
      "onLight": null,
      "w": 600,
      "h": 550,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 45.46331,
     "Longitude": 9.18239,
@@ -12700,7 +13090,8 @@
      "onLight": null,
      "w": 128,
      "h": 128,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3d82f3"
     }
    }
   },
@@ -12726,7 +13117,8 @@
      "onLight": null,
      "w": 593,
      "h": 594,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     }
    }
   },
@@ -12771,7 +13163,8 @@
      "onLight": null,
      "w": 640,
      "h": 410,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0088c3"
     },
     "Latitude": 40.58532,
     "Longitude": 17.11498,
@@ -12800,7 +13193,8 @@
      "onLight": null,
      "w": 640,
      "h": 245,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#eda931"
     }
    }
   },
@@ -12826,7 +13220,8 @@
      "onLight": null,
      "w": 137,
      "h": 69,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f8530d"
     },
     "Latitude": 45.57037,
     "Longitude": 9.77325,
@@ -12855,7 +13250,8 @@
      "onLight": null,
      "w": 600,
      "h": 200,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#4c63cf"
     },
     "Latitude": 45.46974,
     "Longitude": 9.19338,
@@ -12884,7 +13280,8 @@
      "onLight": null,
      "w": 640,
      "h": 75,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3242fc"
     }
    }
   },
@@ -12915,7 +13312,8 @@
      "onLight": null,
      "w": 145,
      "h": 41,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0b538f"
     },
     "Latitude": 45.07425,
     "Longitude": 7.679,
@@ -12967,7 +13365,8 @@
      "w": 640,
      "h": 180,
      "tone": "dark",
-     "scrapedFrom": "https://longterm.redfish.capital/wp-content/uploads/2023/05/Redfish_Capital_Partners.svg"
+     "scrapedFrom": "https://longterm.redfish.capital/wp-content/uploads/2023/05/Redfish_Capital_Partners.svg",
+     "color": "#761320"
     },
     "Latitude": 45.47456,
     "Longitude": 9.19457,
@@ -12996,7 +13395,8 @@
      "onLight": null,
      "w": 592,
      "h": 125,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3d3d3d"
     },
     "Latitude": 45.48601,
     "Longitude": 9.19531,
@@ -13025,7 +13425,8 @@
      "onLight": "/logos/players/7bd13b130e2345ff-d.webp",
      "w": 600,
      "h": 152,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.49036,
     "Longitude": 9.19364,
@@ -13054,7 +13455,8 @@
      "onLight": "/logos/players/c435757ee89533b7-d.webp",
      "w": 300,
      "h": 60,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 44.5257,
     "Longitude": 11.03944,
@@ -13083,7 +13485,8 @@
      "onLight": null,
      "w": 640,
      "h": 193,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#233451"
     },
     "Latitude": 41.91637,
     "Longitude": 12.46268,
@@ -13112,7 +13515,8 @@
      "onLight": null,
      "w": 640,
      "h": 138,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#6689e6"
     }
    }
   },
@@ -13138,7 +13542,8 @@
      "onLight": "/logos/players/0a6274f39acebf35-d.webp",
      "w": 555,
      "h": 105,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.29257,
     "Longitude": 8.59762,
@@ -13167,7 +13572,8 @@
      "onLight": null,
      "w": 610,
      "h": 640,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#014534"
     },
     "Latitude": 45.70514,
     "Longitude": 9.7186,
@@ -13196,7 +13602,8 @@
      "onLight": null,
      "w": 190,
      "h": 66,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#b42e2e"
     }
    }
   },
@@ -13222,7 +13629,8 @@
      "onLight": null,
      "w": 600,
      "h": 68,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0c0000"
     },
     "Latitude": 41.91482,
     "Longitude": 12.50729,
@@ -13251,7 +13659,8 @@
      "onLight": "/logos/players/7529374b1950acab-d.webp",
      "w": 599,
      "h": 266,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 44.47776,
     "Longitude": 8.70263,
@@ -13280,7 +13689,8 @@
      "onLight": null,
      "w": 250,
      "h": 148,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#92342d"
     }
    }
   },
@@ -13306,7 +13716,8 @@
      "onLight": null,
      "w": 349,
      "h": 100,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#8ab8c2"
     },
     "Latitude": 44.22267,
     "Longitude": 12.03826,
@@ -13335,7 +13746,8 @@
      "onLight": null,
      "w": 349,
      "h": 100,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#8ab8c2"
     }
    }
   },
@@ -13361,7 +13773,8 @@
      "onLight": null,
      "w": 455,
      "h": 96,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#015efa"
     }
    }
   },
@@ -13387,7 +13800,8 @@
      "onLight": null,
      "w": 332,
      "h": 139,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0095d7"
     },
     "Latitude": 45.46207,
     "Longitude": 9.21996,
@@ -13416,7 +13830,8 @@
      "onLight": "/logos/players/b8df998a4913668e-d.webp",
      "w": 274,
      "h": 467,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -13442,7 +13857,8 @@
      "onLight": null,
      "w": 228,
      "h": 228,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#11294b"
     },
     "Latitude": 41.9019,
     "Longitude": 12.48264,
@@ -13471,7 +13887,8 @@
      "onLight": null,
      "w": 600,
      "h": 265,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e30613"
     }
    }
   },
@@ -13497,7 +13914,8 @@
      "onLight": null,
      "w": 400,
      "h": 101,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#c0b72f"
     },
     "Latitude": 45.43185,
     "Longitude": 9.31148,
@@ -13526,7 +13944,8 @@
      "onLight": null,
      "w": 600,
      "h": 265,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#af1111"
     }
    }
   },
@@ -13552,7 +13971,8 @@
      "onLight": null,
      "w": 600,
      "h": 124,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#d9291b"
     },
     "Latitude": 37.58779,
     "Longitude": 14.15505,
@@ -13584,7 +14004,8 @@
      "onLight": null,
      "w": 180,
      "h": 160,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0266fd"
     },
     "Latitude": 45.4933,
     "Longitude": 9.18805,
@@ -13640,7 +14061,8 @@
      "w": 532,
      "h": 505,
      "tone": "light",
-     "scrapedFrom": "https://scientifica.vc/wp-content/uploads/2026/07/logo-negative-scientifica.png"
+     "scrapedFrom": "https://scientifica.vc/wp-content/uploads/2026/07/logo-negative-scientifica.png",
+     "color": "#1b3a5d"
     },
     "Latitude": 42.34892,
     "Longitude": 13.39797,
@@ -13669,7 +14091,8 @@
      "onLight": "/logos/players/1bf80751b59e6083-d.webp",
      "w": 183,
      "h": 44,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 44.5257,
     "Longitude": 11.03944,
@@ -13698,7 +14121,8 @@
      "onLight": null,
      "w": 178,
      "h": 232,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#a6be36"
     },
     "Latitude": 45.46518,
     "Longitude": 9.14773,
@@ -13727,7 +14151,8 @@
      "onLight": null,
      "w": 640,
      "h": 327,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#016291"
     }
    }
   },
@@ -13753,7 +14178,8 @@
      "onLight": null,
      "w": 640,
      "h": 263,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#332f35"
     },
     "Latitude": 41.92027,
     "Longitude": 12.44092,
@@ -13782,7 +14208,8 @@
      "onLight": null,
      "w": 640,
      "h": 263,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#332f35"
     },
     "Latitude": 40.83018,
     "Longitude": 14.22327,
@@ -13811,7 +14238,8 @@
      "onLight": null,
      "w": 165,
      "h": 73,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#9801cb"
     },
     "Latitude": 45.4149,
     "Longitude": 11.87857,
@@ -13840,7 +14268,8 @@
      "onLight": "/logos/players/e29245ef431688d8-d.webp",
      "w": 365,
      "h": 148,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -13888,7 +14317,8 @@
      "onLight": null,
      "w": 640,
      "h": 169,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#095494"
     }
    }
   },
@@ -13917,7 +14347,8 @@
      "w": 640,
      "h": 257,
      "tone": "dark",
-     "scrapedFrom": "https://www.sella.ventures/documents/54488075/0/loghi+sella+%281%29.png/27b32ab0-8823-7b7b-80f0-777881d6385b?version=1.0&t=1752568461171"
+     "scrapedFrom": "https://www.sella.ventures/documents/54488075/0/loghi+sella+%281%29.png/27b32ab0-8823-7b7b-80f0-777881d6385b?version=1.0&t=1752568461171",
+     "color": "#0132cd"
     },
     "Latitude": 45.56123,
     "Longitude": 8.05436,
@@ -13968,7 +14399,8 @@
      "onLight": "/logos/players/d150f6aa4fb71941-d.webp",
      "w": 177,
      "h": 37,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -13998,7 +14430,8 @@
      "onLight": "/logos/players/90d6aa6751064033-d.webp",
      "w": 600,
      "h": 319,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.39945,
     "Longitude": 8.91673,
@@ -14046,7 +14479,8 @@
      "onLight": null,
      "w": 420,
      "h": 202,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e92e2c"
     },
     "Latitude": 45.47265,
     "Longitude": 9.20326,
@@ -14075,7 +14509,8 @@
      "onLight": null,
      "w": 131,
      "h": 134,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#6ec0c3"
     },
     "Latitude": 39.23116,
     "Longitude": 9.0986,
@@ -14104,7 +14539,8 @@
      "onLight": null,
      "w": 640,
      "h": 178,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#144b7a"
     }
    }
   },
@@ -14152,7 +14588,8 @@
      "onLight": null,
      "w": 600,
      "h": 190,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#011e31"
     },
     "Latitude": 41.12578,
     "Longitude": 16.86203,
@@ -14181,7 +14618,8 @@
      "onLight": "/logos/players/45e69ab846af35b1-d.webp",
      "w": 605,
      "h": 96,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 37.90113,
     "Longitude": 15.13621,
@@ -14210,7 +14648,8 @@
      "onLight": null,
      "w": 640,
      "h": 279,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#126390"
     },
     "Latitude": 45.06709,
     "Longitude": 7.68663,
@@ -14239,7 +14678,8 @@
      "onLight": "/logos/players/0a6274f39acebf35-d.webp",
      "w": 555,
      "h": 105,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.06521,
     "Longitude": 7.69177,
@@ -14271,7 +14711,8 @@
      "onLight": null,
      "w": 640,
      "h": 237,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#989898"
     },
     "Latitude": 45.46595,
     "Longitude": 9.19881,
@@ -14321,7 +14762,8 @@
      "onLight": null,
      "w": 600,
      "h": 100,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#dc0917"
     }
    }
   },
@@ -14347,7 +14789,8 @@
      "onLight": null,
      "w": 107,
      "h": 95,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#141414"
     },
     "Latitude": 45.88882,
     "Longitude": 11.04508,
@@ -14376,7 +14819,8 @@
      "onLight": null,
      "w": 600,
      "h": 189,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#014d6f"
     },
     "Latitude": 45.05726,
     "Longitude": 7.66932,
@@ -14405,7 +14849,8 @@
      "onLight": null,
      "w": 128,
      "h": 128,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#cc0b64"
     },
     "Latitude": 41.13645,
     "Longitude": 16.83819,
@@ -14434,7 +14879,8 @@
      "onLight": "/logos/players/28767aa41eef7779-d.webp",
      "w": 600,
      "h": 73,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 40.81972,
     "Longitude": 16.42278,
@@ -14463,7 +14909,8 @@
      "onLight": null,
      "w": 600,
      "h": 161,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#01c4b3"
     },
     "Latitude": 45.41146,
     "Longitude": 11.91486,
@@ -14492,7 +14939,8 @@
      "onLight": null,
      "w": 600,
      "h": 185,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#022cc8"
     }
    }
   },
@@ -14524,7 +14972,8 @@
      "onLight": "/logos/players/1f52aa935da3d3bb-d.webp",
      "w": 556,
      "h": 271,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 41.97937,
     "Longitude": 12.4102,
@@ -14553,7 +15002,8 @@
      "onLight": "/logos/players/b5a46a041afb25be-d.webp",
      "w": 262,
      "h": 54,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 41.97748,
     "Longitude": 12.41032,
@@ -14582,7 +15032,8 @@
      "onLight": "/logos/players/6c56b15ae05eb1dd-d.webp",
      "w": 542,
      "h": 120,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     },
     "Latitude": 40.83541,
     "Longitude": 17.35903,
@@ -14611,7 +15062,8 @@
      "onLight": null,
      "w": 569,
      "h": 470,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0aa970"
     },
     "Latitude": 45.13663,
     "Longitude": 10.72429,
@@ -14645,7 +15097,8 @@
      "onLight": null,
      "w": 314,
      "h": 80,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#094171"
     },
     "Latitude": 45.4656,
     "Longitude": 9.19399,
@@ -14674,7 +15127,8 @@
      "onLight": null,
      "w": 600,
      "h": 100,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#fb2b45"
     }
    }
   },
@@ -14731,7 +15185,8 @@
      "onLight": null,
      "w": 598,
      "h": 117,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#038b8b"
     },
     "Latitude": 45.48937,
     "Longitude": 9.1846,
@@ -14782,7 +15237,8 @@
      "onLight": null,
      "w": 192,
      "h": 174,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e63b51"
     },
     "Latitude": 45.51481,
     "Longitude": 9.59474,
@@ -14811,7 +15267,8 @@
      "onLight": null,
      "w": 437,
      "h": 204,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#4dc7b1"
     },
     "Latitude": 45.43642,
     "Longitude": 9.2052,
@@ -14846,7 +15303,8 @@
      "onLight": "/logos/players/0568f8cfb869f346-d.webp",
      "w": 600,
      "h": 236,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -14881,7 +15339,8 @@
      "onLight": null,
      "w": 640,
      "h": 388,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#b9ae77"
     },
     "Latitude": 45.47381,
     "Longitude": 9.18987,
@@ -14910,7 +15369,8 @@
      "onLight": null,
      "w": 640,
      "h": 214,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#2b77b7"
     },
     "Latitude": 45.45316,
     "Longitude": 9.19033,
@@ -14939,7 +15399,8 @@
      "onLight": "/logos/players/5a3111e95c77f9d5-d.webp",
      "w": 300,
      "h": 300,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.45316,
     "Longitude": 9.19033,
@@ -14968,7 +15429,8 @@
      "onLight": null,
      "w": 640,
      "h": 205,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1471fe"
     },
     "Latitude": 45.48577,
     "Longitude": 9.21445,
@@ -14997,7 +15459,8 @@
      "onLight": "/logos/players/d3114c4ce25de0de-d.webp",
      "w": 228,
      "h": 98,
-     "tone": "light"
+     "tone": "light",
+     "color": "#d9b02a"
     },
     "Latitude": 45.50397,
     "Longitude": 9.13734,
@@ -15026,7 +15489,8 @@
      "onLight": "/logos/players/60145d43834a3d22-d.webp",
      "w": 640,
      "h": 157,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -15055,7 +15519,8 @@
      "onLight": null,
      "w": 136,
      "h": 168,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0771aa"
     },
     "Latitude": 40.6664,
     "Longitude": 15.92125,
@@ -15084,7 +15549,8 @@
      "onLight": "/logos/players/0b16813c90d9931f-d.webp",
      "w": 233,
      "h": 104,
-     "tone": "light"
+     "tone": "light",
+     "color": "#0284bd"
     },
     "Latitude": 43.7698,
     "Longitude": 11.25564,
@@ -15132,7 +15598,8 @@
      "onLight": null,
      "w": 334,
      "h": 210,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#314249"
     },
     "Latitude": 46.68642,
     "Longitude": 11.63641,
@@ -15161,7 +15628,8 @@
      "onLight": null,
      "w": 640,
      "h": 243,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#d2242a"
     },
     "Latitude": 46.49848,
     "Longitude": 11.35474,
@@ -15190,7 +15658,8 @@
      "onLight": null,
      "w": 103,
      "h": 55,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e6432f"
     }
    }
   },
@@ -15216,7 +15685,8 @@
      "onLight": null,
      "w": 600,
      "h": 199,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0e68a2"
     },
     "Latitude": 46.01526,
     "Longitude": 13.26727,
@@ -15245,7 +15715,8 @@
      "onLight": null,
      "w": 320,
      "h": 296,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#21715d"
     },
     "Latitude": 45.50632,
     "Longitude": 9.16353,
@@ -15274,7 +15745,8 @@
      "onLight": "/logos/players/6d77b5d7af36e4c2-d.webp",
      "w": 640,
      "h": 230,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1c3a5d"
     }
    }
   },
@@ -15300,7 +15772,8 @@
      "onLight": null,
      "w": 640,
      "h": 587,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0d6983"
     },
     "Latitude": 41.04533,
     "Longitude": 16.88509,
@@ -15329,7 +15802,8 @@
      "onLight": null,
      "w": 640,
      "h": 587,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0d6983"
     },
     "Latitude": 44.43536,
     "Longitude": 11.48796,
@@ -15358,7 +15832,8 @@
      "onLight": null,
      "w": 603,
      "h": 138,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#03344b"
     },
     "Latitude": 44.49382,
     "Longitude": 11.34263,
@@ -15387,7 +15862,8 @@
      "onLight": null,
      "w": 87,
      "h": 94,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0284c4"
     },
     "Latitude": 44.83442,
     "Longitude": 11.60148,
@@ -15416,7 +15892,8 @@
      "onLight": null,
      "w": 194,
      "h": 185,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#043148"
     },
     "Latitude": 44.1583,
     "Longitude": 12.24523,
@@ -15445,7 +15922,8 @@
      "onLight": null,
      "w": 640,
      "h": 145,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#01334d"
     },
     "Latitude": 44.62831,
     "Longitude": 10.94704,
@@ -15474,7 +15952,8 @@
      "onLight": null,
      "w": 640,
      "h": 443,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3773b6"
     },
     "Latitude": 44.62854,
     "Longitude": 10.94978,
@@ -15503,7 +15982,8 @@
      "onLight": null,
      "w": 597,
      "h": 140,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#92b4d1"
     },
     "Latitude": 45.03885,
     "Longitude": 9.75811,
@@ -15532,7 +16012,8 @@
      "onLight": null,
      "w": 560,
      "h": 127,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#02334c"
     },
     "Latitude": 44.43438,
     "Longitude": 12.19543,
@@ -15561,7 +16042,8 @@
      "onLight": null,
      "w": 640,
      "h": 149,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#05374f"
     },
     "Latitude": 44.05924,
     "Longitude": 12.55445,
@@ -15590,7 +16072,8 @@
      "onLight": null,
      "w": 407,
      "h": 92,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#02344c"
     },
     "Latitude": 44.05939,
     "Longitude": 12.56844,
@@ -15619,7 +16102,8 @@
      "onLight": null,
      "w": 640,
      "h": 212,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ff2600"
     },
     "Latitude": 41.89332,
     "Longitude": 12.48293,
@@ -15648,7 +16132,8 @@
      "onLight": null,
      "w": 47,
      "h": 41,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1b1b1b"
     },
     "Latitude": 45.47781,
     "Longitude": 9.22725,
@@ -15681,7 +16166,8 @@
      "onLight": null,
      "w": 126,
      "h": 40,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#2e5dae"
     },
     "Latitude": 41.93129,
     "Longitude": 12.56158,
@@ -15710,7 +16196,8 @@
      "onLight": null,
      "w": 126,
      "h": 40,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1b2438"
     },
     "Latitude": 41.86296,
     "Longitude": 13.24631,
@@ -15761,7 +16248,8 @@
      "onLight": null,
      "w": 600,
      "h": 112,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#188fcc"
     },
     "Latitude": 40.35357,
     "Longitude": 18.17538,
@@ -15790,7 +16278,8 @@
      "onLight": null,
      "w": 489,
      "h": 184,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#a2bc51"
     }
    }
   },
@@ -15816,7 +16305,8 @@
      "onLight": null,
      "w": 489,
      "h": 184,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#a2bc51"
     },
     "Latitude": 45.46578,
     "Longitude": 9.17369,
@@ -15869,7 +16359,8 @@
      "onLight": null,
      "w": 640,
      "h": 167,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ed5a62"
     },
     "Latitude": 45.58847,
     "Longitude": 8.90795,
@@ -15920,7 +16411,8 @@
      "onLight": null,
      "w": 532,
      "h": 287,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0032a1"
     },
     "Latitude": 45.46515,
     "Longitude": 9.18465,
@@ -15949,7 +16441,8 @@
      "onLight": null,
      "w": 128,
      "h": 69,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1a355a"
     }
    }
   },
@@ -15975,7 +16468,8 @@
      "onLight": null,
      "w": 189,
      "h": 63,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e80102"
     },
     "Latitude": 43.33386,
     "Longitude": 11.30896,
@@ -16006,7 +16500,8 @@
      "onLight": null,
      "w": 640,
      "h": 208,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0c6582"
     },
     "Latitude": 42.59944,
     "Longitude": 11.29174,
@@ -16035,7 +16530,8 @@
      "onLight": "/logos/players/26869948b54a4fdb-d.webp",
      "w": 640,
      "h": 61,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 46.10116,
     "Longitude": 11.11196,
@@ -16064,7 +16560,8 @@
      "onLight": null,
      "w": 179,
      "h": 300,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#c80259"
     },
     "Latitude": 45.88904,
     "Longitude": 11.02858,
@@ -16093,7 +16590,8 @@
      "onLight": null,
      "w": 597,
      "h": 154,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#02638f"
     },
     "Latitude": 45.89085,
     "Longitude": 11.02856,
@@ -16130,7 +16628,8 @@
      "onLight": null,
      "w": 561,
      "h": 228,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 41.89636,
     "Longitude": 12.47641,
@@ -16159,7 +16658,8 @@
      "onLight": null,
      "w": 243,
      "h": 27,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e31e1a"
     },
     "Latitude": 45.5234,
     "Longitude": 9.75995,
@@ -16188,7 +16688,8 @@
      "onLight": null,
      "w": 263,
      "h": 75,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#113e7d"
     },
     "Latitude": 45.46386,
     "Longitude": 9.19328,
@@ -16217,7 +16718,8 @@
      "onLight": null,
      "w": 566,
      "h": 139,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1a1a1a"
     },
     "Latitude": 45.46397,
     "Longitude": 9.19347,
@@ -16246,7 +16748,8 @@
      "onLight": null,
      "w": 126,
      "h": 72,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f68f1d"
     },
     "Latitude": 45.5234,
     "Longitude": 9.75995,
@@ -16275,7 +16778,8 @@
      "onLight": "/logos/players/4825513fdb622810-d.webp",
      "w": 599,
      "h": 123,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5c"
     }
    }
   },
@@ -16307,7 +16811,8 @@
      "onLight": "/logos/players/6e242dc73490c060-d.webp",
      "w": 536,
      "h": 191,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -16343,7 +16848,8 @@
      "onLight": "/logos/players/65453db3cadec9ec-d.webp",
      "w": 84,
      "h": 84,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1a395c"
     },
     "Latitude": 45.43313,
     "Longitude": 12.31903,
@@ -16372,7 +16878,8 @@
      "onLight": null,
      "w": 640,
      "h": 426,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#1c4167"
     },
     "Latitude": 45.0545,
     "Longitude": 7.68209,
@@ -16403,7 +16910,8 @@
      "onLight": "/logos/players/fda3f3970e7bdd55-d.webp",
      "w": 640,
      "h": 203,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.06669,
     "Longitude": 7.65965,
@@ -16432,7 +16940,8 @@
      "onLight": null,
      "w": 192,
      "h": 192,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0802c7"
     },
     "Latitude": 45.47659,
     "Longitude": 9.19551,
@@ -16470,7 +16979,8 @@
      "onLight": null,
      "w": 128,
      "h": 128,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#029715"
     },
     "Latitude": 40.82715,
     "Longitude": 14.22044,
@@ -16521,7 +17031,8 @@
      "onLight": "/logos/players/63b9782e946f8157-d.webp",
      "w": 633,
      "h": 146,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 41.88884,
     "Longitude": 12.57162,
@@ -16550,7 +17061,8 @@
      "onLight": null,
      "w": 640,
      "h": 199,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#adafb2"
     },
     "Latitude": 45.5234,
     "Longitude": 9.75995,
@@ -16579,7 +17091,8 @@
      "onLight": null,
      "w": 173,
      "h": 150,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f5080c"
     }
    }
   },
@@ -16605,7 +17118,8 @@
      "onLight": "/logos/players/b18d8befef3b04cc-d.webp",
      "w": 70,
      "h": 122,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.69449,
     "Longitude": 9.66987,
@@ -16638,7 +17152,8 @@
      "onLight": "/logos/players/296af8baa9558cc7-d.webp",
      "w": 600,
      "h": 295,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.81156,
     "Longitude": 9.08304,
@@ -16667,7 +17182,8 @@
      "onLight": null,
      "w": 600,
      "h": 90,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#01587b"
     },
     "Latitude": 45.47282,
     "Longitude": 9.20366,
@@ -16698,7 +17214,8 @@
      "onLight": "/logos/players/9dc7d84e99f5ca82-d.webp",
      "w": 598,
      "h": 193,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 44.31479,
     "Longitude": 9.32439,
@@ -16727,7 +17244,8 @@
      "onLight": null,
      "w": 499,
      "h": 80,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#121984"
     },
     "Latitude": 45.99786,
     "Longitude": 12.29647,
@@ -16762,7 +17280,8 @@
      "onLight": null,
      "w": 270,
      "h": 95,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#9cc136"
     },
     "Latitude": 45.46442,
     "Longitude": 9.17124,
@@ -16829,7 +17348,8 @@
      "onLight": "/logos/players/da0ac1347d86ca0a-d.webp",
      "w": 270,
      "h": 84,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 44.49045,
     "Longitude": 11.33763,
@@ -16861,7 +17381,8 @@
      "onLight": null,
      "w": 581,
      "h": 87,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#fb0302"
     },
     "Latitude": 44.49964,
     "Longitude": 11.35122,
@@ -16913,7 +17434,8 @@
      "onLight": "/logos/players/cce0c5c278ef7a7d-d.webp",
      "w": 600,
      "h": 169,
-     "tone": "light"
+     "tone": "light",
+     "color": "#1b3a5d"
     },
     "Latitude": 44.49964,
     "Longitude": 11.35122,
@@ -16944,7 +17466,8 @@
      "onLight": null,
      "w": 477,
      "h": 567,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 45.95984,
     "Longitude": 12.65709,
@@ -16975,7 +17498,8 @@
      "onLight": null,
      "w": 145,
      "h": 37,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#241f21"
     },
     "Latitude": 41.85451,
     "Longitude": 12.43539,
@@ -17008,7 +17532,8 @@
      "onLight": null,
      "w": 600,
      "h": 274,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#3b3b3b"
     },
     "Latitude": 45.45285,
     "Longitude": 9.16369,
@@ -17040,7 +17565,8 @@
      "w": 640,
      "h": 124,
      "tone": "dark",
-     "scrapedFrom": "https://www.coastercowo.com/wp/wp-content/uploads/2016/09/Coaster-name_SMALL-1.png"
+     "scrapedFrom": "https://www.coastercowo.com/wp/wp-content/uploads/2016/09/Coaster-name_SMALL-1.png",
+     "color": "#1da5c7"
     }
    }
   },
@@ -17070,7 +17596,8 @@
      "onLight": null,
      "w": 409,
      "h": 165,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#e6024e"
     }
    }
   },
@@ -17100,7 +17627,8 @@
      "onLight": null,
      "w": 640,
      "h": 117,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#201e45"
     }
    }
   },
@@ -17128,7 +17656,8 @@
      "onLight": null,
      "w": 300,
      "h": 367,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#a08d7a"
     }
    }
   },
@@ -17156,7 +17685,8 @@
      "onLight": "/logos/players/c7d1a53f4c9c0fc3-d.webp",
      "w": 150,
      "h": 41,
-     "tone": "light"
+     "tone": "light",
+     "color": "#54ce8c"
     },
     "Latitude": 45.06891,
     "Longitude": 7.65109,
@@ -17208,7 +17738,8 @@
      "onLight": null,
      "w": 95,
      "h": 47,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#fd6b02"
     },
     "Latitude": 44.68025,
     "Longitude": 7.99748,
@@ -17239,7 +17770,8 @@
      "onLight": null,
      "w": 192,
      "h": 44,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f77408"
     }
    }
   },
@@ -17269,7 +17801,8 @@
      "w": 324,
      "h": 86,
      "tone": "light",
-     "scrapedFrom": "https://www.iforumroma.com/assets/images/logo.webp"
+     "scrapedFrom": "https://www.iforumroma.com/assets/images/logo.webp",
+     "color": "#1b3a5d"
     }
    }
   },
@@ -17299,7 +17832,8 @@
      "onLight": null,
      "w": 583,
      "h": 143,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#5db138"
     }
    }
   },
@@ -17328,7 +17862,8 @@
      "w": 246,
      "h": 45,
      "tone": "dark",
-     "scrapedFrom": "https://limes.farm/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo_limes.e121ffdf.png&w=640&q=75"
+     "scrapedFrom": "https://limes.farm/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo_limes.e121ffdf.png&w=640&q=75",
+     "color": "#323232"
     }
    }
   },
@@ -17357,7 +17892,8 @@
      "onLight": null,
      "w": 200,
      "h": 45,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#760d27"
     },
     "Latitude": 41.86171,
     "Longitude": 12.48669,
@@ -17409,7 +17945,8 @@
      "onLight": null,
      "w": 470,
      "h": 590,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#000000"
     },
     "Latitude": 41.87024,
     "Longitude": 12.48248,
@@ -17441,7 +17978,8 @@
      "onLight": null,
      "w": 235,
      "h": 146,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#0177ad"
     },
     "Latitude": 38.12408,
     "Longitude": 13.35769,
@@ -17516,7 +18054,8 @@
      "onLight": null,
      "w": 599,
      "h": 254,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#f07b68"
     },
     "Latitude": 45.06669,
     "Longitude": 7.65965,
@@ -17549,7 +18088,8 @@
      "onLight": null,
      "w": 78,
      "h": 143,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#ceac6f"
     },
     "Latitude": 45.44414,
     "Longitude": 9.20848,
@@ -17603,7 +18143,8 @@
      "onLight": null,
      "w": 600,
      "h": 113,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#161214"
     }
    }
   },
@@ -17631,7 +18172,8 @@
      "onLight": null,
      "w": 166,
      "h": 157,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#88bf87"
     },
     "Latitude": 45.05024,
     "Longitude": 7.66924,
@@ -17663,7 +18205,8 @@
      "onLight": null,
      "w": 217,
      "h": 36,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#c0bb06"
     },
     "Latitude": 45.06563,
     "Longitude": 7.68717,
@@ -17716,7 +18259,8 @@
      "onLight": null,
      "w": 44,
      "h": 44,
-     "tone": "dark"
+     "tone": "dark",
+     "color": "#242626"
     }
    }
   },
@@ -17745,7 +18289,8 @@
      "w": 640,
      "h": 120,
      "tone": "dark",
-     "scrapedFrom": "https://www.peekaboovision.com/wp-content/uploads/2023/05/peekaboo-logotipo-colored-black.png"
+     "scrapedFrom": "https://www.peekaboovision.com/wp-content/uploads/2023/05/peekaboo-logotipo-colored-black.png",
+     "color": "#1295f3"
     },
     "Latitude": 41.98016,
     "Longitude": 12.7668,
@@ -17775,7 +18320,8 @@
      "w": 600,
      "h": 550,
      "tone": "dark",
-     "scrapedFrom": "alias of Primo Capital SGR"
+     "scrapedFrom": "alias of Primo Capital SGR",
+     "color": "#000000"
     },
     "Latitude": 45.47093,
     "Longitude": 9.20573,
@@ -17809,7 +18355,8 @@
      "w": 115,
      "h": 165,
      "tone": "dark",
-     "scrapedFrom": "https://www.needsassociation.it/wp-content/uploads/2025/08/logo-ridotto-classico-1.png"
+     "scrapedFrom": "https://www.needsassociation.it/wp-content/uploads/2025/08/logo-ridotto-classico-1.png",
+     "color": "#6f26ec"
     },
     "Latitude": 41.88997,
     "Longitude": 12.53255,
@@ -17843,7 +18390,8 @@
      "w": 640,
      "h": 371,
      "tone": "light",
-     "scrapedFrom": "https://thepeoplesroom.it/assets/figma-updated/composites/home-about-wordmark-original.svg"
+     "scrapedFrom": "https://thepeoplesroom.it/assets/figma-updated/composites/home-about-wordmark-original.svg",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46419,
     "Longitude": 9.18963,
@@ -17880,7 +18428,8 @@
      "w": 146,
      "h": 167,
      "tone": "light",
-     "scrapedFrom": "https://efficiens.it/wp-content/uploads/2025/07/Efficiens_Logo.svg"
+     "scrapedFrom": "https://efficiens.it/wp-content/uploads/2025/07/Efficiens_Logo.svg",
+     "color": "#1b3a5d"
     },
     "Latitude": 45.46898,
     "Longitude": 9.19421,
@@ -17913,7 +18462,8 @@
      "w": 296,
      "h": 219,
      "tone": "dark",
-     "scrapedFrom": "alias of Italian Angels for Biotech"
+     "scrapedFrom": "alias of Italian Angels for Biotech",
+     "color": "#66c1d6"
     }
    }
   },
@@ -17949,7 +18499,8 @@
      "w": 320,
      "h": 296,
      "tone": "dark",
-     "scrapedFrom": "alias of Techbricks"
+     "scrapedFrom": "alias of Techbricks",
+     "color": "#21715d"
     }
    }
   },
@@ -17987,7 +18538,8 @@
      "w": 640,
      "h": 390,
      "tone": "dark",
-     "scrapedFrom": "alias of CDP Venture Capital"
+     "scrapedFrom": "alias of CDP Venture Capital",
+     "color": "#e30613"
     }
    }
   },
@@ -18022,7 +18574,8 @@
      "w": 180,
      "h": 180,
      "tone": "dark",
-     "scrapedFrom": "https://p3ventures.it/apple-icon.png?apple-icon.04-b7hylvr94u.png"
+     "scrapedFrom": "https://p3ventures.it/apple-icon.png?apple-icon.04-b7hylvr94u.png",
+     "color": "#ec459f"
     }
    }
   },
@@ -18077,7 +18630,8 @@
      "w": 471,
      "h": 292,
      "tone": "dark",
-     "scrapedFrom": "https://angels4impact.net/wp-content/uploads/2026/11/angels4impact-logo.svg"
+     "scrapedFrom": "https://angels4impact.net/wp-content/uploads/2026/11/angels4impact-logo.svg",
+     "color": "#276482"
     }
    }
   },
@@ -18109,7 +18663,8 @@
      "w": 365,
      "h": 421,
      "tone": "light",
-     "scrapedFrom": "inline svg"
+     "scrapedFrom": "inline svg",
+     "color": "#1b3a5d"
     }
    }
   }

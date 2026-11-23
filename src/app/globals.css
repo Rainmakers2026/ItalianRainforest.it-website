@@ -841,48 +841,89 @@ body {
 }
 
 /* Player logos on the map: round badges that grow with the zoom (--logo-size, set by
-   MapCanvas), name label above on hover/focus. */
+   MapCanvas), name label above on hover/focus. Each badge is a medal: the front is the
+   navy player-type badge (same size and spot as the map sprite, --coin-from), which turns
+   over to the back — the logo in colour on white, ringed in the logo's main colour (--c). */
 .irf-logo-pin:hover,
 .irf-logo-pin:focus-within {
   z-index: 5;
 }
 .irf-logo-marker {
-  --s: var(--logo-size, 30px);
+  --s: var(--logo-size, 40px);
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   width: var(--s);
   height: var(--s);
-  padding: calc(var(--s) * 0.1);
-  border-radius: 999px;
-  background: #fff;
-  border: 2px solid var(--c, #4b61d1);
-  box-shadow: 0 4px 10px -4px rgb(20 48 79 / 0.55);
+  padding: 0;
+  border: 0;
+  background: none;
   cursor: pointer;
-  animation: logo-in 260ms ease-out both;
+  perspective: 600px;
   transition:
     width 160ms ease,
     height 160ms ease,
-    transform 160ms ease,
-    box-shadow 160ms ease;
+    transform 160ms ease;
 }
-.irf-logo-marker.is-dark {
+.irf-coin {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: 999px;
+  transform-style: preserve-3d;
+  transform: rotateY(180deg);
+  animation: coin-flip 760ms cubic-bezier(0.45, 0.05, 0.25, 1) both;
+}
+.irf-coin-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  pointer-events: none;
+}
+.irf-coin-front {
+  background: #1b3a5c;
+  color: #fff;
+}
+.irf-coin-front svg {
+  width: 50%;
+  height: 50%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.irf-coin-back {
+  transform: rotateY(180deg);
+  background: #fff;
+  box-shadow:
+    inset 0 0 0 2.5px var(--c, #1b3a5c),
+    0 4px 12px -4px rgb(20 48 79 / 0.5);
+}
+.irf-coin-back.is-dark {
   background: #1b3a5c;
 }
-.irf-logo-marker img {
-  width: 100%;
-  height: 100%;
+.irf-coin-back img {
+  display: block;
   object-fit: contain;
-  border-radius: 999px;
   pointer-events: none;
+  /* Crisp small wordmarks. */
+  image-rendering: -webkit-optimize-contrast;
 }
 .irf-logo-marker:hover,
 .irf-logo-marker:focus-visible {
-  transform: scale(1.3);
+  transform: scale(1.6);
   z-index: 5;
   outline: none;
-  box-shadow: 0 10px 22px -8px rgb(20 48 79 / 0.65);
+}
+.irf-logo-marker:hover .irf-coin-back,
+.irf-logo-marker:focus-visible .irf-coin-back {
+  box-shadow:
+    inset 0 0 0 2.5px var(--c, #1b3a5c),
+    0 10px 22px -8px rgb(20 48 79 / 0.65);
 }
 /* Name label: appears instantly above the badge, readable on any map colour. */
 .irf-logo-name {
@@ -912,101 +953,39 @@ body {
 .irf-logo-marker:hover .irf-logo-name,
 .irf-logo-marker:focus-visible .irf-logo-name {
   opacity: 1;
-  transform: translate(-50%, 0) scale(calc(1 / 1.3));
+  transform: translate(-50%, 0) scale(calc(1 / 1.6));
 }
-@keyframes logo-in {
-  from {
-    opacity: 0;
-    transform: scale(0.6);
-  }
-}
-/* Morph on zoom-in: each logo badge is born as its translucent navy player-type badge
-   (same size and spot as the map sprite), which flips away while the logo flips in and
-   the ring takes the player-type colour. */
-.irf-logo-marker {
-  perspective: 240px;
-  animation: logo-ring 640ms cubic-bezier(0.3, 0.7, 0.2, 1) both;
-}
-.irf-logo-type {
-  position: absolute;
-  inset: -2px;
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  background: rgb(20 48 79 / 0.84);
-  box-shadow:
-    inset 0 0 0 2px var(--c, #4b61d1),
-    0 0 0 1px rgb(255 255 255 / 0.85);
-  color: #fff;
-  pointer-events: none;
-  backface-visibility: hidden;
-  animation: type-out 640ms cubic-bezier(0.5, 0, 0.2, 1) forwards;
-}
-.irf-logo-type svg {
-  width: 52%;
-  height: 52%;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.irf-logo-marker img {
-  backface-visibility: hidden;
-  animation: logo-face 640ms cubic-bezier(0.3, 0.7, 0.2, 1) both;
-}
-@keyframes logo-ring {
+/* Zoom-in: the type badge lifts, turns over like a coin and lands as the logo badge. */
+@keyframes coin-flip {
   0% {
-    transform: scale(0.76);
-    border-color: transparent;
-    background: transparent;
-    box-shadow: none;
+    transform: scale(var(--coin-from, 0.7)) rotateY(0deg);
   }
-  45% {
-    transform: scale(1.06);
-  }
-}
-@keyframes type-out {
-  0%,
-  20% {
-    opacity: 1;
-    transform: rotateY(0deg);
-  }
-  55%,
-  100% {
-    opacity: 0;
-    transform: rotateY(90deg);
-  }
-}
-@keyframes logo-face {
-  0%,
   50% {
-    opacity: 0;
-    transform: rotateY(-90deg);
+    transform: scale(calc((var(--coin-from, 0.7) + 1) / 2 * 1.12)) rotateY(90deg);
   }
   100% {
-    opacity: 1;
-    transform: rotateY(0deg);
+    transform: scale(1) rotateY(180deg);
   }
 }
-/* Zooming back out: the logo shrinks into its spot while the type badge fades back in. */
+/* Zoom-out: the medal turns back to its type face, then the map sprite takes over. */
 .irf-logo-pin.is-leaving .irf-logo-marker {
-  animation: logo-out 220ms ease-in forwards;
   pointer-events: none;
 }
-@keyframes logo-out {
+.irf-logo-pin.is-leaving .irf-coin {
+  animation: coin-unflip 320ms cubic-bezier(0.5, 0, 0.5, 1) forwards;
+}
+@keyframes coin-unflip {
+  from {
+    transform: scale(1) rotateY(180deg);
+  }
   to {
-    opacity: 0;
-    transform: scale(0.6);
+    transform: scale(var(--coin-from, 0.7)) rotateY(360deg);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .irf-logo-marker,
-  .irf-logo-marker img {
+  .irf-coin,
+  .irf-logo-pin.is-leaving .irf-coin {
     animation: none;
-  }
-  .irf-logo-type {
-    display: none;
   }
 }
 

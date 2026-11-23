@@ -32,6 +32,8 @@ export const LogoSchema = z.object({
   tone: z.enum(['light', 'dark']),
   /** For light artwork: a version recoloured dark, to place directly on white. */
   onLight: z.string().nullable().optional(),
+  /** Main colour of the artwork as shown on white (hex): ring of its map badge. */
+  color: z.string().regex(/^#[0-9a-fA-F]{6}$/).nullable().optional(),
 });
 
 export const PublicPlayerSchema = z.object({

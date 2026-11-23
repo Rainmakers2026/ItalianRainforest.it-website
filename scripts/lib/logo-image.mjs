@@ -59,3 +59,40 @@ export async function processLogo(buf, outDir, hash = logoHash(buf)) {
   }
   return { src: `/logos/players/${hash}.webp`, onLight, w: out.info.width, h: out.info.height, tone };
 }
+
+/**
+ * Main colour of a logo as it is shown on white (hex), for the ring around it on the map.
+ * Most frequent saturated hue if the artwork has one, otherwise its dominant dark tone;
+ * colours too pale to read on white are darkened.
+ */
+export async function logoColor(file) {
+  const { data, info } = await sharp(file).ensureAlpha().resize(96, 96, { fit: 'inside' }).raw().toBuffer({ resolveWithObject: true });
+  const vivid = new Map();
+  const plain = new Map();
+  let opaque = 0;
+  for (let i = 0; i < data.length; i += info.channels) {
+    if (data[i + 3] < 128) continue;
+    const [r, g, b] = [data[i], data[i + 1], data[i + 2]];
+    const max = Math.max(r, g, b);
+    const sat = max - Math.min(r, g, b);
+    const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    if (lum > 228 && sat < 28) continue; // white plate / background
+    opaque++;
+    const key = (r >> 5) * 64 + (g >> 5) * 8 + (b >> 5);
+    const bins = sat > 55 && max > 60 ? vivid : plain;
+    const e = bins.get(key) ?? [0, 0, 0, 0];
+    e[0] += r;
+    e[1] += g;
+    e[2] += b;
+    e[3]++;
+    bins.set(key, e);
+  }
+  const top = (m) => [...m.values()].sort((a, b) => b[3] - a[3])[0];
+  const vividN = [...vivid.values()].reduce((s, e) => s + e[3], 0);
+  const best = vividN > opaque * 0.06 ? top(vivid) : top(plain) ?? top(vivid);
+  if (!best) return '#14304F';
+  let [r, g, b] = [best[0] / best[3], best[1] / best[3], best[2] / best[3]];
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  if (lum > 175) [r, g, b] = [r, g, b].map((c) => c * (175 / lum));
+  return '#' + [r, g, b].map((c) => Math.round(c).toString(16).padStart(2, '0')).join('');
+}
