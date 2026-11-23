@@ -21,20 +21,6 @@ export type Partner = {
  */
 export const PARTNERS: Partner[] = [
   {
-    key: 'rainmakers',
-    name: 'Rainmakers',
-    url: 'https://www.rainmakers.it/',
-    logo: '/partners/rainmakers.webp',
-    w: 480,
-    h: 163,
-    kind: { it: 'Promotore', en: 'Promoter' },
-    since: 2011,
-    description: {
-      it: 'Key player dell’ecosistema innovazione italiano attivo dal 2011 su innovazione e startup.',
-      en: 'A key player in the Italian innovation ecosystem, working on innovation and startups since 2011.',
-    },
-  },
-  {
     key: 'innovup',
     name: 'InnovUp',
     url: 'https://innovup.net/',
