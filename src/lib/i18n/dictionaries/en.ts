@@ -38,7 +38,7 @@ const en: Dictionary = {
     titleLead: 'Map, database and infographic',
     titleAccent: 'of the Italian Rainforest',
     tagline: 'Who’s there, where they are, how to reach them.',
-    lead: 'Here you will find, always updated and freely downloadable, the **map and database** of the most relevant enablers for Italian innovation.',
+    lead: 'Here you will find, always updated and freely downloadable, the **map and database** of the most relevant enablers in the Italian innovation ecosystem; created by Rainmakers and its partners for rainmakers of any nation, to help Italy grow with the support of everyone.',
     ctaMap: 'Explore the map',
     ctaDatabase: 'Explore the database',
     ctaInfographic: 'Download the infographic',
@@ -89,6 +89,7 @@ const en: Dictionary = {
     focusPlayers: '{n} players',
     focusText: 'Filter by region and the map zooms in on the area, showing only local players.',
     cta: 'Download the infographic',
+    seeOnMap: 'See Lombardy on the map',
     visualAlt:
       'Infographic: map of Italy with Lombardy highlighted and enlarged, showing its provinces and the region’s players as small umbrellas; next to it, the Region and Province filters.',
   },

@@ -3,6 +3,7 @@ import { PROVINCES } from '@/lib/geo/territories';
 import { fmt, type Dictionary } from '@/lib/i18n';
 import { MARK_CANOPY } from '../Logo';
 import { Icon } from '../ui/Icon';
+import { ExploreLink } from './ExploreLink';
 import { SectionHeader } from './SectionHeader';
 
 // Zoom panel geometry (SVG user units): Italy on the left, Lombardy enlarged on the right.
@@ -179,6 +180,10 @@ export function How({ t, players, locale }: { t: Dictionary['how']; players: num
                 <Icon name="download" size={18} />
                 {t.cta}
               </a>
+              <ExploreLink query={`region=${FOCUS_REGION}`} className="btn btn-light w-fit">
+                <Icon name="map" size={18} />
+                {t.seeOnMap}
+              </ExploreLink>
             </div>
           </div>
         </div>

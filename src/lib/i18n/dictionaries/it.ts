@@ -3,7 +3,7 @@ const it = {
   meta: {
     title: 'Mappa, Database e Infografica di Italian Rainforest',
     description:
-      'Investitori, incubatori, venture builder, parchi scientifici e istituzioni: {active} abilitatori dell’innovazione italiana in una mappa, un database e un’infografica gratuiti e aggiornati.',
+      'Investitori, incubatori, venture builder, parchi scientifici e tecnologici, istituzioni e molti altri ancora: tutti gli abilitatori dell’innovazione italiana in una mappa, un database e un’infografica gratuiti e aggiornati.',
     ogAlt: 'Italian Rainforest, la mappa viva dell’ecosistema italiano dell’innovazione',
     privacyTitle: 'Informativa privacy — Italian Rainforest',
     embedMapTitle: 'Mappa Italian Rainforest',
@@ -21,7 +21,7 @@ const it = {
   nav: {
     why: 'Perché',
     how: 'Come',
-    what: 'Per cosa',
+    what: 'Cosa',
     forWhom: 'Per chi',
     who: 'Chi siamo',
     partners: 'Partner',
@@ -36,11 +36,11 @@ const it = {
     titleLead: 'Mappa, Database e Infografica',
     titleAccent: 'di Italian Rainforest',
     tagline: 'Chi c’è, dove lo trovi, come lo raggiungi.',
-    lead: 'Qui trovi a tua disposizione, sempre aggiornati e liberamente scaricabili, la **mappa e il database** degli abilitatori più rilevanti per l’innovazione italiana.',
+    lead: 'Qui trovi a tua disposizione, sempre aggiornati e liberamente scaricabili, la **mappa, il database e l’infografica** degli abilitatori più rilevanti dell’ecosistema dell’innovazione italiano; creati da Rainmakers e dai suoi partner per imprenditori e innovatori di qualsiasi nazione, per far crescere l’Italia grazie al supporto di tutti.',
     ctaMap: 'Naviga la mappa',
     ctaDatabase: 'Esplora il database',
     ctaInfographic: 'Scarica l’infografica',
-    cardTitle: 'Cosa trovi oggi nella Rainforest',
+    cardTitle: 'Cosa trovi oggi nella Rainforest italiana',
     cardMore: 'Tutte le {n} tipologie',
     cardUpdated: 'Dati aggiornati al {date}',
     statOrgs: 'abilitatori mappati',
@@ -54,21 +54,21 @@ const it = {
     title: 'PERCHÉ',
     accent: 'LO FACCIAMO',
     definition:
-      '**Italian Rainforest** nasce per rendere l’ecosistema italiano dell’innovazione più trasparente, più aperto e interconnesso e in generale più consapevole e migliore rispetto ad un ecosistema senza queste caratteristiche.',
+      'Italian Rainforest **nasce per rendere l’ecosistema italiano dell’innovazione più trasparente, più aperto e interconnesso e in generale più auto-consapevole e migliore** rispetto ad un ecosistema senza queste caratteristiche.',
     paragraphs: [
-      'Nasce come **giveback di Rainmakers** al proprio ecosistema nazionale, perché siamo profondamente convinti che nel mondo delle startup e dell’innovazione per ciascuno valga la filosofia **“ubuntu”**: **I am because we are.**',
-      'Il nostro “why” è **“Salvare la nostra nazione in una sola generazione con impatto, imprenditoria e innovazione.”** e il cambiamento passa anche dal nostro giveback con **Italian Rainforest**.',
+      'Nasce come **giveback di Rainmakers al proprio ecosistema nazionale ma diventa sforzo collettivo di tutti gli abilitatori della Rainforest italiana**, perché siamo profondamente convinti che nel mondo delle startup e dell’innovazione per ciascuno valga la filosofia **“ubuntu”**: **I am because we are.**',
+      'Il nostro “why” è **“Salvare la nostra Nazione in una sola generazione con impatto, imprenditoria e innovazione.”** e l’impatto passa anche dal nostro giveback all’Italia con **Italian Rainforest**.',
     ],
     pillarsTitle: 'Tutto quello che serve a un founder, in un unico posto',
     pillars: [
-      { icon: 'coins', title: 'Capitali', text: 'Venture capital, corporate VC, business angel, crowdfunding e family office: chi investe e dove.' },
+      { icon: 'coins', title: 'Capitali', text: 'Venture capital, corporate VC, business angel, piattaforme di crowdfunding e family office: chi investe e dove.' },
       {
         icon: 'building',
-        title: 'Spazi e programmi',
+        title: 'Spazi e supporto operativo',
         text: 'Incubatori, acceleratori, venture builder, coworking e parchi scientifici dove far crescere un’idea.',
       },
-      { icon: 'landmark', title: 'Supporto pubblico', text: 'Istituzioni e associazioni che sostengono chi fa impresa.' },
-      { icon: 'users', title: 'Formazione e community', text: 'Corsi, programmi di empowerment, media e network per crescere e trovare compagni di strada.' },
+      { icon: 'landmark', title: 'Supporto istituzionale', text: 'Istituzioni e associazioni che sostengono chi fa impresa.' },
+      { icon: 'users', title: 'Formazione e informazione', text: 'Corsi, programmi di empowerment, media e network per crescere e trovare compagni di strada.' },
     ],
     quote: 'Salvare la nostra nazione in una sola generazione con impatto, imprenditoria e innovazione.',
     quoteBy: 'Il nostro “why”',
@@ -87,6 +87,7 @@ const it = {
     focusPlayers: '{n} player',
     focusText: 'Filtrando per regione la mappa zooma sul territorio e mostra solo i player locali.',
     cta: 'Scarica l’infografica',
+    seeOnMap: 'Vedi la Lombardia sulla mappa',
     visualAlt:
       'Infografica: mappa dell’Italia con la Lombardia evidenziata e ingrandita, con le sue province e i player della regione rappresentati come piccoli ombrelli; accanto, i filtri Regione e Provincia.',
   },
@@ -145,7 +146,7 @@ const it = {
       },
       {
         title: 'Startup italiane',
-        text: 'Per capire **“who is who”** in Italia e trovare informazioni utili al proprio sviluppo, opportunatamente categorizzate e georeferenziate, etc.',
+        text: 'Per capire **“who is who”** in Italia e trovare informazioni utili al proprio sviluppo, opportunamente categorizzate e georeferenziate, etc.',
       },
       {
         title: 'Abilitatori dell’innovazione stranieri',
