@@ -3,7 +3,7 @@
 // by kind of enabler (the Italian Rainforest taxonomy).
 //   node scripts/build-infographic.mts
 // Run after scripts/import-irf-csv.mjs. Output: public/infographic/italian-rainforest-infografica-{it,en}.png
-import { mkdir, readFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
@@ -189,8 +189,40 @@ async function build(locale: 'it' | 'en') {
   composites.push({ input: logo.data, left: W - M - logo.info.width, top: M - 10 });
   await mkdir(path.join(root, 'public/infographic'), { recursive: true });
   const out = path.join(root, `public/infographic/italian-rainforest-infografica-${locale}.png`);
-  await sharp(base).composite(composites).png({ compressionLevel: 9, palette: false }).toFile(out);
+  const full = await sharp(base).composite(composites).png({ compressionLevel: 9, palette: false }).toBuffer();
+  await writeFile(out, full);
+  // Printable PDF: the same artwork as one page at 300 dpi.
+  const jpeg = await sharp(full).flatten({ background: '#ffffff' }).jpeg({ quality: 88, chromaSubsampling: '4:4:4' }).toBuffer();
+  await writeFile(out.replace(/\.png$/, '.pdf'), pdfWithImage(jpeg, W, H, `Italian Rainforest · ${t.infographic.eyebrow}`));
   console.log(locale, `${W}×${H}`, players.length, 'players');
+}
+
+/** Minimal single-page PDF wrapping a JPEG (DCTDecode), page sized at 300 dpi. */
+function pdfWithImage(jpeg: Buffer, w: number, h: number, title: string): Buffer {
+  const pw = ((w * 72) / 300).toFixed(2);
+  const ph = ((h * 72) / 300).toFixed(2);
+  const content = `q ${pw} 0 0 ${ph} 0 0 cm /Im0 Do Q`;
+  const ascii = title.normalize('NFD').replace(/[^\x20-\x7e]/g, '').replace(/[()\\]/g, '');
+  const objs: (string | Buffer)[][] = [
+    ['<< /Type /Catalog /Pages 2 0 R >>'],
+    ['<< /Type /Pages /Kids [3 0 R] /Count 1 >>'],
+    [`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pw} ${ph}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>`],
+    [`<< /Type /XObject /Subtype /Image /Width ${w} /Height ${h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.length} >>\nstream\n`, jpeg, '\nendstream'],
+    [`<< /Length ${content.length} >>\nstream\n${content}\nendstream`],
+    [`<< /Title (${ascii}) /Producer (Italian Rainforest) >>`],
+  ];
+  const parts: Buffer[] = [Buffer.from('%PDF-1.4\n%\xe2\xe3\xcf\xd3\n', 'latin1')];
+  const offsets: number[] = [];
+  let len = parts[0]!.length;
+  objs.forEach((o, i) => {
+    offsets.push(len);
+    const chunk = Buffer.concat([Buffer.from(`${i + 1} 0 obj\n`), ...o.map((x) => (typeof x === 'string' ? Buffer.from(x, 'latin1') : x)), Buffer.from('\nendobj\n')]);
+    parts.push(chunk);
+    len += chunk.length;
+  });
+  const xref = `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n${offsets.map((o) => `${String(o).padStart(10, '0')} 00000 n \n`).join('')}trailer\n<< /Size ${objs.length + 1} /Root 1 0 R /Info ${objs.length} 0 R >>\nstartxref\n${len}\n%%EOF\n`;
+  parts.push(Buffer.from(xref, 'latin1'));
+  return Buffer.concat(parts);
 }
 
 await build('it');

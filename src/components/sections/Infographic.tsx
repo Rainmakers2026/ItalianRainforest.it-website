@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element -- 500+ pre-optimised, pre-sized logo files (public/logos): plain lazy <img> is lighter than the image optimiser */
+import type { CSSProperties } from 'react';
 import type { PublicPlayer } from '@/lib/data/schema';
 import { CATEGORY_BY_KEY, CATEGORY_FAMILIES, type CategoryKey } from '@/lib/data/taxonomy';
 import { HTML_LANG, type Locale } from '@/lib/i18n/config';
@@ -13,7 +14,7 @@ type Item = Pick<PublicPlayer, 'id' | 'name' | 'logo' | 'website'>;
  * Logo without a frame, linked to the organisation's website (new tab). White/pale
  * artwork is rendered dark so it reads on white.
  */
-function Tile({ p, visit }: { p: Item; visit: string }) {
+function Tile({ p, visit, color }: { p: Item; visit: string; color: string }) {
   const art = p.logo ? (
     <img
       src={p.logo.onLight ?? p.logo.src}
@@ -27,7 +28,18 @@ function Tile({ p, visit }: { p: Item; visit: string }) {
   ) : (
     <span className="line-clamp-2 text-center text-[0.75rem] leading-tight font-bold text-ink">{p.name}</span>
   );
-  const box = 'flex h-14 w-full items-center justify-center rounded-xl px-1.5 transition-transform duration-200';
+  // On hover/focus the tile lifts above its neighbours as a white card (category-coloured
+  // ring, name underneath); the other logos of the panel fade so it stands out.
+  const box =
+    'irf-tile relative z-0 flex h-14 w-full items-center justify-center rounded-xl px-1.5 outline-none transition-[transform,opacity,box-shadow,background-color] duration-200 ease-out ' +
+    'group-hover/panel:opacity-40 hover:z-20 hover:opacity-100! hover:bg-white focus-visible:z-20 focus-visible:opacity-100! focus-visible:bg-white ' +
+    'motion-safe:hover:scale-[1.6] motion-safe:focus-visible:scale-[1.6] hover:shadow-[0_10px_28px_-8px_rgb(20_45_74/0.45),0_0_0_1.5px_var(--tile)] focus-visible:shadow-[0_10px_28px_-8px_rgb(20_45_74/0.45),0_0_0_2px_var(--tile)]';
+  const label = (
+    <span className="pointer-events-none absolute top-full left-1/2 mt-0.5 max-w-[160%] -translate-x-1/2 truncate rounded-md bg-white px-1 py-0.5 text-center whitespace-nowrap shadow-[0_4px_10px_-4px_rgb(20_45_74/0.35)] text-[0.4375rem] leading-none font-bold text-ink opacity-0 transition-opacity duration-200 [.irf-tile:focus-visible_&]:opacity-100 [.irf-tile:hover_&]:opacity-100">
+      {p.name}
+    </span>
+  );
+  const style = { '--tile': color } as CSSProperties;
   return (
     <li className="flex">
       {p.website ? (
@@ -36,13 +48,16 @@ function Tile({ p, visit }: { p: Item; visit: string }) {
           event="outbound_player_website"
           props={{ player: p.id, from: 'infographic' }}
           title={`${p.name} · ${visit}`}
-          className={`${box} hover:scale-110 focus-visible:scale-110`}
+          className={box}
+          style={style}
         >
           {art}
+          {label}
         </OutboundLink>
       ) : (
-        <span title={p.name} className={box}>
+        <span title={p.name} tabIndex={0} className={box} style={style}>
           {art}
+          {label}
         </span>
       )}
     </li>
@@ -76,15 +91,26 @@ export function Infographic({ players, locale, t, families }: { players: PublicP
         <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeader caps id="infographic-title" title={t.title} accent={t.accent} lead={t.lead} />
           <div className="reveal grid gap-1.5">
-            <a href={`/infographic/italian-rainforest-infografica-${locale}.png`} download className="btn btn-primary">
-              <Icon name="download" size={18} />
-              {t.download}
-            </a>
+            <div className="flex flex-wrap gap-2">
+              <a href={`/infographic/italian-rainforest-infografica-${locale}.pdf`} download className="btn btn-primary">
+                <Icon name="download" size={18} />
+                {t.download} · PDF
+              </a>
+              <a href={`/infographic/italian-rainforest-infografica-${locale}.png`} download className="btn btn-outline">
+                <Icon name="download" size={18} />
+                {t.downloadPng}
+              </a>
+            </div>
             <span className="text-center text-xs text-subtle">{fmt(t.downloadHint, { n: nf.format(listed.length) })}</span>
           </div>
         </div>
 
-        <div className="mt-12 grid gap-12">
+        <p className="reveal mt-8 flex items-center gap-2 text-sm text-muted">
+          <Icon name="info" size={16} className="shrink-0" />
+          {t.hoverHint}
+        </p>
+
+        <div className="mt-10 grid gap-12">
           {groups.map((g) => (
             <div key={g.key} className="reveal">
               <h3 className="flex items-center gap-2.5 text-lg font-black tracking-[0.06em] uppercase" style={{ color: g.color }}>
@@ -112,9 +138,9 @@ export function Infographic({ players, locale, t, families }: { players: PublicP
                       <h4 className="absolute -top-3.5 left-6 bg-white px-2.5 text-[0.9375rem] leading-none font-bold text-ink">
                         {c.label[locale]} <span className="font-semibold text-subtle tabular-nums">· {nf.format(items.length)}</span>
                       </h4>
-                      <ul className="grid grid-cols-[repeat(auto-fill,minmax(6.25rem,1fr))] gap-x-2 gap-y-1">
+                      <ul className="group/panel grid grid-cols-[repeat(auto-fill,minmax(6.25rem,1fr))] gap-x-2 gap-y-1">
                         {items.map((p) => (
-                          <Tile key={p.id} p={p} visit={t.visit} />
+                          <Tile key={p.id} p={p} visit={t.visit} color={c.color} />
                         ))}
                       </ul>
                     </section>
