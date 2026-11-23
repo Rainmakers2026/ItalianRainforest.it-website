@@ -9,79 +9,41 @@ import type { Locale } from '@/lib/i18n/config';
  * with a label.
  */
 export const CATEGORIES = [
-  // ── Personal enablers
-  {
-    key: 'programs',
-    family: 'personal',
-    source: ['EMPOWERMENT PROGRAM', 'Empowerment Programs'],
-    color: '#0B8A78',
-    label: { it: 'Programmi di empowerment', en: 'Empowerment programmes' },
-    short: { it: 'Programmi', en: 'Programmes' },
-    definition: {
-      it: 'Percorsi che rafforzano competenze e mentalità imprenditoriale di persone e team.',
-      en: 'Programmes that build entrepreneurial skills and mindset in people and teams.',
-    },
-  },
-  {
-    key: 'training',
-    family: 'personal',
-    source: ['CORSI DI FORMAZIONE', 'Training'],
-    color: '#3FB8A4',
-    label: { it: 'Corsi di formazione', en: 'Training courses' },
-    short: { it: 'Formazione', en: 'Training' },
-    definition: {
-      it: 'Scuole e corsi su imprenditorialità, innovazione e venture capital.',
-      en: 'Schools and courses on entrepreneurship, innovation and venture capital.',
-    },
-  },
-  // ── Business enablers
-  {
-    key: 'incubator',
-    family: 'business',
-    source: ['INCUBATOR/ACCELERATOR', 'Incubator / Accelerator'],
-    color: '#1F5FBF',
-    label: { it: 'Incubatori e acceleratori', en: 'Incubators & accelerators' },
-    short: { it: 'Incubatori', en: 'Incubators' },
-    definition: {
-      it: 'Programmi che supportano le startup nelle prime fasi con servizi, mentoring e network.',
-      en: 'Programmes supporting early-stage startups with services, mentoring and networks.',
-    },
-  },
-  {
-    key: 'venture-builder',
-    family: 'business',
-    source: ['VENTURE BUILDER/STARTUP STUDIO', 'Startup Studio / Venture Builder'],
-    color: '#4F8FEA',
-    label: { it: 'Venture builder e startup studio', en: 'Venture builders & startup studios' },
-    short: { it: 'Venture builder', en: 'Venture builders' },
-    definition: {
-      it: 'Realtà che creano, co-fondano e fanno crescere nuove imprese.',
-      en: 'Organisations that create, co-found and grow new companies.',
-    },
-  },
-  {
-    key: 'science-park',
-    family: 'business',
-    source: ['PST', 'Science Park'],
-    color: '#14306B',
-    label: { it: 'Parchi scientifici e tecnologici', en: 'Science & technology parks' },
-    short: { it: 'PST', en: 'Science parks' },
-    definition: {
-      it: 'Poli che collegano ricerca, imprese e trasferimento tecnologico.',
-      en: 'Hubs linking research, companies and technology transfer.',
-    },
-  },
   // ── Financial enablers
   {
     key: 'vc',
     family: 'financial',
-    source: ['VC'],
+    source: ['VC', 'INVESTOR', 'Investor'],
     color: '#C2410C',
     label: { it: 'Venture capital', en: 'Venture capital' },
     short: { it: 'VC', en: 'VC' },
     definition: {
       it: 'Fondi che investono in equity in startup e scaleup.',
       en: 'Funds investing equity in startups and scale-ups.',
+    },
+  },
+  {
+    key: 'angels',
+    family: 'financial',
+    source: ['BAN', 'BAN/CLUB DEAL', 'BAN / Club Deal'],
+    color: '#E0782F',
+    label: { it: 'Business angel network (BAN)', en: 'Business angel networks (BAN)' },
+    short: { it: 'BAN', en: 'BAN' },
+    definition: {
+      it: 'Network e club di business angel che investono capitali propri, spesso insieme, nelle prime fasi delle startup.',
+      en: 'Networks and clubs of business angels investing their own money, often together, in early-stage startups.',
+    },
+  },
+  {
+    key: 'regional-finance',
+    family: 'financial',
+    source: ['FINANZIARIE REGIONALI'],
+    color: '#9A3412',
+    label: { it: 'Finanziarie regionali', en: 'Regional financial agencies' },
+    short: { it: 'Finanziarie reg.', en: 'Regional finance' },
+    definition: {
+      it: 'Società finanziarie e di sviluppo delle Regioni che sostengono le startup del territorio con fondi, coinvestimenti e bandi.',
+      en: 'Financial and development companies of the Italian regions backing local startups through funds, co-investment and calls.',
     },
   },
   {
@@ -97,21 +59,9 @@ export const CATEGORIES = [
     },
   },
   {
-    key: 'angels',
-    family: 'financial',
-    source: ['BAN/CLUB DEAL', 'BAN / Club Deal'],
-    color: '#E0782F',
-    label: { it: 'Business angel e club deal', en: 'Business angels & club deals' },
-    short: { it: 'Angel / club deal', en: 'Angels / club deals' },
-    definition: {
-      it: 'Network di business angel e club di investimento.',
-      en: 'Business angel networks and investment clubs.',
-    },
-  },
-  {
     key: 'crowdfunding',
     family: 'financial',
-    source: ['CROWDFUNDING PLATFORM', 'Crowdfunding'],
+    source: ['CROWDFUNDING', 'CROWDFUNDING PLATFORM', 'Crowdfunding'],
     color: '#C99A12',
     label: { it: 'Piattaforme di crowdfunding', en: 'Crowdfunding platforms' },
     short: { it: 'Crowdfunding', en: 'Crowdfunding' },
@@ -133,22 +83,59 @@ export const CATEGORIES = [
     },
   },
   {
-    key: 'investor',
+    key: 'banks',
     family: 'financial',
-    source: ['INVESTOR', 'Investor'],
+    source: ['BANCHE PER STARTUP'],
     color: '#D9893F',
-    label: { it: 'Investitori', en: 'Investors' },
-    short: { it: 'Investitori', en: 'Investors' },
+    label: { it: 'Banche per startup', en: 'Banks for startups' },
+    short: { it: 'Banche', en: 'Banks' },
     definition: {
-      it: 'Altri investitori in startup: fondi di trasferimento tecnologico, holding e network di investimento.',
-      en: 'Other startup investors: tech-transfer funds, holdings and investment networks.',
+      it: 'Banche con programmi, sportelli e strumenti di credito dedicati alle startup.',
+      en: 'Banks with programmes, desks and lending products dedicated to startups.',
+    },
+  },
+  // ── Personal enablers
+  {
+    key: 'university',
+    family: 'personal',
+    source: ['CORSI UNIVERSITARI PUBBLICI'],
+    color: '#0B8A78',
+    label: { it: 'Corsi universitari pubblici', en: 'Public university programmes' },
+    short: { it: 'Università', en: 'Universities' },
+    definition: {
+      it: 'Corsi, laboratori e percorsi di università pubbliche su imprenditorialità e innovazione.',
+      en: 'Courses, labs and programmes of public universities on entrepreneurship and innovation.',
+    },
+  },
+  {
+    key: 'training',
+    family: 'personal',
+    source: ['PERCORSI FORMATIVI PRIVATI', 'CORSI DI FORMAZIONE', 'Training'],
+    color: '#3FB8A4',
+    label: { it: 'Percorsi formativi privati', en: 'Private training programmes' },
+    short: { it: 'Formazione privata', en: 'Private training' },
+    definition: {
+      it: 'Scuole, academy e corsi privati su imprenditorialità, innovazione e venture capital.',
+      en: 'Private schools, academies and courses on entrepreneurship, innovation and venture capital.',
+    },
+  },
+  {
+    key: 'mentors',
+    family: 'personal',
+    source: ['GRUPPI DI MENTOR', 'EMPOWERMENT PROGRAM', 'Empowerment Programs'],
+    color: '#0E5F55',
+    label: { it: 'Gruppi di mentor', en: 'Mentor groups' },
+    short: { it: 'Mentor', en: 'Mentors' },
+    definition: {
+      it: 'Reti di imprenditori e manager esperti che affiancano founder e team con mentoring e percorsi di crescita.',
+      en: 'Networks of experienced entrepreneurs and managers who support founders and teams through mentoring and growth programmes.',
     },
   },
   // ── Environmental enablers
   {
     key: 'institution',
     family: 'environmental',
-    source: ['INSTITUTIONS', 'Institution'],
+    source: ['ISTITUZIONI', 'INSTITUTIONS', 'Institution'],
     color: '#1E6B3A',
     label: { it: 'Istituzioni', en: 'Institutions' },
     short: { it: 'Istituzioni', en: 'Institutions' },
@@ -158,23 +145,11 @@ export const CATEGORIES = [
     },
   },
   {
-    key: 'associations',
-    family: 'environmental',
-    source: ['ASSOCIATIONS', 'Association'],
-    color: '#5E9E2E',
-    label: { it: 'Associazioni', en: 'Associations' },
-    short: { it: 'Associazioni', en: 'Associations' },
-    definition: {
-      it: 'Associazioni di categoria e network che rappresentano e connettono l’ecosistema.',
-      en: 'Trade associations and networks representing and connecting the ecosystem.',
-    },
-  },
-  {
     key: 'media',
     family: 'environmental',
     source: ['MEDIA', 'Media & Communities'],
     color: '#2F9C6A',
-    label: { it: 'Media e community', en: 'Media & communities' },
+    label: { it: 'Media', en: 'Media' },
     short: { it: 'Media', en: 'Media' },
     definition: {
       it: 'Testate, piattaforme e community dedicate all’innovazione.',
@@ -182,15 +157,52 @@ export const CATEGORIES = [
     },
   },
   {
-    key: 'coworking',
+    key: 'associations',
     family: 'environmental',
-    source: ['COWORKING', 'CoWorking'],
-    color: '#8CC152',
-    label: { it: 'Coworking', en: 'Coworking spaces' },
-    short: { it: 'Coworking', en: 'Coworking' },
+    source: ['ASSOCIAZIONI DI CATEGORIA', 'ASSOCIATIONS', 'Association'],
+    color: '#5E9E2E',
+    label: { it: 'Associazioni di categoria', en: 'Trade associations' },
+    short: { it: 'Associazioni', en: 'Associations' },
     definition: {
-      it: 'Spazi di lavoro condivisi che ospitano community di innovatori.',
-      en: 'Shared workspaces hosting communities of innovators.',
+      it: 'Associazioni di categoria e network che rappresentano e connettono l’ecosistema.',
+      en: 'Trade associations and networks representing and connecting the ecosystem.',
+    },
+  },
+  // ── Business enablers
+  {
+    key: 'incubator',
+    family: 'business',
+    source: ['INCUBATOR/ACCELERATOR', 'INCUBATOR / ACCELERATOR', 'Incubator / Accelerator', 'PST', 'Science Park', 'COWORKING', 'CoWorking'],
+    color: '#1F5FBF',
+    label: { it: 'Incubatori e acceleratori', en: 'Incubators & accelerators' },
+    short: { it: 'Incubatori', en: 'Incubators' },
+    definition: {
+      it: 'Programmi e spazi che supportano le startup nelle prime fasi con servizi, mentoring e network, inclusi parchi scientifici e coworking per startup.',
+      en: 'Programmes and spaces supporting early-stage startups with services, mentoring and networks, including science parks and startup coworking spaces.',
+    },
+  },
+  {
+    key: 'venture-builder',
+    family: 'business',
+    source: ['VENTURE BUILDER', 'VENTURE BUILDER/STARTUP STUDIO', 'Startup Studio / Venture Builder'],
+    color: '#4F8FEA',
+    label: { it: 'Venture builder', en: 'Venture builders' },
+    short: { it: 'Venture builder', en: 'Venture builders' },
+    definition: {
+      it: 'Realtà che creano, co-fondano e fanno crescere nuove imprese insieme a founder, corporate e investitori.',
+      en: 'Organisations that create, co-found and grow new companies together with founders, corporates and investors.',
+    },
+  },
+  {
+    key: 'startup-studio',
+    family: 'business',
+    source: ['STARTUP STUDIO'],
+    color: '#14306B',
+    label: { it: 'Startup studio', en: 'Startup studios' },
+    short: { it: 'Startup studio', en: 'Startup studios' },
+    definition: {
+      it: 'Team stabili che generano idee in proprio e lanciano in serie nuove startup, condividendo risorse e competenze.',
+      en: 'Standing teams that generate their own ideas and launch new startups in series, sharing resources and skills.',
     },
   },
   // ── Outside the four families
@@ -242,10 +254,10 @@ export const categoryLabel = (key: CategoryKey, locale: Locale) => CATEGORY_BY_K
  * "unclassified" stay outside them. Labels live in the dictionaries (what.families).
  */
 export const CATEGORY_FAMILIES = [
-  { key: 'personal', icon: 'book', color: '#0B8A78', categories: ['programs', 'training'] },
-  { key: 'business', icon: 'rocket', color: '#1F5FBF', categories: ['incubator', 'venture-builder', 'science-park'] },
-  { key: 'financial', icon: 'coins', color: '#C2410C', categories: ['vc', 'cvc', 'angels', 'crowdfunding', 'family-office', 'investor'] },
-  { key: 'environmental', icon: 'landmark', color: '#1E6B3A', categories: ['institution', 'associations', 'media', 'coworking'] },
+  { key: 'financial', icon: 'coins', color: '#C2410C', categories: ['vc', 'angels', 'regional-finance', 'cvc', 'crowdfunding', 'family-office', 'banks'] },
+  { key: 'personal', icon: 'book', color: '#0B8A78', categories: ['university', 'training', 'mentors'] },
+  { key: 'environmental', icon: 'landmark', color: '#1E6B3A', categories: ['institution', 'media', 'associations'] },
+  { key: 'business', icon: 'rocket', color: '#1F5FBF', categories: ['incubator', 'venture-builder', 'startup-studio'] },
 ] as const satisfies readonly { key: string; icon: string; color: string; categories: readonly CategoryKey[] }[];
 export type FamilyKey = (typeof CATEGORY_FAMILIES)[number]['key'];
 export const FAMILY_BY_KEY = Object.fromEntries(CATEGORY_FAMILIES.map((f) => [f.key, f])) as Record<

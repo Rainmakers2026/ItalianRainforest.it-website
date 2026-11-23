@@ -67,10 +67,10 @@ const en: Dictionary = {
       {
         icon: 'building',
         title: 'Spaces & programmes',
-        text: 'Incubators, accelerators, venture builders, coworking spaces and science parks where ideas grow.',
+        text: 'Incubators, accelerators, venture builders and startup studios where ideas grow.',
       },
       { icon: 'landmark', title: 'Public support', text: 'Institutions and associations backing entrepreneurs.' },
-      { icon: 'users', title: 'Training & community', text: 'Courses, empowerment programmes, media and networks to grow and find fellow travellers.' },
+      { icon: 'users', title: 'Training & community', text: 'University courses, training programmes, mentor groups and media to grow and find fellow travellers.' },
     ],
     quote: 'To save our nation in one generation through impact, entrepreneurship and innovation.',
     quoteBy: 'Our “why”',
@@ -114,10 +114,10 @@ const en: Dictionary = {
       environmental: 'Environmental',
     },
     familiesDefinition: {
-      personal: 'They grow people: skills, mindset and learning paths for entrepreneurs.',
-      business: 'They start and grow companies: incubation, acceleration, venture building and technology transfer.',
-      financial: 'They bring capital to startups: from business angels to venture capital, from crowdfunding to family offices.',
-      environmental: 'They shape the context: institutions, associations, media and spaces that hold the ecosystem together.',
+      personal: 'They grow people: public university programmes, private training and mentor groups for entrepreneurs.',
+      business: 'They start and grow companies: incubators and accelerators, venture builders and startup studios.',
+      financial: 'They bring capital to startups: venture capital, business angel networks, regional financial agencies, corporate venture capital, crowdfunding, family offices and banks for startups.',
+      environmental: 'They shape the context: institutions, media and trade associations that hold the ecosystem together.',
     },
     upcoming: {
       personal: [] as string[],
@@ -440,7 +440,7 @@ const en: Dictionary = {
       },
       {
         q: 'How are organisations categorised?',
-        a: 'By player type, the “Player type” column of the database. Today the {active} organisations listed fall into {categories} player types, grouped into the four kinds of enablers: {familyList}. In detail: {categoryList}. An organisation can have more than one type (for example a venture capital firm that also runs a coworking space).',
+        a: 'By player type, the “Player type” column of the database. Today the {active} organisations listed fall into {categories} player types, grouped into the four kinds of enablers: {familyList}. In detail: {categoryList}. An organisation can have more than one type (for example a venture capital firm that also runs an incubator space).',
       },
       {
         q: 'How is the data verified?',

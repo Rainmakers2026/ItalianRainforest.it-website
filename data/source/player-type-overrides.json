@@ -1,0 +1,139 @@
+{
+ "_about": "Player types of the site (16 types in 4 kinds of enablers, see src/lib/data/taxonomy.ts). The database export still uses the old PLAYER TYPE values: \"rename\" maps them to the new ones, \"byName\" sets the types of single organisations (replacing the export value). Applied by scripts/import-irf-csv.mjs; the export value is kept in \"PLAYER TYPE (EXPORT)\". To be validated by Rainmakers.",
+ "rename": {
+  "INCUBATOR/ACCELERATOR": "INCUBATOR/ACCELERATOR",
+  "PST": "INCUBATOR/ACCELERATOR",
+  "COWORKING": "INCUBATOR/ACCELERATOR",
+  "VENTURE BUILDER/STARTUP STUDIO": "VENTURE BUILDER",
+  "VC": "VC",
+  "INVESTOR": "VC",
+  "BAN/CLUB DEAL": "BAN",
+  "CVC": "CVC",
+  "CROWDFUNDING PLATFORM": "CROWDFUNDING",
+  "FAMILY OFFICE": "FAMILY OFFICE",
+  "CORSI DI FORMAZIONE": "PERCORSI FORMATIVI PRIVATI",
+  "EMPOWERMENT PROGRAM": "GRUPPI DI MENTOR",
+  "INSTITUTIONS": "ISTITUZIONI",
+  "MEDIA": "MEDIA",
+  "ASSOCIATIONS": "ASSOCIAZIONI DI CATEGORIA"
+ },
+ "byName": {
+  "12Venture": [
+   "STARTUP STUDIO"
+  ],
+  "20 Ventures": [
+   "STARTUP STUDIO"
+  ],
+  "Arboria/ArborIA": [
+   "STARTUP STUDIO"
+  ],
+  "Day One": [
+   "STARTUP STUDIO"
+  ],
+  "Dlventures": [
+   "STARTUP STUDIO"
+  ],
+  "Feedel Ventures": [
+   "STARTUP STUDIO"
+  ],
+  "Kitzanos - Venture Builders": [
+   "STARTUP STUDIO"
+  ],
+  "Magnisi Venture": [
+   "STARTUP STUDIO"
+  ],
+  "Mamazen Startup Studios": [
+   "STARTUP STUDIO"
+  ],
+  "Nana Bianca": [
+   "STARTUP STUDIO"
+  ],
+  "One Factory": [
+   "STARTUP STUDIO"
+  ],
+  "Phoenix Startup Studio": [
+   "STARTUP STUDIO"
+  ],
+  "Start Factor": [
+   "STARTUP STUDIO"
+  ],
+  "Startup Bakery": [
+   "STARTUP STUDIO"
+  ],
+  "StartupGym": [
+   "STARTUP STUDIO"
+  ],
+  "Techbricks": [
+   "STARTUP STUDIO"
+  ],
+  "VeniSIA": [
+   "STARTUP STUDIO"
+  ],
+  "Efficiens Venture Studio": [
+   "STARTUP STUDIO"
+  ],
+  "Finlombarda Gestioni": [
+   "FINANZIARIE REGIONALI"
+  ],
+  "Friulia Finanziaria FVG": [
+   "FINANZIARIE REGIONALI"
+  ],
+  "Gepafin": [
+   "FINANZIARIE REGIONALI"
+  ],
+  "Lazio Innova": [
+   "FINANZIARIE REGIONALI"
+  ],
+  "SFIRS": [
+   "FINANZIARIE REGIONALI"
+  ],
+  "Sviluppo Basilicata - T3": [
+   "FINANZIARIE REGIONALI"
+  ],
+  "Trentino Sviluppo": [
+   "FINANZIARIE REGIONALI"
+  ],
+  "Intesa Sanpaolo Innovation Center": [
+   "BANCHE PER STARTUP"
+  ],
+  "Unicredit Start Lab": [
+   "BANCHE PER STARTUP"
+  ],
+  "ICCREA BANCA S.P.A.": [
+   "BANCHE PER STARTUP"
+  ],
+  "Emil Banca / MUG": [
+   "BANCHE PER STARTUP"
+  ],
+  "SellaLab": [
+   "BANCHE PER STARTUP"
+  ],
+  "Le Village By Crédit Agricole Milano": [
+   "BANCHE PER STARTUP"
+  ],
+  "Contamination Lab - Università di Cagliari": [
+   "CORSI UNIVERSITARI PUBBLICI"
+  ],
+  "Endeavor Italy": [
+   "GRUPPI DI MENTOR"
+  ],
+  "StartupItalia": [
+   "MEDIA"
+  ],
+  "Crowdinvest": [
+   "CROWDFUNDING"
+  ],
+  "Key capital": [
+   "VC"
+  ],
+  "FeatVentures": [
+   "VC"
+  ],
+  "Italians Angels for Biotech": [
+   "BAN"
+  ],
+  "Angels 4 Impact": [
+   "BAN"
+  ]
+ }
+}

@@ -65,10 +65,10 @@ const it = {
       {
         icon: 'building',
         title: 'Spazi e supporto operativo',
-        text: 'Incubatori, acceleratori, venture builder, coworking e parchi scientifici dove far crescere un’idea.',
+        text: 'Incubatori, acceleratori, venture builder e startup studio dove far crescere un’idea.',
       },
       { icon: 'landmark', title: 'Supporto istituzionale', text: 'Istituzioni e associazioni che sostengono chi fa impresa.' },
-      { icon: 'users', title: 'Formazione e informazione', text: 'Corsi, programmi di empowerment, media e network per crescere e trovare compagni di strada.' },
+      { icon: 'users', title: 'Formazione e informazione', text: 'Corsi universitari, percorsi formativi, gruppi di mentor e media per crescere e trovare compagni di strada.' },
     ],
     quote: 'Salvare la nostra nazione in una sola generazione con impatto, imprenditoria e innovazione.',
     quoteBy: 'Il nostro “why”',
@@ -112,10 +112,10 @@ const it = {
       environmental: 'Ambientali',
     },
     familiesDefinition: {
-      personal: 'Fanno crescere le persone: competenze, mentalità e percorsi per chi fa impresa.',
-      business: 'Fanno nascere e crescere le imprese: incubazione, accelerazione, venture building e trasferimento tecnologico.',
-      financial: 'Portano capitale alle startup: dal business angel al venture capital, dal crowdfunding al family office.',
-      environmental: 'Creano il contesto: istituzioni, associazioni, media e spazi che tengono insieme l’ecosistema.',
+      personal: 'Fanno crescere le persone: corsi universitari pubblici, percorsi formativi privati e gruppi di mentor per chi fa impresa.',
+      business: 'Fanno nascere e crescere le imprese: incubatori e acceleratori, venture builder e startup studio.',
+      financial: 'Portano capitale alle startup: venture capital, business angel network, finanziarie regionali, corporate venture capital, crowdfunding, family office e banche per startup.',
+      environmental: 'Creano il contesto: istituzioni, media e associazioni di categoria che tengono insieme l’ecosistema.',
     },
     upcoming: {
       personal: [] as string[],
@@ -438,7 +438,7 @@ const it = {
       },
       {
         q: 'Come sono classificate le organizzazioni?',
-        a: 'Per tipologia di player, la colonna «Player type» del database. Oggi le {active} organizzazioni mappate rientrano in {categories} tipologie, raggruppate nei quattro tipi di abilitatori: {familyList}. Nel dettaglio: {categoryList}. Un’organizzazione può avere più tipologie (per esempio un venture capital che gestisce anche un coworking).',
+        a: 'Per tipologia di player, la colonna «Player type» del database. Oggi le {active} organizzazioni mappate rientrano in {categories} tipologie, raggruppate nei quattro tipi di abilitatori: {familyList}. Nel dettaglio: {categoryList}. Un’organizzazione può avere più tipologie (per esempio un venture capital che gestisce anche un incubatore).',
       },
       {
         q: 'Come vengono verificati i dati?',

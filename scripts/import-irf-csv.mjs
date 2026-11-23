@@ -179,6 +179,18 @@ for (const [key, r] of seen) {
   });
 }
 
+// ---------- player types (data/source/player-type-overrides.json) ----------
+const typeMap = JSON.parse(await readFile(path.join(root, 'data/source/player-type-overrides.json'), 'utf8'));
+report.retyped = [];
+for (const r of records) {
+  const exported = r.fields['PLAYER TYPE'];
+  const own = typeMap.byName[r.fields['COMPANY NAME']];
+  const types = own ?? [...new Set(exported.map((t) => typeMap.rename[t] ?? t))];
+  r.fields['PLAYER TYPE (EXPORT)'] = exported;
+  r.fields['PLAYER TYPE'] = types;
+  if (own) report.retyped.push(`${r.fields['COMPANY NAME']}: ${exported.join(', ') || '—'} → ${types.join(', ')}`);
+}
+
 // ---------- logos ----------
 const manifestPath = path.join(root, 'data/snapshot/logos.json');
 let logos = existsSync(manifestPath) ? JSON.parse(await readFile(manifestPath, 'utf8')).logos : {};
@@ -301,6 +313,10 @@ ${list(report.sharedLogos)}
 ## Logo files without a matching organisation (${report.unmatchedLogos.length})
 Archived in \`data/logos/unmatched/\`, not published.
 ${list(report.unmatchedLogos)}
+
+## Player types set by name (${report.retyped.length})
+From \`data/source/player-type-overrides.json\` (export value → type on the site). To be validated.
+${list(report.retyped)}
 
 ## Repeated rows skipped (${report.duplicateRows.length})
 ${list(report.duplicateRows)}
