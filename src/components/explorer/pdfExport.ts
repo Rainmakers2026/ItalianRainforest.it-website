@@ -6,12 +6,13 @@
  * it (emoji and other symbols are dropped, accented Latin letters are kept).
  */
 
-export type PdfRow = { name: string; type: string; city: string; region: string; industry: string; website: string; status: string };
+export type PdfRow = Record<string, string>;
 export type PdfMeta = {
   title: string;
   subtitle: string;
   footer: string;
-  columns: { name: string; type: string; city: string; region: string; industry: string; website: string; status: string };
+  /** Columns chosen in the "Columns" dialog, in order (key of PdfRow + header label). */
+  columns: { key: string; label: string }[];
 };
 
 const CP1252_EXTRA = new Set('€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ'.split(''));
@@ -75,15 +76,18 @@ function footers(doc: import('jspdf').jsPDF, meta: PdfMeta) {
 
 function table(doc: import('jspdf').jsPDF, autoTable: typeof import('jspdf-autotable').autoTable, rows: PdfRow[], meta: PdfMeta, startY: number) {
   const c = meta.columns;
+  const many = c.length > 7;
   autoTable(doc, {
     startY,
     margin: { left: 12, right: 12, top: 30, bottom: 14 },
-    head: [[c.name, c.type, c.city, c.region, c.industry, c.website, c.status].map(toWinAnsi)],
-    body: rows.map((r) => [r.name, r.type, r.city, r.region, r.industry, r.website, r.status].map(toWinAnsi)),
-    styles: { font: 'helvetica', fontSize: 7.5, cellPadding: 1.6, textColor: [30, 40, 60], overflow: 'linebreak', lineColor: [225, 230, 240], lineWidth: 0.1 },
+    head: [c.map((col) => toWinAnsi(col.label))],
+    body: rows.map((r) => c.map((col) => toWinAnsi(r[col.key] ?? ''))),
+    styles: { font: 'helvetica', fontSize: many ? 6.5 : 7.5, cellPadding: 1.6, textColor: [30, 40, 60], overflow: 'linebreak', lineColor: [225, 230, 240], lineWidth: 0.1 },
     headStyles: { fillColor: BRAND, textColor: 255, fontStyle: 'bold' },
     alternateRowStyles: { fillColor: [245, 248, 253] },
-    columnStyles: { 0: { fontStyle: 'bold', cellWidth: 46 }, 1: { cellWidth: 44 }, 5: { cellWidth: 44 }, 6: { cellWidth: 22 } },
+    columnStyles: Object.fromEntries(
+      c.map((col, i) => [i, col.key === 'name' ? { fontStyle: 'bold' as const, cellWidth: 40 } : col.key === 'description' ? { cellWidth: many ? 70 : 90 } : col.key === 'status' ? { cellWidth: 20 } : {}]),
+    ),
     didDrawPage: () => header(doc, meta, logoCache),
   });
 }

@@ -76,7 +76,10 @@ export function DatabaseExplorer() {
   const { state, results, filters, locale, t, openPlayer, resetFilters } = useExplorer();
   const root = useRef<HTMLDivElement>(null);
   const tableTop = useRef<HTMLDivElement>(null);
-  const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: 'name', dir: 1 });
+  // null = default order: relevance while searching, otherwise A-Z by name.
+  const [userSort, setSort] = useState<{ key: SortKey; dir: 1 | -1 } | null>(null);
+  const searching = !!filters.q.trim();
+  const sort = useMemo(() => userSort ?? { key: 'name' as SortKey, dir: 1 as const }, [userSort]);
   // Page resets to 0 whenever the result set (filters) changes.
   const [pager, setPager] = useState({ filters, page: 0 });
   const page = pager.filters === filters ? pager.page : 0;
@@ -100,9 +103,10 @@ export function DatabaseExplorer() {
   }, []);
 
   const sorted = useMemo(() => {
+    if (!userSort && searching) return results; // already ranked by relevance
     const s = [...results].sort(sorter(sort.key, locale));
     return sort.dir === 1 ? s : s.reverse();
-  }, [results, sort, locale]);
+  }, [results, sort, userSort, searching, locale]);
   const pages = Math.max(1, Math.ceil(sorted.length / PAGE));
   const current = sorted.slice(page * PAGE, page * PAGE + PAGE);
   const cols = t.database.columns;
@@ -112,12 +116,12 @@ export function DatabaseExplorer() {
     tableTop.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
   const toggleSort = (key: SortKey) => {
-    setSort((s) => (s.key === key ? { key, dir: s.dir === 1 ? -1 : 1 } : { key, dir: 1 }));
+    setSort((s) => (s && s.key === key ? { key, dir: s.dir === 1 ? -1 : 1 } : { key, dir: 1 }));
     track('database_filter_used', { filter: 'sort', value: key });
   };
 
   const sortHeader = (k: SortKey, label: string, className = '') => {
-    const active = sort.key === k;
+    const active = (!!userSort || !searching) && sort.key === k;
     return (
       <th
         key={k}

@@ -1,6 +1,6 @@
 import { getDataset } from '@/lib/data/provider';
-import { exportRows, toCsv } from '@/lib/export';
-import { applyFilters, parseFilters } from '@/lib/filters';
+import { parseDownloadFields } from '@/lib/download-fields';
+import { exportRows, selectForExport, toCsv } from '@/lib/export';
 import type { Locale } from '@/lib/i18n/config';
 import {
   clientKey,
@@ -17,10 +17,14 @@ import { SITE } from '@/lib/site';
 
 async function buildFile(query: string, format: 'csv' | 'json', locale: Locale) {
   const { players, updatedAt } = await getDataset();
-  const rows = exportRows(applyFilters(players, parseFilters(new URLSearchParams(query))), locale);
+  // Only the public dataset, never the master file. "filtered": same filters + search as on
+  // screen (map or database), every result, no pagination. "all": every publishable player.
+  const sp = new URLSearchParams(query);
+  const { scope, list } = selectForExport(players, sp);
+  const rows = exportRows(list, locale, parseDownloadFields(sp.get('fields')));
   const stamp = updatedAt.slice(0, 10);
   const attribution = `Italian Rainforest (${SITE.url}) — copyleft, non-commercial use — ${stamp}`;
-  const name = `italian-rainforest-${stamp}.${format}`;
+  const name = `italian-rainforest-${scope === 'all' ? 'full-' : ''}${stamp}.${format}`;
   const body =
     format === 'csv'
       ? toCsv(rows, attribution)
@@ -31,6 +35,7 @@ async function buildFile(query: string, format: 'csv' | 'json', locale: Locale) 
       'content-disposition': `attachment; filename="${name}"`,
       'cache-control': 'no-store',
       'x-row-count': String(rows.length),
+      'x-export-scope': scope,
     },
   });
 }

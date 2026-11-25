@@ -5,6 +5,8 @@
  */
 export type AnalyticsEvent =
   | 'map_view'
+  | 'download_columns'
+  | 'search_suggestion_open'
   | 'explorer_view_switch'
   | 'lead_gate_view'
   | 'lead_signup'

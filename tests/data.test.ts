@@ -5,7 +5,7 @@ import type { PublicPlayer } from '@/lib/data/schema';
 import { computeStats } from '@/lib/data/stats';
 import { categoryFromSource } from '@/lib/data/taxonomy';
 import { exportRows, toCsv } from '@/lib/export';
-import { applyFilters, DEFAULT_FILTERS, facetCounts, parseFilters, serializeFilters } from '@/lib/filters';
+import { applyFilters, DEFAULT_FILTERS, facetCounts, parseFilters, searchSuggestions, serializeFilters } from '@/lib/filters';
 
 const snapshot = JSON.parse(readFileSync('data/snapshot/irf-records.json', 'utf8')) as { exportDate: string; records: RawRecord[] };
 const lookups: Lookups = {
@@ -123,7 +123,7 @@ describe('export', () => {
     expect(csv).not.toContain('secret.person');
     expect(csv).not.toContain('Mario Rossi');
     expect(csv).toContain('Acme Ventures');
-    expect(csv.split('\r\n')[0]).toContain('company_name,player_type,website');
+    expect(csv.split('\r\n')[0]).toContain('company_name,website,short_description,player_type');
   });
 
   it('neutralises spreadsheet formulas', () => {
@@ -156,6 +156,17 @@ describe('query state', () => {
     expect(milano.length).toBeGreaterThan(10);
     expect(milano.every((p) => p.location?.city?.toLowerCase() === 'milano')).toBe(true);
     expect(facetCounts(players, DEFAULT_FILTERS, 'region').get('lombardia')).toBeGreaterThan(50);
+  });
+
+  it('search ignores punctuation and ranks name matches first', () => {
+    const birex = applyFilters(players, { ...DEFAULT_FILTERS, q: 'birex' });
+    expect(birex[0]?.name).toMatch(/bi-rex/i);
+    const q = { ...DEFAULT_FILTERS, q: 'polihub' };
+    const r = applyFilters(players, q);
+    expect(r[0]?.name.toLowerCase()).toContain('polihub');
+    expect(searchSuggestions(r, q.q).every((p) => /polihub/i.test(p.name))).toBe(true);
+    // Ranking never changes the result set, only its order.
+    expect(new Set(r.map((p) => p.id))).toEqual(new Set(players.filter((p) => r.includes(p)).map((p) => p.id)));
   });
 
   it('search is accent- and case-insensitive', () => {

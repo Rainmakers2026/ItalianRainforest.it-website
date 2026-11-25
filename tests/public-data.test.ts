@@ -15,6 +15,7 @@ import { dedupe, isStartup, normalizeRecord, RESERVED_FIELDS, type Lookups, type
 import { PublicPlayerSchema, type PublicPlayer } from '@/lib/data/schema';
 import { computeStats } from '@/lib/data/stats';
 import { CATEGORY_FAMILIES } from '@/lib/data/taxonomy';
+import { DOWNLOAD_FIELDS, parseDownloadFields } from '@/lib/download-fields';
 import { exportRows, toCsv } from '@/lib/export';
 import { applyFilters, DEFAULT_FILTERS } from '@/lib/filters';
 
@@ -134,14 +135,15 @@ describe('reserved fields never reach the browser', () => {
 
   it('no phone, reference, email, information source or secondary type value in the public payload or the downloads', () => {
     const payload = JSON.stringify({ players }).toUpperCase();
-    const download = toCsv(exportRows(players, 'it'), 'x').toUpperCase() + JSON.stringify(exportRows(players, 'en')).toUpperCase();
+    const all = [...DOWNLOAD_FIELDS];
+    const download = toCsv(exportRows(players, 'it', all), 'x').toUpperCase() + JSON.stringify(exportRows(players, 'en', all)).toUpperCase();
     expect(reservedValues.size).toBeGreaterThan(100);
     const leaks = [...reservedValues].filter((v) => !secondaryOnly.has(v) && (payload.includes(v) || download.includes(v)));
     expect(leaks).toEqual([]);
     for (const k of RESERVED_FIELDS) expect(payload).not.toContain(`"${k}"`);
     expect(payload).not.toMatch(/SECONDARY/);
     // Download columns: an explicit list, none of them reserved.
-    expect(Object.keys(exportRows(players, 'it')[0]!).join(',')).not.toMatch(/secondary|reference|source|phone|email/i);
+    expect(Object.keys(exportRows(players, 'it', all)[0]!).join(',')).not.toMatch(/secondary|reference|source|phone|email/i);
   });
 
   it('a raw record with reserved fields is sanitised', () => {
@@ -184,6 +186,13 @@ describe('MAIN TYPE is the only public classification', () => {
     const both = applyFilters(players, { ...DEFAULT_FILTERS, categories: ['vc'], region: 'lombardia' });
     expect(both.length).toBeGreaterThan(0);
     expect(both.every((p) => p.categories[0] === 'vc' && p.location?.region === 'lombardia')).toBe(true);
+  });
+
+  it('downloads only allow public columns, in the chosen subset', () => {
+    expect(parseDownloadFields('email,phone,reference,secondary,website')).toEqual(['name', 'website']);
+    expect(Object.keys(exportRows(players, 'it', ['website', 'region'])[0]!)).toEqual(['company_name', 'website', 'region']);
+    const filtered = applyFilters(players, { ...DEFAULT_FILTERS, categories: ['vc'], region: 'lombardia' });
+    expect(exportRows(filtered, 'it', ['type']).every((r) => r.player_type === exportRows(filtered, 'it', ['type'])[0]!.player_type)).toBe(true);
   });
 
   it('downloads use one type per row', () => {

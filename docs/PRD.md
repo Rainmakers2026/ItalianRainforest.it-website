@@ -74,3 +74,44 @@ automatically.
 - Open point to validate with Rainmakers: `data/source/player-type-overrides.json`
   `byName` refines ~40 organisations into the types the export has no MAIN TYPE value for
   (startup studio, regional finance, banks, universities, mentors).
+
+## Public database download — P0 (update 1/6)
+
+Prevails over earlier implementations. Applies to every download entry point (map and
+database, CSV / JSON / PDF and any future format).
+
+### 1. Two modes
+- **Complete database** ("Scarica database completo"): every publishable player — the
+  public dataset after all the rules above (no STARTUP, no INACTIVE, no template rows,
+  deduplicated).
+- **Filtered database** ("Scarica database filtrato"): only the players matching the
+  active filters and search at the moment of the download.
+
+### 2. Filters honoured
+The filtered file applies, at the same time, MAIN TYPE (PLAYER TYPE in the interface),
+region, every other geographic filter (city, …), the text search and any other public
+filter, present or future. There is one filter definition (`Filters`, `applyFilters`)
+shared by map, database and download: a new public filter is added there and reaches the
+download automatically.
+
+### 3. No pagination, exact count
+The file contains every matching result, regardless of the table page. Exported rows =
+total filtered results shown on screen. With no active filter the two modes produce the
+same rows. With zero results the filtered download is disabled (never falls back to the
+complete database).
+
+### 4. Public data layer only
+Files are built server-side from `getDataset()` (the public dataset) — never from the
+Rainmakers OS master export. The master (`data/source/`) is never served, copied to
+`public/`, read by an API route or offered as a download. Reserved fields stay out (see
+§ 5 above).
+
+### Implementation (codebase)
+- `src/lib/export.ts` — `selectForExport(players, params)`: `scope=all` → whole public
+  dataset (filter params ignored); otherwise `applyFilters(players, parseFilters(params))`.
+- `src/app/api/download/route.ts` — the only data-file endpoint; `x-row-count` and
+  `x-export-scope` response headers; `full-` in the filename for the complete mode.
+- `src/components/explorer/Downloads.tsx` — sends `serializeFilters(filters)` + `scope`;
+  PDF uses the same `results` / `players` lists (provider → `applyFilters`).
+- `tests/download-scope.test.ts` — modes, combined filters, no pagination, count, filter
+  round trip, empty result, master never reachable.

@@ -58,7 +58,16 @@ export const FILTER_PARAM_KEYS = ['q', 'category', 'region', 'city', 'industry',
 export const activeFilterCount = (f: Filters) =>
   (f.q.trim() ? 1 : 0) + f.categories.length + (f.region ? 1 : 0) + (f.city ? 1 : 0) + (f.industry ? 1 : 0) + (f.status !== 'all' ? 1 : 0);
 
-const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+/** Accent-, case- and punctuation-insensitive form: "Bi-Rex" → "bi rex", "dell'Innovazione" → "dell innovazione". */
+export const fold = (s: string) =>
+  s
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+const compact = (s: string) => fold(s).replace(/ /g, '');
+const searchTerms = (q: string) => fold(q).split(' ').filter(Boolean);
 
 const REGION_NAME = new Map(REGIONS.map((r) => [r.slug, `${r.it} ${r.en}`]));
 const PROVINCE_NAME = new Map(PROVINCES.map((p) => [p.slug, `${p.name} ${p.code}`]));
@@ -71,9 +80,11 @@ function haystack(p: PublicPlayer): string {
     h = fold(
       [
         p.name,
+        compact(p.name), // "birex" finds "Bi-Rex", "40 jemz" finds "40JEMZ"
         p.websiteHost,
         ...p.categories.map((c) => CATEGORY_TEXT.get(c)),
         p.location?.city,
+        p.location?.address,
         p.location?.province && PROVINCE_NAME.get(p.location.province),
         p.location?.region && REGION_NAME.get(p.location.region),
         ...p.industries,
@@ -82,6 +93,7 @@ function haystack(p: PublicPlayer): string {
         .filter(Boolean)
         .join(' '),
     );
+    h = ` ${h} `;
     haystacks.set(p, h);
   }
   return h;
@@ -99,14 +111,60 @@ function matches(p: PublicPlayer, f: Filters, skip?: Facet): boolean {
   if (skip !== 'industry' && f.industry && !p.industries.includes(f.industry)) return false;
   if (skip !== 'q' && f.q.trim()) {
     const h = haystack(p);
-    const terms = fold(f.q).split(/\s+/).filter(Boolean);
-    if (!terms.every((t) => h.includes(t))) return false;
+    if (!searchTerms(f.q).every((t) => h.includes(t))) return false;
   }
   return true;
 }
 
+const names = new WeakMap<PublicPlayer, { full: string; compact: string; words: string[] }>();
+function nameParts(p: PublicPlayer) {
+  let n = names.get(p);
+  if (!n) {
+    const full = fold(p.name);
+    n = { full, compact: full.replace(/ /g, ''), words: full.split(' ') };
+    names.set(p, n);
+  }
+  return n;
+}
+
+/**
+ * Relevance of a player for a query (higher first): exact name, name prefix, a name word
+ * starting with the term, name contains, then the other fields (type, place, industry,
+ * description). Used to order search results on map and database.
+ */
+export function searchScore(p: PublicPlayer, q: string): number {
+  const terms = searchTerms(q);
+  if (!terms.length) return 0;
+  const n = nameParts(p);
+  const joined = terms.join(' ');
+  const joinedCompact = terms.join('');
+  let score = 0;
+  if (n.full === joined || n.compact === joinedCompact) score += 1000;
+  else if (n.full.startsWith(joined) || n.compact.startsWith(joinedCompact)) score += 500;
+  for (const t of terms) {
+    if (n.words.some((w) => w.startsWith(t))) score += 80;
+    else if (n.compact.includes(t)) score += 40;
+    else if (p.websiteHost && fold(p.websiteHost).includes(t)) score += 20;
+    else score += 1; // matched in type, place, industry or description
+  }
+  return score;
+}
+
+/**
+ * The public dataset filtered by the query state. With a search query the results are
+ * ordered by relevance (stable, so ties keep the dataset order).
+ */
 export function applyFilters(players: PublicPlayer[], f: Filters): PublicPlayer[] {
-  return players.filter((p) => matches(p, f));
+  const out = players.filter((p) => matches(p, f));
+  if (!f.q.trim()) return out;
+  const score = new Map(out.map((p) => [p, searchScore(p, f.q)]));
+  return out.sort((a, b) => score.get(b)! - score.get(a)!);
+}
+
+/** Top name matches for the search suggestions (only players whose name matches). */
+export function searchSuggestions(results: PublicPlayer[], q: string, limit = 6): PublicPlayer[] {
+  if (!searchTerms(q).length) return [];
+  return results.filter((p) => searchScore(p, q) >= 40).slice(0, limit);
 }
 
 /** Counts per value of one facet, with every *other* active filter applied. */

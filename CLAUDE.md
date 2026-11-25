@@ -32,6 +32,21 @@ Full text: `docs/PRD.md` § "Public data visibility & player type classification
    snapshot. After every database update run `npm run data:import`, `npm run
    infographic:build` and `npm test`; never ship with a failing test.
 
+## Downloads (P0 — update 1/6, full text: `docs/PRD.md` § "Public database download")
+
+1. **Two modes.** "Scarica database completo" = every publishable player; "Scarica database
+   filtrato" = only the players matching the active filters and search.
+2. **All filters at once.** The filtered file honours MAIN TYPE (PLAYER TYPE in the UI),
+   region, city and other geographic filters, text search and every public filter, present
+   or future, through the one shared `Filters` / `applyFilters` (never a separate filter
+   logic for downloads).
+3. **No pagination, exact count.** Every matching result, regardless of the table page;
+   exported rows = filtered results on screen; with no filters the two modes coincide; zero
+   results never fall back to the full database.
+4. **Public data layer only.** Files come from `getDataset()` via `selectForExport()` in
+   `src/lib/export.ts`; the Rainmakers OS master (`data/source/`) is never served, copied to
+   `public/` or downloadable. Guarded by `tests/download-scope.test.ts`.
+
 ## Working rules
 
 - No production deploy without explicit approval: publish only on the preview branch

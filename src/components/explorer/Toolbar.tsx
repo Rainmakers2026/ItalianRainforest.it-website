@@ -1,25 +1,32 @@
 'use client';
 
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
 import { REGIONS } from '@/lib/geo/territories';
 import { CATEGORY_BY_KEY, CATEGORY_FAMILIES, STATUSES, type CategoryKey } from '@/lib/data/taxonomy';
-import { activeFilterCount, facetCounts, type Filters } from '@/lib/filters';
+import type { PublicPlayer } from '@/lib/data/schema';
+import { activeFilterCount, facetCounts, searchSuggestions, type Filters } from '@/lib/filters';
 import { formatNumber } from '@/lib/i18n/config';
 import { fmt } from '@/lib/i18n';
 import { Dialog } from '../ui/Dialog';
 import { Icon } from '../ui/Icon';
+import { Avatar } from './Avatar';
 import { CategoryBar } from './CategoryBar';
 import { useExplorer } from './ExplorerProvider';
-import { regionName } from './labels';
+import { categoryName, locationLabel, regionName } from './labels';
 
 type Source = 'map' | 'database';
 
 function SearchBox({ source }: { source: Source }) {
-  const { filters, setFilters, t, results } = useExplorer();
+  const { filters, setFilters, t, results, locale, openPlayer } = useExplorer();
   const [value, setValue] = useState(filters.q);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1);
   const id = useId();
+  const listId = useId();
+  const input = useRef<HTMLInputElement>(null);
   const committed = useRef(filters.q);
+  const s = t.explorer.searchBox;
 
   // Keep in sync when the query changes elsewhere (other section, reset, back button).
   useEffect(() => {
@@ -29,14 +36,36 @@ function SearchBox({ source }: { source: Source }) {
     }
   }, [filters.q]);
 
+  const commit = useCallback(
+    (v: string) => {
+      committed.current = v;
+      setFilters({ q: v }, source);
+    },
+    [setFilters, source],
+  );
+
   useEffect(() => {
     if (value === committed.current) return;
-    const h = setTimeout(() => {
-      committed.current = value;
-      setFilters({ q: value }, source);
-    }, 200);
+    const h = setTimeout(() => commit(value), 200);
     return () => clearTimeout(h);
-  }, [value, setFilters, source]);
+  }, [value, commit]);
+
+  // "/" focuses the search (unless the user is typing somewhere else).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== '/' || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
+      const el = e.target as HTMLElement | null;
+      if (el && (el.isContentEditable || /^(input|textarea|select)$/i.test(el.tagName))) return;
+      const box = input.current;
+      if (!box || !box.offsetParent) return; // hidden (other section)
+      const r = box.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > window.innerHeight) return; // only the visible box
+      e.preventDefault();
+      box.focus();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   // Search analytics without the query text itself (may contain personal data).
   const resultsCount = results.length;
@@ -52,6 +81,45 @@ function SearchBox({ source }: { source: Source }) {
     return () => clearTimeout(h);
   }, [filters.q, resultsCount, source]);
 
+  const suggestions = useMemo(() => (value.trim() && value === filters.q ? searchSuggestions(results, filters.q) : []), [results, filters.q, value]);
+  const showList = open && suggestions.length > 0;
+  const current = active >= 0 && active < suggestions.length ? active : -1;
+
+  const choose = (p: PublicPlayer) => {
+    setOpen(false);
+    setActive(-1);
+    track('search_suggestion_open', { source, position: suggestions.indexOf(p) + 1 });
+    openPlayer(p.id, source === 'map' ? 'map' : 'database');
+  };
+  const clear = () => {
+    setValue('');
+    commit('');
+    setActive(-1);
+    input.current?.focus();
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown' && suggestions.length) {
+      e.preventDefault();
+      setOpen(true);
+      setActive((i) => (i + 1) % suggestions.length);
+    } else if (e.key === 'ArrowUp' && suggestions.length) {
+      e.preventDefault();
+      setOpen(true);
+      setActive((i) => (i <= 0 ? suggestions.length - 1 : i - 1));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (showList && current >= 0) choose(suggestions[current]!);
+      else {
+        commit(value);
+        setOpen(false);
+      }
+    } else if (e.key === 'Escape') {
+      if (showList) setOpen(false);
+      else if (value) clear();
+    }
+  };
+
   return (
     <div className="relative min-w-0 flex-1 md:min-w-[16rem]">
       <label htmlFor={id} className="sr-only">
@@ -59,16 +127,82 @@ function SearchBox({ source }: { source: Source }) {
       </label>
       <Icon name="search" size={18} className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-savoia" />
       <input
+        ref={input}
         id={id}
-        type="search"
-        inputMode="search"
+        type="text"
+        role="combobox"
+        aria-expanded={showList}
+        aria-controls={listId}
+        aria-autocomplete="list"
+        aria-activedescendant={showList && current >= 0 ? `${listId}-${current}` : undefined}
+        enterKeyHint="search"
         autoComplete="off"
         spellCheck={false}
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => {
+          setValue(e.target.value);
+          setOpen(true);
+          setActive(-1);
+        }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 120)}
+        onKeyDown={onKeyDown}
         placeholder={t.explorer.searchPlaceholder}
-        className="field field-pill pl-10"
+        className="field field-pill pr-10 pl-10"
       />
+      {value ? (
+        <button
+          type="button"
+          onClick={clear}
+          aria-label={s.clear}
+          className="absolute top-1/2 right-2 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-muted hover:bg-mist hover:text-ink"
+        >
+          <Icon name="x" size={16} />
+        </button>
+      ) : (
+        <kbd
+          aria-hidden="true"
+          className="pointer-events-none absolute top-1/2 right-3 hidden -translate-y-1/2 rounded border border-line px-1.5 font-sans text-xs text-subtle md:block"
+          title={s.shortcut}
+        >
+          /
+        </kbd>
+      )}
+      <ul
+        id={listId}
+        role="listbox"
+        aria-label={s.suggestions}
+        hidden={!showList}
+        className="absolute top-full right-0 left-0 z-30 mt-1.5 overflow-hidden rounded-2xl border border-line bg-white py-1 shadow-[var(--shadow-pop)]"
+      >
+        {suggestions.map((p, i) => {
+          const place = locationLabel(p, locale);
+          return (
+            <li
+              key={p.id}
+              id={`${listId}-${i}`}
+              role="option"
+              aria-selected={i === current}
+              onMouseDown={(e) => e.preventDefault()}
+              onMouseEnter={() => setActive(i)}
+              onClick={() => choose(p)}
+              className={`flex cursor-pointer items-center gap-3 px-3 py-2 ${i === current ? 'bg-mist' : ''}`}
+            >
+              <Avatar player={p} size={28} wide={!!p.logo} />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-bold text-ink">{p.name}</span>
+                <span className="block truncate text-xs text-muted">
+                  {categoryName(p.categories[0]!, locale)}
+                  {place ? ` · ${place}` : ''}
+                </span>
+              </span>
+            </li>
+          );
+        })}
+        <li role="presentation" className="border-t border-line px-3 pt-1.5 pb-1 text-xs text-subtle">
+          {fmt(s.allResults, { n: formatNumber(results.length, locale) })}
+        </li>
+      </ul>
     </div>
   );
 }
