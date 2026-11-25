@@ -3,8 +3,9 @@ import { CATEGORY_KEYS, STATUSES, type CategoryKey } from './taxonomy';
 
 /**
  * Canonical public schema. Everything in `PublicPlayer` may reach the browser.
- * Sensitive data (direct emails, phone numbers, contact persons) lives only in
- * `GatedContacts`, which is never part of the public payload or the exports.
+ * The direct email lives only in `GatedContacts`, never part of the public payload or
+ * the exports. Reserved columns (REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE)
+ * are not even read. See CLAUDE.md "Public data rules".
  */
 
 const categoryKey = z.enum(CATEGORY_KEYS as [CategoryKey, ...CategoryKey[]]);
@@ -40,7 +41,8 @@ export const PublicPlayerSchema = z.object({
   id: z.string(), // pseudonymous, stable (hash of the source record id)
   slug: z.string(),
   name: z.string().min(1),
-  categories: z.array(categoryKey).min(1),
+  /** Exactly one: the player's MAIN TYPE. Kept as an array for the filter helpers. */
+  categories: z.array(categoryKey).length(1),
   status: z.enum(STATUSES),
   website: z.url().nullable(),
   websiteHost: z.string().nullable(),
@@ -54,8 +56,6 @@ export const PublicPlayerSchema = z.object({
 
 export const GatedContactsSchema = z.object({
   email: z.string().nullable(),
-  phone: z.string().nullable(),
-  contactPerson: z.string().nullable(),
 });
 
 export type PublicPlayer = z.infer<typeof PublicPlayerSchema>;

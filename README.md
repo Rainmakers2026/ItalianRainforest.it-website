@@ -29,7 +29,7 @@ npm start
 | `test` | Vitest: read-only policy, sanitisation, export, query state |
 | `lint`, `typecheck`, `format` | ESLint, `tsc --noEmit`, Prettier |
 | `check:airtable-readonly` | Static guard: fails on any Airtable write path |
-| `data:import [csv] [logo-dir]` | Imports the IRF database export (CSV) into `data/snapshot/irf-records.json`; with a logo folder (one sub-folder per PLAYER TYPE, `<Company>.webp`) also rebuilds `public/logos/players`. Writes `docs/data-quality.md` |
+| `data:import [csv] [logo-dir]` | Imports the IRF database export (CSV) into `data/snapshot/irf-records.json`; with a logo folder (one sub-folder per type, `<Company>.webp`) also rebuilds `public/logos/players`. Writes `docs/data-quality.md` |
 | `data:geocode` | Geocodes new/changed addresses with OpenStreetMap Nominatim (cached in `data/snapshot/geocode-cache.json`), then re-imports |
 | `infographic:build` | Regenerates the downloadable infographic PNGs (`public/infographic/`) from the snapshot |
 | `brand:prepare <dir>` | Regenerates logos and favicon from the official artwork (1.webp white, 2.webp blue) |

@@ -238,13 +238,14 @@ export type Category = (typeof CATEGORIES)[number];
 export const CATEGORY_KEYS = CATEGORIES.map((c) => c.key) as CategoryKey[];
 export const CATEGORY_BY_KEY = Object.fromEntries(CATEGORIES.map((c) => [c.key, c])) as Record<CategoryKey, Category>;
 
+const sourceKey = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase().replace(/\s*\/\s*/g, '/');
 const SOURCE_TO_KEY = new Map<string, CategoryKey>(
-  CATEGORIES.flatMap((c) => c.source.map((s) => [s.toLowerCase(), c.key] as const)),
+  CATEGORIES.flatMap((c) => c.source.map((s) => [sourceKey(s), c.key] as const)),
 );
 
-/** PLAYER TYPE value → category. STARTUP and unknown values return null. */
+/** MAIN TYPE value → category (spaces and case normalised). STARTUP and unknown values return null. */
 export function categoryFromSource(raw: string): CategoryKey | null {
-  return SOURCE_TO_KEY.get(raw.trim().toLowerCase()) ?? null;
+  return SOURCE_TO_KEY.get(sourceKey(raw)) ?? null;
 }
 
 export const categoryLabel = (key: CategoryKey, locale: Locale) => CATEGORY_BY_KEY[key].label[locale];

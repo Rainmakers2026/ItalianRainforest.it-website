@@ -7,9 +7,20 @@
 //               (e.g. the unzipped "LOGHI PLAYER" archive). Optional: without it the
 //               existing logo manifest is kept.
 //
-// What it does (all deterministic, nothing invented):
-//   - drops template rows ("Nome", "Nome azienda") and STARTUP-only rows;
-//   - keeps the first occurrence of each company name (the export repeats a block);
+// Public data pipeline (P0 rules, see CLAUDE.md "Public data rules"):
+//   1. import → 2. validate/normalise → 3. dedupe (first occurrence of each company name,
+//   the export repeats a block) → 4. exclude MAIN TYPE = STARTUP (exact match after
+//   normalising spaces and case; "VENTURE BUILDER/STARTUP STUDIO" is kept) → 5. other
+//   publishability rules → 6. reserved fields are never read (column allowlist below, so
+//   REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, EMAIL, PHONE never reach the snapshot)
+//   → 7. the snapshot is the public dataset every component reads.
+//   Startups stay untouched in the master database: they are only left out here.
+//
+// What else it does (all deterministic, nothing invented):
+//   - drops template rows ("Nome", "Nome azienda");
+//   - the export is upper-case: names, websites, descriptions and industries take the
+//     mixed-case spelling of data/source/display-text.json when equal ignoring case,
+//     otherwise a conservative case conversion (acronyms and place names kept);
 //   - "DA VERIFICARE", "Not Answered", empty → null; cookie/404 boilerplate descriptions → null;
 //   - checks the address against the REGION column: an address whose province belongs
 //     to another region is kept for reference but not used for the map position;
@@ -20,7 +31,7 @@
 //   - writes docs/data-quality.md with everything that needs a human check.
 import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
-import { copyFile, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { logoColor, logoHash, processLogo } from './lib/logo-image.mjs';
@@ -106,11 +117,15 @@ const col = (name) => {
   if (i < 0) throw new Error(`Column "${name}" not found in ${csvPath}`);
   return i;
 };
+const hasCol = (name) => header.some((h) => h.toUpperCase().startsWith(name));
+// Explicit allowlist of the columns read from the export. Anything else (REFERENCE,
+// INFORMATION SOURCE, SECONDARY TYPE, EMAIL, PHONE, GOOGLE MAPS LINK…) is never read.
 const C = {
   name: header[0] === 'Map' ? 0 : col('COMPANY NAME'),
   website: col('WEBSITE'),
   description: col('SHORT DESCRIPTION'),
-  type: col('PLAYER TYPE'),
+  // MAIN TYPE is the only public classification; older exports call it PLAYER TYPE.
+  type: hasCol('MAIN TYPE') ? col('MAIN TYPE') : col('PLAYER TYPE'),
   address: col('ADDRESS'),
   region: col('REGION'),
   city: col('CITY'),
@@ -119,7 +134,59 @@ const C = {
   logo: col('LOGO'),
 };
 
-const report = { template: [], duplicateRows: [], startupOnly: [], junkDescription: [], addressMismatch: [], noRegion: [], logoMissing: [], logoNoFlag: [], sharedLogos: [], unmatchedLogos: [] };
+// ---------- spelling (the export is upper-case) ----------
+const displayText = JSON.parse(await readFile(path.join(root, 'data/source/display-text.json'), 'utf8')).entries;
+const isUpper = (s) => !!s && /\p{Lu}/u.test(s) && !/\p{Ll}/u.test(s);
+const SMALL = new Set(['a', 'al', 'and', 'by', 'da', 'dal', 'de', 'dei', 'del', 'della', 'delle', 'di', 'e', 'ed', 'for', 'il', 'in', 'la', 'le', 'of', 'per', 'su', 'the', 'to']);
+const ACRONYMS = new Map(
+  'AI ICT VC CVC SGR SRL SPA SB EUR USD B2B B2C PMI SME CDP EU UE ESG HR CEO CTO UN USA UK MIT ETS APS ONLUS TRL IPO NFC QR CRM ERP GDPR API AR VR XR ESA ASI CNR EIT KIC BAN IAG FVG BPCO PST MVP PR 3D AIFM CSSF SICAF FIA ESCP DNA RNA EBN EEN IASP NME OGR LUISS UNIBO'
+    .split(' ')
+    .map((a) => [a.toLowerCase(), a]),
+);
+for (const [k, v] of Object.entries({ saas: 'SaaS', iot: 'IoT', smes: 'SMEs', euveca: 'EuVECA', consob: 'Consob', innovup: 'InnovUp' })) ACRONYMS.set(k, v);
+const PLACES = new Set(
+  [...REGIONS.flatMap((r) => [r.it, r.en]), ...PROVINCES.map((p) => p.name), 'Italy', 'Italia', 'Italian', 'Italiane', 'Italiani', 'Italiana', 'Europe', 'European', 'Europa', 'Europea', 'Milan', 'Rome', 'Turin', 'Naples', 'Florence', 'Venice', 'Genoa', 'Padua', 'Sicily', 'Sardinia', 'Lombardy', 'Tuscany', 'Brussels', 'London', 'Paris']
+    .flatMap((n) => n.split(/[\s/-]+/))
+    .filter((w) => w.length > 3)
+    .map((w) => w.toLowerCase()),
+);
+const cap = (w) => w.replace(/(^|['’-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+/** "CDP VENTURE CAPITAL DI ROMA" → "CDP Venture Capital di Roma" (words of ≤ 3 letters kept as acronyms). */
+function nameCase(s) {
+  return s
+    .split(' ')
+    .map((w, i) => {
+      const lw = w.toLowerCase();
+      if (ACRONYMS.has(lw)) return ACRONYMS.get(lw);
+      if (/\d/.test(w) || /^(\p{L}\.)+\p{L}?\.?$/u.test(w) || (w.replace(/[^\p{L}]/gu, '').length <= 3 && !SMALL.has(lw))) return w;
+      return i > 0 && SMALL.has(lw) ? lw : cap(lw);
+    })
+    .join(' ');
+}
+/** Upper-case prose → sentence case, keeping acronyms, place names and the company's name. */
+function sentenceCase(s, name) {
+  const own = new Set((name ?? '').toLowerCase().split(/\s+/).filter((w) => w.length > 2 && !SMALL.has(w)));
+  let out = s.toLowerCase().replace(/(^|[.!?…]\s+|\(\s*)(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+  out = out.replace(/[\p{L}\d]+/gu, (w) => {
+    const lw = w.toLowerCase();
+    if (ACRONYMS.has(lw)) return ACRONYMS.get(lw);
+    if (PLACES.has(lw) || own.has(lw)) return cap(w);
+    return w;
+  });
+  return out;
+}
+const sameText = (a, b) => !!a && !!b && a.toUpperCase() === b.toUpperCase();
+function spelling(key, f) {
+  const ref = displayText[key];
+  const name = sameText(ref?.name, f.name) ? ref.name : isUpper(f.name) ? nameCase(f.name) : f.name;
+  const website = !f.website ? null : sameText(ref?.website, f.website) ? ref.website : isUpper(f.website) ? f.website.toLowerCase() : f.website;
+  const description = !f.description ? null : sameText(ref?.description, f.description) ? ref.description : isUpper(f.description) ? sentenceCase(f.description, name) : f.description;
+  const refInd = new Map((ref?.industry ?? []).map((x) => [x.toUpperCase(), x]));
+  const industry = f.industry.map((x) => refInd.get(x.toUpperCase()) ?? (isUpper(x) ? nameCase(x) : x));
+  return { name, website, description, industry, nameFromRef: sameText(ref?.name, f.name) };
+}
+
+const report = { template: [], duplicateRows: [], startups: [], inactive: [], reCased: [], junkDescription: [], addressMismatch: [], noRegion: [], logoMissing: [], logoNoFlag: [], sharedLogos: [], unmatchedLogos: [] };
 const seen = new Map();
 for (const r of rows) {
   const name = clean(r[C.name]);
@@ -132,14 +199,22 @@ for (const r of rows) {
 
 const records = [];
 for (const [key, r] of seen) {
-  const name = clean(r[C.name]);
-  const types = [...new Set((r[C.type] ?? '').split(';').map((s) => clean(s)).filter(Boolean).map((s) => s.toUpperCase()))];
-  const enablerTypes = types.filter((t) => t !== 'STARTUP');
-  if (types.length && !enablerTypes.length) { report.startupOnly.push(name); continue; }
+  const rawName = clean(r[C.name]);
+  // MAIN TYPE, normalised (spaces, case, "A / B" → "A/B"). Old PLAYER TYPE exports could
+  // hold a list: only its first value is used, the classification is always single.
+  const mainType = clean((r[C.type] ?? '').split(';')[0])?.toUpperCase().replace(/\s*\/\s*/g, '/') ?? null;
+  // Step 4: exact match only. "VENTURE BUILDER/STARTUP STUDIO" is not a startup.
+  if (mainType === 'STARTUP') { report.startups.push(rawName); continue; }
+  // Step 5, other publishability rule: organisations marked INACTIVE are not public.
+  if (/^INACTIVE\b/i.test(clean(r[C.status]) ?? '')) { report.inactive.push(rawName); continue; }
 
   // Internal CRM notes ("| CHELONIA ITALIA — STATUS CONTATTO: …") are never published.
   let description = clean((r[C.description] ?? '').replace(/\s*\|?\s*CHELONIA ITALIA\b[\s\S]*$/i, ''));
-  if (description && JUNK_DESCRIPTION.some((re) => re.test(description))) { report.junkDescription.push(name); description = null; }
+  if (description && JUNK_DESCRIPTION.some((re) => re.test(description))) { report.junkDescription.push(rawName); description = null; }
+  const industriesRaw = [...new Set((r[C.industry] ?? '').replace(/\s*\|[\s\S]*$/, '').split(/[;,]/).map((s) => clean(s)).filter((s) => s && !/^it$/i.test(s)))];
+  const text = spelling(key, { name: rawName, website: clean(r[C.website]), description, industry: industriesRaw });
+  const name = text.name;
+  if (!text.nameFromRef && isUpper(rawName)) report.reCased.push(`${rawName} → ${name}`);
 
   const regionRaw = clean(r[C.region]);
   const regionMeta = regionRaw ? regionByName.get(slugify(regionRaw)) ?? null : null;
@@ -156,40 +231,48 @@ for (const [key, r] of seen) {
   const province = addressConsistent ? parsed.province : null;
   if (!region) report.noRegion.push(name);
 
-  const industries = [...new Set((r[C.industry] ?? '').split(/[;,]/).map((s) => clean(s)).filter((s) => s && !/^it$/i.test(s)))];
+  const industries = [...new Set(text.industry)];
   const statusRaw = clean(r[C.status])?.toUpperCase() ?? null;
 
   records.push({
     id: `irf_${createHash('sha256').update(key).digest('hex').slice(0, 14)}`,
     fields: {
       'COMPANY NAME': name,
-      WEBSITE: clean(r[C.website]),
-      'SHORT DESCRIPTION': description,
-      'PLAYER TYPE': enablerTypes,
+      WEBSITE: text.website,
+      'SHORT DESCRIPTION': text.description,
+      'MAIN TYPE': mainType,
       ADDRESS: address,
       'ADDRESS CHECK': address ? (addressConsistent ? 'ok' : addrRegion ? 'region-mismatch' : 'unparsed') : null,
       REGION: region?.it ?? null,
       PROVINCE: province?.code ?? null,
       CITY: city,
       INDUSTRY: industries,
-      STATUS: statusRaw === 'ACTIVE' ? 'ACTIVE' : statusRaw === 'INACTIVE' ? 'INACTIVE' : 'DA VERIFICARE',
+      // "ACTIVE (SITO RAGGIUNGIBILE)" → ACTIVE; "PARTNER INNOVUP (SITO DA VERIFICARE)" → DA VERIFICARE.
+      STATUS: /^ACTIVE\b/.test(statusRaw ?? '') ? 'ACTIVE' : /^INACTIVE\b/.test(statusRaw ?? '') ? 'INACTIVE' : 'DA VERIFICARE',
       'LOGO FLAG': clean(r[C.logo])?.toUpperCase() ?? null,
     },
     _key: key,
   });
 }
 
-// ---------- player types (data/source/player-type-overrides.json) ----------
+// ---------- player type (data/source/player-type-overrides.json) ----------
+// One type per player, from MAIN TYPE: "rename" maps the export value to the site's
+// taxonomy; "byName" refines single organisations into the sub-types the export has no
+// value for (startup studio, regional finance, banks, universities, mentors). Never
+// applied to startups (already excluded above), never more than one type.
 const typeMap = JSON.parse(await readFile(path.join(root, 'data/source/player-type-overrides.json'), 'utf8'));
+const byName = new Map(Object.entries(typeMap.byName).map(([k, v]) => [normName(k), Array.isArray(v) ? v[0] : v]));
 report.retyped = [];
 for (const r of records) {
-  const exported = r.fields['PLAYER TYPE'];
-  const own = typeMap.byName[r.fields['COMPANY NAME']];
-  const types = own ?? [...new Set(exported.map((t) => typeMap.rename[t] ?? t))];
-  r.fields['PLAYER TYPE (EXPORT)'] = exported;
-  r.fields['PLAYER TYPE'] = types;
-  if (own) report.retyped.push(`${r.fields['COMPANY NAME']}: ${exported.join(', ') || '—'} → ${types.join(', ')}`);
+  const exported = r.fields['MAIN TYPE'];
+  const own = byName.get(r._key);
+  r.fields['MAIN TYPE (EXPORT)'] = exported;
+  r.fields['MAIN TYPE'] = own ?? (exported ? typeMap.rename[exported] ?? exported : null);
+  if (own) report.retyped.push(`${r.fields['COMPANY NAME']}: ${exported ?? '—'} → ${own}`);
 }
+
+// Step 6, final gate: only these keys may be written to the public snapshot.
+const PUBLIC_FIELDS = new Set(['COMPANY NAME', 'WEBSITE', 'SHORT DESCRIPTION', 'MAIN TYPE', 'MAIN TYPE (EXPORT)', 'ADDRESS', 'ADDRESS CHECK', 'REGION', 'PROVINCE', 'CITY', 'INDUSTRY', 'STATUS', 'LOGO FLAG', 'LOGO', 'Latitude', 'Longitude', 'GEO PRECISION']);
 
 // ---------- logos ----------
 const manifestPath = path.join(root, 'data/snapshot/logos.json');
@@ -253,6 +336,17 @@ for (const r of records) {
   else if (r.fields['LOGO FLAG'] === 'SI') report.logoMissing.push(r.fields['COMPANY NAME']);
   if (logos[r.id] && r.fields['LOGO FLAG'] !== 'SI') report.logoNoFlag.push(r.fields['COMPANY NAME']);
 }
+// Only logos of public players stay in public/: the others (startups, renamed or removed
+// organisations) are moved to data/logos/unpublished/ and come back if needed again.
+{
+  const pubDir = path.join(root, 'public/logos/players');
+  const parkDir = path.join(root, 'data/logos/unpublished');
+  await mkdir(parkDir, { recursive: true });
+  const used = new Set(records.flatMap((r) => [r.fields.LOGO?.src, r.fields.LOGO?.onLight]).filter((s) => s?.startsWith('/logos/players/')).map((s) => path.basename(s)));
+  for (const f of await readdir(parkDir)) if (used.has(f) && !existsSync(path.join(pubDir, f))) await rename(path.join(parkDir, f), path.join(pubDir, f));
+  report.unpublishedLogos = 0;
+  for (const f of await readdir(pubDir)) if (!used.has(f)) await rename(path.join(pubDir, f), path.join(parkDir, f)), report.unpublishedLogos++;
+}
 
 // ---------- geocoding cache (filled by scripts/geocode-irf.mjs) ----------
 const geoPath = path.join(root, 'data/snapshot/geocode-cache.json');
@@ -270,8 +364,12 @@ const out = {
   source: path.basename(csvPath),
   importedAt: new Date().toISOString(),
   // Date of the database export (owner-provided). Shown on the site as "updated on".
-  exportDate: process.env.IRF_EXPORT_DATE ?? '2026-11-17',
-  records: records.map(({ _key, ...r }) => r),
+  exportDate: process.env.IRF_EXPORT_DATE ?? '2026-11-24',
+  records: records.map(({ _key, ...r }) => {
+    const bad = Object.keys(r.fields).filter((k) => !PUBLIC_FIELDS.has(k));
+    if (bad.length) throw new Error(`Field(s) outside the public allowlist: ${bad.join(', ')}`);
+    return r;
+  }),
 };
 await writeFile(path.join(root, 'data/snapshot/irf-records.json'), JSON.stringify(out, null, 1));
 
@@ -285,6 +383,8 @@ Nothing below was changed by hand: these are the rows that need a check in the s
 | | |
 |---|---|
 | Rows in the export | ${rows.length} |
+| Startups left out (MAIN TYPE = STARTUP, kept in the master) | ${report.startups.length} |
+| Inactive organisations left out (STATUS = INACTIVE) | ${report.inactive.length} |
 | Unique organisations imported | ${records.length} |
 | Repeated rows skipped (same name) | ${report.duplicateRows.length} |
 | Template rows skipped | ${report.template.length} |
@@ -318,8 +418,12 @@ ${list(report.unmatchedLogos)}
 From \`data/source/player-type-overrides.json\` (export value → type on the site). To be validated.
 ${list(report.retyped)}
 
+## Names converted from upper case (${report.reCased.length})
+Not in \`data/source/display-text.json\`: spelling rebuilt automatically, to be checked.
+${list(report.reCased)}
+
 ## Repeated rows skipped (${report.duplicateRows.length})
 ${list(report.duplicateRows)}
 `;
 await writeFile(path.join(root, 'docs/data-quality.md'), md);
-console.log(`Imported ${records.length} organisations, ${Object.keys(logos).length} logos, ${report.addressMismatch.length} address mismatches, ${report.noRegion.length} without region.`);
+console.log(`Imported ${records.length} organisations (${report.startups.length} startups left out), ${Object.keys(logos).length} logos, ${report.addressMismatch.length} address mismatches, ${report.noRegion.length} without region.`);

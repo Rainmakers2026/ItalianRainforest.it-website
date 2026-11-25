@@ -1,5 +1,5 @@
 {
- "_about": "Player types of the site (16 types in 4 kinds of enablers, see src/lib/data/taxonomy.ts). The database export still uses the old PLAYER TYPE values: \"rename\" maps them to the new ones, \"byName\" sets the types of single organisations (replacing the export value). Applied by scripts/import-irf-csv.mjs; the export value is kept in \"PLAYER TYPE (EXPORT)\". To be validated by Rainmakers.",
+ "_about": "Player type of the site (16 types in 4 kinds of enablers, see src/lib/data/taxonomy.ts), always ONE per player, derived from MAIN TYPE only (SECONDARY TYPE is never used). \"rename\" maps MAIN TYPE values of the export to the site taxonomy; \"byName\" (matched on the normalised company name) refines single organisations into the sub-types the export has no value for (startup studio, regional finance, banks, universities, mentors). Never applied to MAIN TYPE = STARTUP, which is excluded first. Applied by scripts/import-irf-csv.mjs; the export value is kept in \"MAIN TYPE (EXPORT)\". To be validated by Rainmakers.",
  "rename": {
   "INCUBATOR/ACCELERATOR": "INCUBATOR/ACCELERATOR",
   "PST": "INCUBATOR/ACCELERATOR",
@@ -134,6 +134,12 @@
   ],
   "Angels 4 Impact": [
    "BAN"
+  ],
+  "Endeavor Italia": [
+   "GRUPPI DI MENTOR"
+  ],
+  "Le Village by CA": [
+   "BANCHE PER STARTUP"
   ]
  }
 }

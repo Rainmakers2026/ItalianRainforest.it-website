@@ -23,7 +23,9 @@ const sensitive: RawRecord = {
   id: 'recTEST123',
   fields: {
     'COMPANY NAME': '  Acme   Ventures \n',
-    'PLAYER TYPE': ['VC', 'BAN/CLUB DEAL'],
+    'MAIN TYPE': 'VC',
+    'SECONDARY TYPE': 'BAN/CLUB DEAL; STARTUP',
+    'INFORMATION SOURCE': 'CHELONIA ITALIA internal note',
     STATUS: 'ACTIVE',
     WEBSITE: 'www.acme.vc/?utm_source=x',
     INDUSTRY: 'Fintech; DA VERIFICARE; it',
@@ -38,7 +40,8 @@ const sensitive: RawRecord = {
 };
 
 describe('IRF database import', () => {
-  it('maps the whole snapshot (621 enablers, no startups, no template rows)', () => {
+  it('maps the whole snapshot (enablers only, no startups, no template rows)', () => {
+    // The snapshot is the public dataset: every record maps to a public player.
     expect(players.length).toBe(snapshot.records.length);
     expect(players.length).toBeGreaterThan(600);
     expect(players.some((p) => /^nome( azienda)?$/i.test(p.name))).toBe(false);
@@ -46,14 +49,15 @@ describe('IRF database import', () => {
   });
 
   it('maps every PLAYER TYPE of the export to a category', () => {
-    for (const t of ['INCUBATOR/ACCELERATOR', 'VENTURE BUILDER/STARTUP STUDIO', 'VC', 'MEDIA', 'PST', 'BAN/CLUB DEAL', 'ASSOCIATIONS', 'EMPOWERMENT PROGRAM', 'CROWDFUNDING PLATFORM', 'INSTITUTIONS', 'CORSI DI FORMAZIONE', 'FAMILY OFFICE', 'CVC', 'COWORKING', 'Altri abilitatori'])
+    for (const t of ['INCUBATOR/ACCELERATOR', 'INCUBATOR / ACCELERATOR', 'BANCHE PER STARTUP', 'PERCORSI FORMATIVI PRIVATI', 'VENTURE BUILDER/STARTUP STUDIO', 'VC', 'MEDIA', 'PST', 'BAN/CLUB DEAL', 'ASSOCIATIONS', 'EMPOWERMENT PROGRAM', 'CROWDFUNDING PLATFORM', 'INSTITUTIONS', 'CORSI DI FORMAZIONE', 'FAMILY OFFICE', 'CVC', 'COWORKING', 'Altri abilitatori'])
       expect(categoryFromSource(t), t).not.toBeNull();
     expect(categoryFromSource('STARTUP')).toBeNull();
     expect(players.some((p) => p.categories.includes('unclassified'))).toBe(false);
   });
 
   it('keeps logos and positions from the lookups', () => {
-    expect(players.filter((p) => p.logo).length).toBe(Object.keys(lookups.logos).length);
+    expect(players.filter((p) => p.logo).length).toBeGreaterThan(400);
+    expect(players.every((p) => !lookups.logos[nameKey(p.name)] || p.logo)).toBe(true);
     expect(players.every((p) => !p.logo || p.logo.src.startsWith('/logos/players/'))).toBe(true);
     expect(players.filter((p) => p.location?.lat != null).length).toBeGreaterThan(400);
   });
@@ -77,22 +81,22 @@ describe('normalisation & sanitisation', () => {
     expect(json).not.toContain('recTEST123'); // source id stays server-side
     expect(p.hasGatedContacts).toBe(true);
     expect(p.name).toBe('Acme Ventures');
-    expect(p.categories).toEqual(['vc', 'angels']);
+    expect(p.categories).toEqual(['vc']);
     expect(p.status).toBe('active');
     expect(p.industries).toEqual(['Fintech']);
     expect(p.location).toMatchObject({ region: 'lombardia', province: 'milano', city: 'Milano', lat: 45.4642, lng: 9.19, precision: 'address' });
   });
 
   it('reads status placeholders as "to be verified" and skips startups', () => {
-    const p = normalizeRecord({ id: 'r1', fields: { 'COMPANY NAME': 'X', 'PLAYER TYPE': 'VC', STATUS: 'DA VERIFICARE' } })!;
+    const p = normalizeRecord({ id: 'r1', fields: { 'COMPANY NAME': 'X', 'MAIN TYPE': 'VC', STATUS: 'DA VERIFICARE' } })!;
     expect(p.status).toBe('unverified');
-    expect(normalizeRecord({ id: 'r2', fields: { 'COMPANY NAME': 'Y', 'PLAYER TYPE': ['STARTUP'] } })).toBeNull();
+    expect(normalizeRecord({ id: 'r2', fields: { 'COMPANY NAME': 'Y', 'MAIN TYPE': 'STARTUP' } })).toBeNull();
   });
 
   it('falls back to the geocode and logo lookups by name', () => {
     const k = nameKey('Acme Ventures');
     const p = normalizeRecord(
-      { id: 'r3', fields: { 'COMPANY NAME': 'Acme Ventures', 'PLAYER TYPE': 'VC', REGION: 'Lazio' } },
+      { id: 'r3', fields: { 'COMPANY NAME': 'Acme Ventures', 'MAIN TYPE': 'VC', REGION: 'Lazio' } },
       { logos: { [k]: { src: '/logos/players/x.webp', w: 10, h: 10, tone: 'dark' } }, geo: { [k]: { lat: 41.9, lng: 12.5, precision: 'city' } } },
     )!;
     expect(p.logo?.src).toBe('/logos/players/x.webp');

@@ -20,46 +20,55 @@ Logos and geocoded positions are keyed by **company name** (`nameKey()`), so the
 
 ## Columns (CSV export = Airtable "Rainmakers OS")
 
+Public data rules (P0, also in `CLAUDE.md` and `docs/PRD.md`): the importer and the normaliser read an **explicit allowlist** of columns; everything else is never read, so it cannot reach the snapshot, the API, the page payload or the downloads.
+
 | Column | Public | Maps to |
 |---|---|---|
-| COMPANY NAME (`Map` in the CSV) | ✔ | `name`, `slug` |
+| COMPANY NAME (`Map` in old CSVs) | ✔ | `name`, `slug` |
 | WEBSITE | ✔ | `website`, `websiteHost` (normalised, tracking params removed) |
-| SHORT DESCRIPTION | ✔ | `description` (cookie/404 boilerplate dropped by the importer) |
-| PLAYER TYPE (multi, `;`-separated in the CSV) | ✔ | `categories` — STARTUP rows are excluded |
+| SHORT DESCRIPTION | ✔ | `description` (cookie/404 boilerplate and CRM notes dropped by the importer) |
+| MAIN TYPE (`PLAYER TYPE` in older exports) | ✔ | `categories` — **exactly one** per player. `STARTUP` (exact match, spaces/case normalised) is excluded |
 | ADDRESS | ✔ | `location.address` — hidden when it contradicts REGION |
 | REGION | ✔ | `location.region` (slug) |
 | CITY | ✔ | `location.city` (normalised: Turin → Torino, …) |
-| INDUSTRY | ✔ | `industries` |
-| STATUS | ✔ | `status`: ACTIVE → `active`, INACTIVE → `inactive`, DA VERIFICARE/empty → `unverified` |
+| INDUSTRY | ✔ | `industries` (CRM notes after "\|" dropped) |
+| STATUS | ✔ | `status`: ACTIVE… → `active`, DA VERIFICARE/empty → `unverified`. **INACTIVE → not public** |
 | LOGO (attachment in Airtable; SI/NO in the CSV) | ✔ | `logo` {src, w, h, tone} |
 | OPEN STREET MAP | ✔ | `location.lat/lng` when the link carries coordinates |
-| EMAIL, PHONE, REFERENCE | ✖ gated | `GatedContacts` (never public, never exported) |
-| REFERENCE, INFORMATION SOURCE | ✖ | not used |
+| EMAIL | ✖ gated | `GatedContacts.email`, server-side only (contact request, `REVEAL_GATED_CONTACTS`) |
+| SECONDARY TYPE | ✖ reserved | never read, never used for classification or counts |
+| REFERENCE, INFORMATION SOURCE, PHONE | ✖ reserved | never read |
+| GOOGLE MAPS LINK | ✖ | not used |
+
+The export is upper-case: names, websites, descriptions and industries take the mixed-case spelling of `data/source/display-text.json` when it is equal ignoring case, otherwise a conservative case conversion (listed in `docs/data-quality.md`).
 
 Other names can be mapped without code changes: `AIRTABLE_FIELD_MAP='{"name":"Company"}'` (keys in `src/lib/data/normalize.ts`).
 
 "DA VERIFICARE", "Not Answered" and empty cells are treated as missing values.
 
-## Player types → categories → families
+## MAIN TYPE → player type → kind of enabler
 
-| PLAYER TYPE | Category key | Family |
+One type per player. `rename` in `data/source/player-type-overrides.json` maps the export value; `byName` refines single organisations into the types the export has no value for (startup studio, regional finance, banks, universities, mentors) — never for startups, never more than one type.
+
+| MAIN TYPE | Player type | Kind |
 |---|---|---|
-| EMPOWERMENT PROGRAM | `programs` | personal |
-| CORSI DI FORMAZIONE | `training` | personal |
-| INCUBATOR/ACCELERATOR | `incubator` | business |
-| VENTURE BUILDER/STARTUP STUDIO | `venture-builder` | business |
-| PST | `science-park` | business |
 | VC | `vc` | financial |
-| CVC | `cvc` | financial |
 | BAN/CLUB DEAL | `angels` | financial |
+| CVC | `cvc` | financial |
 | CROWDFUNDING PLATFORM | `crowdfunding` | financial |
 | FAMILY OFFICE | `family-office` | financial |
+| BANCHE PER STARTUP | `banks` | financial |
+| (byName) FINANZIARIE REGIONALI | `regional-finance` | financial |
+| PERCORSI FORMATIVI PRIVATI, CORSI DI FORMAZIONE | `training` | personal |
+| (byName) CORSI UNIVERSITARI PUBBLICI | `university` | personal |
+| (byName) GRUPPI DI MENTOR | `mentors` | personal |
 | INSTITUTIONS | `institution` | environmental |
 | ASSOCIATIONS | `associations` | environmental |
 | MEDIA | `media` | environmental |
-| COWORKING | `coworking` | environmental |
-| Altri abilitatori | `other` | — |
-| STARTUP | excluded | — |
+| INCUBATOR / ACCELERATOR, PST, COWORKING | `incubator` | business |
+| VENTURE BUILDER/STARTUP STUDIO | `venture-builder` | business |
+| (byName) STARTUP STUDIO | `startup-studio` | business |
+| STARTUP | **excluded** (kept in the master) | — |
 
 Labels, short labels, definitions and colours live in `src/lib/data/taxonomy.ts` (colours: one hue per family).
 

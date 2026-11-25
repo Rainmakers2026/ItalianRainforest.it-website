@@ -16,10 +16,13 @@ type Logo = { src: string; onLight?: string | null; w: number; h: number; tone: 
 type Rec = { id: string; fields: Record<string, unknown> };
 
 const snap = JSON.parse(await readFile(path.join(root, 'data/snapshot/irf-records.json'), 'utf8')) as { exportDate: string; records: Rec[] };
+// The snapshot is the public dataset (startups and inactive organisations already left
+// out by the importer): one tile per player, under its single MAIN TYPE.
 const players = snap.records
   .map((r) => {
-    const types = (r.fields['PLAYER TYPE'] as string[]).map(categoryFromSource).filter((c): c is CategoryKey => !!c);
-    return { name: String(r.fields['COMPANY NAME']), type: types[0] ?? ('other' as CategoryKey), logo: (r.fields.LOGO as Logo | undefined) ?? null };
+    const mainType = r.fields['MAIN TYPE'] ?? (r.fields['PLAYER TYPE'] as string[] | undefined)?.[0];
+    const type = typeof mainType === 'string' ? categoryFromSource(mainType) : null;
+    return { name: String(r.fields['COMPANY NAME']), type: type ?? ('unclassified' as CategoryKey), logo: (r.fields.LOGO as Logo | undefined) ?? null };
   })
   .sort((a, b) => a.name.localeCompare(b.name, 'it', { sensitivity: 'base' }));
 

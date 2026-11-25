@@ -13,7 +13,10 @@ const DEFAULT_FIELDS = {
   name: 'COMPANY NAME',
   website: 'WEBSITE',
   description: 'SHORT DESCRIPTION',
-  types: 'PLAYER TYPE',
+  // MAIN TYPE is the only public classification (see CLAUDE.md "Public data rules").
+  // SECONDARY TYPE is never read. Older exports and snapshots call it PLAYER TYPE.
+  types: 'MAIN TYPE',
+  legacyTypes: 'PLAYER TYPE',
   address: 'ADDRESS',
   addressCheck: 'ADDRESS CHECK', // set by the CSV importer only
   region: 'REGION',
@@ -26,10 +29,10 @@ const DEFAULT_FIELDS = {
   lat: 'Latitude',
   lng: 'Longitude',
   geoPrecision: 'GEO PRECISION',
-  // SENSITIVE — never in the public payload
+  // SENSITIVE — never in the public payload. Only EMAIL is read, server-side, for the
+  // gated contact request. REFERENCE, PHONE, INFORMATION SOURCE and SECONDARY TYPE are
+  // reserved: never read at all.
   email: 'EMAIL',
-  phone: 'PHONE',
-  contactPerson: 'REFERENCE',
 } as const;
 type FieldKey = keyof typeof DEFAULT_FIELDS;
 
@@ -42,7 +45,14 @@ function fieldMapFromEnv(): Record<FieldKey, string> {
   }
 }
 export const FIELDS = fieldMapFromEnv();
-export const SENSITIVE_FIELDS = [FIELDS.email, FIELDS.phone, FIELDS.contactPerson] as const;
+/** Reserved columns of the master database: never read, never published. */
+export const RESERVED_FIELDS = ['REFERENCE', 'INFORMATION SOURCE', 'SECONDARY TYPE', 'PHONE', 'EMAIL'] as const;
+
+/** MAIN TYPE normalised for comparisons: spaces collapsed, upper case, "A / B" → "A/B". */
+export const normalizeMainType = (v: string | null): string | null =>
+  v ? v.replace(/\s+/g, ' ').trim().toUpperCase().replace(/\s*\/\s*/g, '/') || null : null;
+/** Exact match only: "VENTURE BUILDER/STARTUP STUDIO" is not a startup. */
+export const isStartup = (mainType: string | null) => normalizeMainType(mainType) === 'STARTUP';
 
 export type RawRecord = { id: string; createdTime?: string; fields: Record<string, unknown> };
 
@@ -188,18 +198,32 @@ function normalizeStatus(v: unknown): StatusKey {
 }
 
 export function extractGatedContacts(f: Record<string, unknown>): GatedContacts {
-  return { email: str(f[FIELDS.email]), phone: str(f[FIELDS.phone]), contactPerson: str(f[FIELDS.contactPerson]) };
+  return { email: str(f[FIELDS.email]) };
 }
 
-/** Maps one raw source record to the public schema. Returns null for unusable rows (incl. startups). */
+/** The single MAIN TYPE of a record (first value if a legacy list slips through). */
+export function mainTypeOf(f: Record<string, unknown>): string | null {
+  const v = f[FIELDS.types] !== undefined ? f[FIELDS.types] : f[FIELDS.legacyTypes];
+  return list(v)[0] ?? null;
+}
+
+/**
+ * Maps one raw source record to the public schema (allowlist: only the fields below are
+ * read). Returns null for unusable rows, for every record whose MAIN TYPE is STARTUP and
+ * for inactive organisations: what it returns is the public dataset, nothing else is.
+ */
 export function normalizeRecord(rec: RawRecord, lookups: Lookups = { logos: {}, geo: {} }): PublicPlayer | null {
   const f = rec.fields;
   const name = str(f[FIELDS.name]);
   if (!name || /^nome( azienda)?$/i.test(name)) return null;
 
-  const rawTypes = list(f[FIELDS.types]);
-  if (rawTypes.length && rawTypes.every((t) => /^startup$/i.test(t))) return null; // startups are not enablers
-  const categories = [...new Set(rawTypes.map(categoryFromSource).filter((c): c is CategoryKey => !!c))];
+  const mainType = mainTypeOf(f);
+  if (isStartup(mainType)) return null; // startups are not enablers: never public
+  const category: CategoryKey = (mainType && categoryFromSource(mainType)) || 'unclassified';
+  const status = normalizeStatus(f[FIELDS.status]);
+  // Other publishability rule: organisations marked INACTIVE are not shown anywhere, so
+  // database, map, KPIs, ring and infographic all share the same perimeter.
+  if (status === 'inactive') return null;
   const { url, host } = normalizeWebsite(str(f[FIELDS.website]));
   const gated = extractGatedContacts(f);
   const key = nameKey(name);
@@ -208,15 +232,15 @@ export function normalizeRecord(rec: RawRecord, lookups: Lookups = { logos: {}, 
     id: publicId(rec.id),
     slug: slugify(name),
     name,
-    categories: categories.length ? categories : ['unclassified'],
-    status: normalizeStatus(f[FIELDS.status]),
+    categories: [category],
+    status,
     website: url,
     websiteHost: host,
     description: str(f[FIELDS.description]),
     logo: normalizeLogo(f[FIELDS.logo]) ?? lookups.logos[key] ?? null,
     industries: normalizeIndustries(list(f[FIELDS.industry])),
     location: normalizeLocation(f, lookups.geo[key]),
-    hasGatedContacts: !!(gated.email || gated.phone || gated.contactPerson),
+    hasGatedContacts: !!gated.email,
   };
   const parsed = PublicPlayerSchema.safeParse(player);
   return parsed.success ? parsed.data : null;
