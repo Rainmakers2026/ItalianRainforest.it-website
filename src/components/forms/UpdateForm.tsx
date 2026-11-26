@@ -71,7 +71,8 @@ export function UpdateForm({ t, lead, locale }: { t: Dictionary['update']; lead:
     const details = String(fd.get('details') ?? '').trim();
     const errs: FormErrors = {};
     if (!org.trim()) errs.org = t.errors.org;
-    if (details.length < 10) errs.details = t.errors.details;
+    // Characters as the server and PostgreSQL count them (an emoji is one character).
+    if ([...details].length < 10) errs.details = t.errors.details;
     if (!EMAIL_RE.test(email)) errs.email = lead.errors.email;
     if (!consent) errs.consent = lead.errors.consent;
     setErrors(errs);

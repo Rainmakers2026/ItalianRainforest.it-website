@@ -8,11 +8,33 @@ import { airtableLeadsConfigured, stageLead } from './leads-airtable';
  * form is Supabase: src/lib/supabase/store.ts (CLAUDE.md "Form submissions → Supabase").
  */
 
+/**
+ * Length as PostgreSQL counts it: characters (Unicode code points), not UTF-16 code units.
+ * An emoji is 1 character for PostgreSQL but 2 for String.length, so a plain zod
+ * `.min()` / `.max()` would accept texts the database CHECK constraints refuse.
+ */
+export const charLength = (s: string) => [...s].length;
+/** PostgreSQL text cannot store U+0000. */
+const NUL = '\u0000';
+/** Trimmed text with a length in characters, aligned with the SQL CHECK constraints. */
+const text = (min: number, max: number) =>
+  z
+    .string()
+    .trim()
+    .refine((s) => !s.includes(NUL), { message: 'invalid character' })
+    .refine((s) => charLength(s) >= min && charLength(s) <= max, { message: `${min}–${max} characters` });
+const optionalText = (max: number) => text(0, max).optional().default('');
+
 /** Trimmed and lower-cased before validation: one address, one spelling, everywhere. */
-export const emailSchema = z.string().trim().toLowerCase().pipe(z.email().max(200));
+export const emailSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .pipe(z.email().max(200))
+  .refine((s) => charLength(s) >= 3 && charLength(s) <= 200);
 const consent = z.literal(true);
 const utm = z
-  .record(z.string().regex(/^[a-z_]{1,40}$/), z.string().max(80))
+  .record(z.string().regex(/^[a-z_]{1,40}$/), text(0, 80))
   .refine((u) => Object.keys(u).length <= 10)
   .optional();
 const slug = z.string().regex(/^[a-z0-9_]{1,60}$/);
@@ -37,8 +59,8 @@ const common = {
   elapsed: z.number().int().min(0),
 };
 
-const personName = z.string().trim().min(1).max(100);
-const company = z.string().trim().max(160).optional().default('');
+const personName = text(1, 100);
+const company = optionalText(160);
 /** Who the visitor is: collected once by the sign-up gate, then sent with every gated action. */
 const person = { firstName: personName, lastName: personName, referent: personName.optional(), company };
 
@@ -63,27 +85,32 @@ export const SignupSchema = z
     registrationId: z.uuid().optional(),
     embedKind: z.enum(['map', 'database']).optional(),
     embedLocale: z.enum(['it', 'en']).optional(),
+    /** Map files produced in the browser (PNG / PDF): rows in the view and active filters. */
+    rowCount: z.number().int().min(0).max(1_000_000).optional(),
+    filterQuery: z.string().max(1000).regex(/^[\x21-\x7e]*$/).optional(),
   })
   .superRefine((v, ctx) => {
     if (v.reason === 'embed' && !v.embedKind) ctx.addIssue({ code: 'custom', path: ['embedKind'], message: 'required for the embed code' });
     if (v.reason !== 'embed' && (v.embedKind || v.embedLocale)) ctx.addIssue({ code: 'custom', path: ['embedKind'], message: 'embed only' });
     if (v.entry === 'registration' && v.registrationId) ctx.addIssue({ code: 'custom', path: ['registrationId'], message: 'events only' });
+    if ((v.rowCount !== undefined || v.filterQuery !== undefined) && (v.entry !== 'event' || (v.reason !== 'map_png' && v.reason !== 'map_pdf')))
+      ctx.addIssue({ code: 'custom', path: ['rowCount'], message: 'map file events only' });
   });
 /** Contact reveal from the player profile, for a signed-up visitor. */
 export const ContactRequestSchema = z.object({
   ...common,
   ...person,
   playerId: z.string().min(4).max(20),
-  message: z.string().max(1000).optional().default(''),
+  message: optionalText(1000),
 });
 /** POST /api/suggest — "Segnala un aggiornamento / Suggest an update". */
 export const SuggestionSchema = z.object({
   ...common,
   ...tracking,
   type: z.enum(['new', 'correction', 'other']),
-  organization: z.string().trim().min(1).max(200),
-  website: z.string().trim().max(300).optional().default(''),
-  details: z.string().trim().min(10).max(3000),
+  organization: text(1, 200),
+  website: optionalText(300),
+  details: text(10, 3000),
 });
 /** POST /api/download — a download by a signed-up visitor (the profile stored at sign-up). */
 export const DownloadRequestSchema = z.object({
@@ -124,7 +151,13 @@ export type Lead =
   | ({ kind: 'download' } & z.infer<typeof DownloadRequestSchema>);
 
 const MIN_ELAPSED_MS = 1500;
-export const looksAutomated = (l: { company_url?: string; elapsed: number }) => !!l.company_url || l.elapsed < MIN_ELAPSED_MS;
+/**
+ * Bot signals. `form`: a form a person fills in (honeypot + time-to-submit). `action`: a
+ * click of an already signed-up visitor (later download / embed copy / map file) — no form
+ * is typed, a fast click is legitimate, so only the honeypot applies (plus the rate limit).
+ */
+export const looksAutomated = (l: { company_url?: string; elapsed: number }, kind: 'form' | 'action' = 'form') =>
+  !!l.company_url || (kind === 'form' && l.elapsed < MIN_ELAPSED_MS);
 
 // --- Rate limiting -----------------------------------------------------------
 // In-memory sliding window per instance. On serverless this is best-effort; for

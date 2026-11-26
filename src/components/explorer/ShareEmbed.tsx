@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
 import { useLeadProfile, type LeadProfile } from '@/lib/lead-profile';
-import { newRequestId, originOf, recordGatedEvent, type Origin } from '@/lib/submission';
+import { newRequestId, originOf, pageLocale, recordGatedEvent, type Origin } from '@/lib/submission';
 import { LOCALES, type Locale } from '@/lib/i18n/config';
 import { SITE } from '@/lib/site';
 import { Icon } from '../ui/Icon';
@@ -17,7 +17,10 @@ export function ShareEmbed({ kind }: { kind: 'map' | 'database' }) {
   const { t, locale, requireLead } = useExplorer();
   const profile = useLeadProfile();
   const unlocked = !!profile;
-  const [lang, setLang] = useState<Locale>(locale);
+  // Default language of the code = the language of the page the visitor is on (the explorer
+  // itself is in English on both home pages); IT / EN stay selectable. The explorer is
+  // loaded in the browser only (LazyExplorer), so reading the page here is hydration-safe.
+  const [lang, setLang] = useState<Locale>(() => (typeof window === 'undefined' ? locale : pageLocale()));
   const [copied, setCopied] = useState(false);
   const [failed, setFailed] = useState(false);
   const inFlight = useRef(false);

@@ -54,8 +54,9 @@ export async function POST(req: Request) {
   if (!parsed.success) return json({ error: 'invalid', fields: parsed.error.issues.map((i) => i.path.join('.')) }, 400);
   const data = parsed.data;
   const file = await buildFile(data.query, data.format);
-  // Bots get the open data but are not recorded.
-  if (looksAutomated(data) || !file.ok) return file;
+  // Bots get the open data but are not recorded. "table" is only the list that goes into
+  // the map PDF: the PDF itself is recorded by the browser once it exists (/api/signup event).
+  if (looksAutomated(data, 'action') || !file.ok || data.format === 'table') return file;
   // Every download of a signed-up visitor is recorded (download_registrations, EVENT)
   // before the file is handed over: no file when the record could not be saved.
   const failed = await storeOrFail('download', () => recordDownload(data, Number(file.headers.get('x-row-count'))));

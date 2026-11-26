@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   if (!parsed.success) return json({ error: 'invalid', fields: parsed.error.issues.map((i) => i.path.join('.')) }, 400);
   const data = parsed.data;
   // Pretend success to bots, store nothing.
-  if (looksAutomated(data)) return json({ ok: true });
+  if (looksAutomated(data, data.entry === 'event' ? 'action' : 'form')) return json({ ok: true });
 
   const failed = await storeOrFail('signup', () => recordSignup(data));
   if (failed) return failed;

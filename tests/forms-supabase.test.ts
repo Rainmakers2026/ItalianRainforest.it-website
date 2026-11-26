@@ -200,15 +200,63 @@ describe('/api/download (POST) → download_registrations EVENT', () => {
     });
   });
 
-  it('complete database, Excel and the map PDF list are recorded with their own type', async () => {
+  it('complete database and Excel are recorded with their own type', async () => {
     await call(download, '/api/download', downloadBody({ format: 'xlsx', query: 'scope=all', reason: 'download_bulk' }));
-    await call(download, '/api/download', downloadBody({ format: 'table', query: 'region=lombardia', reason: 'map_pdf' }));
     await call(download, '/api/download', downloadBody({ format: 'xlsx', query: 'scope=filtered' }));
     expect(db.tables.download_registrations.map((r) => [r.request_type, r.file_format, r.download_scope])).toEqual([
       ['DOWNLOAD_BULK', 'XLSX', 'ALL'],
-      ['MAP_PDF', 'PDF', 'FILTERED'],
       ['DOWNLOAD_XLSX', 'XLSX', 'FILTERED'],
     ]);
+  });
+
+  it('regression (fix 1): the map PDF list alone records nothing; the PDF is recorded once it exists, with rows and filters', async () => {
+    const list = await call(download, '/api/download', downloadBody({ format: 'table', query: 'region=lombardia&scope=filtered&locale=en', reason: 'map_pdf' }));
+    expect(list.status).toBe(200);
+    expect(((await list.json()) as { rows: unknown[] }).rows.length).toBeGreaterThan(0);
+    expect(db.tables.download_registrations).toHaveLength(0);
+    // The browser generated the PDF: one EVENT, with the exported rows and filters.
+    const ev = signupBody({ entry: 'event', registrationId: id(), reason: 'map_pdf', origin: origin('map', 'panel_filtered_map_pdf'), rowCount: 186, filterQuery: 'region=lombardia&scope=filtered&locale=en' });
+    expect((await call(signup, '/api/signup', ev)).status).toBe(200);
+    expect(db.tables.download_registrations).toHaveLength(1);
+    expect(db.tables.download_registrations[0]).toMatchObject({ entry_type: 'EVENT', request_type: 'MAP_PDF', file_format: 'PDF', download_scope: 'FILTERED', row_count: 186, filter_query: 'region=lombardia&scope=filtered&locale=en', cta: 'panel_filtered_map_pdf' });
+    // Same for the PNG; rows / filters only on map file events.
+    await call(signup, '/api/signup', signupBody({ entry: 'event', registrationId: id(), reason: 'map_png', rowCount: 777, filterQuery: 'scope=filtered&locale=en' }));
+    expect(db.tables.download_registrations[1]).toMatchObject({ request_type: 'MAP_PNG', file_format: 'PNG', row_count: 777 });
+    for (const bad of [signupBody({ rowCount: 3 }), signupBody({ entry: 'event', registrationId: id(), reason: 'embed', embedKind: 'map', rowCount: 3 }), signupBody({ entry: 'event', registrationId: id(), reason: 'map_pdf', filterQuery: 'a b' })]) {
+      expect((await call(signup, '/api/signup', bad)).status).toBe(400);
+    }
+  });
+
+  it('regression: a fast click of a signed-up visitor (event / later download) is recorded; the honeypot still blocks', async () => {
+    expect((await call(signup, '/api/signup', signupBody({ entry: 'event', registrationId: id(), reason: 'embed', embedKind: 'map', elapsed: 300 }))).status).toBe(200);
+    expect((await call(download, '/api/download', downloadBody({ elapsed: 200 }))).status).toBe(200);
+    expect(db.tables.sharing_is_caring_registrations).toHaveLength(1);
+    expect(db.tables.download_registrations).toHaveLength(1);
+    // A sign-up FORM submitted in 0.3 s is still treated as a bot; any honeypot too.
+    await call(signup, '/api/signup', signupBody({ elapsed: 300 }));
+    await call(signup, '/api/signup', signupBody({ entry: 'event', registrationId: id(), reason: 'embed', embedKind: 'map', company_url: 'http://bot' }));
+    expect(db.tables.download_registrations).toHaveLength(1);
+    expect(db.tables.sharing_is_caring_registrations).toHaveLength(1);
+  });
+
+  it('regression (fix 4): lengths are counted in characters like PostgreSQL (emoji, accents, other scripts)', async () => {
+    const emoji = '🌳';
+    // 5 emoji = 10 UTF-16 units but 5 characters: refused by the server (PostgreSQL would refuse it too).
+    expect((await call(suggest, '/api/suggest', suggestBody({ details: emoji.repeat(5) }))).status).toBe(400);
+    expect(db.tables.database_update_requests).toHaveLength(0);
+    // 10 emoji = 10 characters: accepted by the server AND by the database CHECK.
+    expect((await call(suggest, '/api/suggest', suggestBody({ details: emoji.repeat(10) }))).status).toBe(200);
+    // 200 emoji in the organisation name (400 UTF-16 units): within the 200-character limit.
+    expect((await call(suggest, '/api/suggest', suggestBody({ organization: emoji.repeat(200) }))).status).toBe(200);
+    expect((await call(suggest, '/api/suggest', suggestBody({ organization: emoji.repeat(201) }))).status).toBe(400);
+    // Names: 100 characters of a non-Latin script / with combining accents.
+    expect((await call(signup, '/api/signup', signupBody({ firstName: '東'.repeat(100), lastName: 'Rússu' }))).status).toBe(200);
+    expect((await call(signup, '/api/signup', signupBody({ firstName: '東'.repeat(101) }))).status).toBe(400);
+    // U+0000 cannot be stored in PostgreSQL text: refused up front (400), never a 503.
+    expect((await call(suggest, '/api/suggest', suggestBody({ details: 'Valid text\u0000 with NUL inside' }))).status).toBe(400);
+    expect(db.tables.database_update_requests).toHaveLength(2);
+    expect(db.tables.download_registrations).toHaveLength(1);
+    expect(db.calls.every((c) => c.status < 400)).toBe(true);
   });
 
   it('no file when the download cannot be recorded', async () => {

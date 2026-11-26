@@ -158,6 +158,15 @@ Before every push, all of these pass (fix the cause, never weaken a test):
   explorer's), `utm`, request type, change type.
 - **No success without the record**: mandatory writes happen before the answer, failure or
   missing config in production → 503. Only the optional newsletter write may fail silently.
+- **Map files are recorded only once they exist** (map PNG / PDF are generated in the
+  browser): the EVENT is sent after the file is produced and before it is handed over; the
+  PDF list (`/api/download` format `table`) records nothing by itself.
+- **Bot signals**: forms = honeypot + time-to-submit; clicks of a signed-up visitor (events,
+  later downloads) = honeypot only (a fast click is legitimate). Rate limits always apply.
+- **Lengths in characters, as PostgreSQL counts them** (`charLength` in `src/lib/leads.ts`):
+  never zod `.min()` / `.max()` on stored text (UTF-16 units ≠ characters); U+0000 refused.
+- **UI**: download status (preparing / done / error) also in the compact mobile toolbar; a
+  newer action cancels the "done" timer. Embed code language defaults to the page language.
 - **Newsletter**: separate, optional; UNSUBSCRIBED / BLOCKED contacts are never reactivated.
 - **Secrets**: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `PRIVACY_POLICY_VERSION` in server
   env only (never `NEXT_PUBLIC_`, never committed); `src/lib/supabase/*` is `server-only`;

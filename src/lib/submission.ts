@@ -41,16 +41,20 @@ export function originOf(section: string, cta: string): Origin {
 }
 
 export type GatedEvent = {
-  reason: 'map_png' | 'embed';
+  reason: 'map_png' | 'map_pdf' | 'embed';
   origin: Origin;
   requestId: string;
   embedKind?: 'map' | 'database';
   embedLocale?: Locale;
+  /** Map files: rows in the exported view and the active filters (public query string). */
+  rowCount?: number;
+  filterQuery?: string;
 };
 
 /**
- * A gated action of a signed-up visitor that has no server request of its own (map PNG,
- * embed code copy): recorded as an EVENT. Throws when it could not be recorded.
+ * A gated action of a signed-up visitor produced in the browser (map PNG / PDF, embed code
+ * copy): recorded as an EVENT once the result exists, before it is handed over. Throws when
+ * it could not be recorded (then no file / no copy).
  */
 export async function recordGatedEvent(p: LeadProfile, ev: GatedEvent): Promise<void> {
   const res = await fetch('/api/signup', {

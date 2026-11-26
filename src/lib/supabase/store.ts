@@ -83,10 +83,19 @@ export async function recordSignup(s: Signup): Promise<void> {
     await insertOnce(TABLES.embeds, { ...common, embed_kind: upper(s.embedKind!), embed_locale: s.embedLocale ?? null });
     return;
   }
+  // Map PNG / PDF events: the file exists (recorded by the browser just before saving it).
+  const mapFile = event && s.filterQuery !== undefined;
   await insertOnce(TABLES.downloads, {
     ...common,
     request_type: upper(s.reason),
     file_format: event ? (FORMAT_OF[s.reason] ?? null) : null,
+    ...(mapFile
+      ? {
+          download_scope: new URLSearchParams(s.filterQuery).get('scope') === 'all' ? 'ALL' : 'FILTERED',
+          filter_query: s.filterQuery || null,
+          row_count: s.rowCount ?? null,
+        }
+      : {}),
   });
 }
 

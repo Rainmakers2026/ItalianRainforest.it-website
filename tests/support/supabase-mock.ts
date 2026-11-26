@@ -10,7 +10,8 @@
  */
 
 type Row = Record<string, unknown>;
-type Col = { required?: boolean; values?: readonly string[]; default?: () => unknown };
+/** `chars`: CHECK on length(btrim(value)) in characters (code points), as PostgreSQL counts. */
+type Col = { required?: boolean; values?: readonly string[]; default?: () => unknown; chars?: readonly [number, number] };
 type Table = Record<string, Col>;
 
 const now = () => new Date().toISOString();
@@ -35,10 +36,10 @@ export const SCHEMA = {
     request_id: req,
     source: { default: () => 'ITALIAN RAINFOREST WEBSITE' },
     change_type: { required: true, values: ['NEW', 'CORRECTION', 'OTHER'] },
-    organization_name: req,
-    website: {},
-    details: req,
-    email: req,
+    organization_name: { required: true, chars: [1, 200] },
+    website: { chars: [0, 300] },
+    details: { required: true, chars: [10, 3000] },
+    email: { required: true, chars: [3, 200] },
     locale: { required: true, values: LOCALE },
     ...provenance,
     ...consents,
@@ -49,7 +50,7 @@ export const SCHEMA = {
     created_at: { default: now },
     first_name: req,
     last_name: req,
-    email: req,
+    email: { required: true, chars: [3, 200] },
     source: { default: () => 'SHARING IS CARING' },
     locale: { required: true, values: LOCALE },
     ...consents,
@@ -71,13 +72,13 @@ export const SCHEMA = {
     entry_type: { required: true, values: ENTRY },
     registration_id: {},
     source: { default: () => 'ITALIAN RAINFOREST WEBSITE' },
-    first_name: req,
-    last_name: req,
-    email: req,
+    first_name: { required: true, chars: [1, 100] },
+    last_name: { required: true, chars: [1, 100] },
+    email: { required: true, chars: [3, 200] },
     request_type: { required: true, values: ['DOWNLOAD_CSV', 'DOWNLOAD_XLSX', 'DOWNLOAD_BULK', 'MAP_CSV', 'MAP_PNG', 'MAP_PDF'] },
     file_format: { values: ['CSV', 'XLSX', 'PNG', 'PDF'] },
     download_scope: { values: ['ALL', 'FILTERED'] },
-    filter_query: {},
+    filter_query: { chars: [0, 1000] },
     row_count: {},
     locale: { required: true, values: LOCALE },
     ...provenance,
@@ -183,6 +184,17 @@ export function createSupabaseMock(serviceKey: string) {
 
   const pgError = (status: number, code: string, message: string) => Response.json({ code, message, details: null, hint: null }, { status });
 
+  /** PostgreSQL-like value checks: NUL in text (22P05), CHECK on length(btrim()) in characters (23514). */
+  function checkText(name: string, col: Col, v: unknown): Response | null {
+    if (typeof v !== 'string') return null;
+    if (v.includes('\u0000')) return pgError(400, '22P05', `unsupported Unicode escape sequence in "${name}"`);
+    if (col.chars) {
+      const n = [...v.replace(/^ +| +$/g, '')].length; // btrim() removes spaces only
+      if (n < col.chars[0] || n > col.chars[1]) return pgError(400, '23514', `check constraint on "${name}"`);
+    }
+    return null;
+  }
+
   function validate(table: string, input: Row): Row | Response {
     const cols = COLUMNS[table]!;
     const unknown = Object.keys(input).filter((k) => !(k in cols));
@@ -193,6 +205,8 @@ export function createSupabaseMock(serviceKey: string) {
       if (v === undefined) v = col.default ? col.default() : null;
       if (v === null && col.required) return pgError(400, '23502', `null value in column "${name}"`);
       if (v !== null && col.values && !col.values.includes(String(v))) return pgError(400, '23514', `check constraint on "${name}"`);
+      const bad = checkText(name, col, v);
+      if (bad) return bad;
       row[name] = v;
     }
     return row;
@@ -292,6 +306,8 @@ export function createSupabaseMock(serviceKey: string) {
         const col = cols[name]!;
         if (v === null && col.required) return pgError(400, '23502', `null value in column "${name}"`);
         if (v !== null && v !== undefined && col.values && !col.values.includes(String(v))) return pgError(400, '23514', `check constraint on "${name}"`);
+        const bad = checkText(name, col, v);
+        if (bad) return bad;
       }
       const fs = filtersOf(sp);
       if (!fs.length) throw new Error('mock: PATCH without filter');

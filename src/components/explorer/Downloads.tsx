@@ -42,6 +42,10 @@ const today = () => new Date().toISOString().slice(0, 10);
 export function useDownloads(section: 'map' | 'database') {
   const { t, filters, results, locale, downloadRequiresEmail, requireLead, mapRef, updatedAt } = useExplorer();
   const [status, setStatus] = useState<Status>('idle');
+  // The "done" note clears itself; a newer action cancels that timer, so it can never
+  // overwrite the newer state (e.g. hide an error).
+  const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => void (clearTimer.current && clearTimeout(clearTimer.current)), []);
 
   const query = (all: boolean) => {
     const sp = all ? new URLSearchParams() : serializeFilters(filters);
@@ -58,11 +62,13 @@ export function useDownloads(section: 'map' | 'database') {
     track('database_download_click', { reason, rows: results.length });
     const action: Action = { reason, origin: originOf(section, cta), requestId: newRequestId() };
     const go = async (p: LeadProfile | null) => {
+      if (clearTimer.current) clearTimeout(clearTimer.current);
+      clearTimer.current = null;
       setStatus('busy');
       try {
         await run(p, action);
         setStatus('done');
-        setTimeout(() => setStatus('idle'), 3500);
+        clearTimer.current = setTimeout(() => setStatus('idle'), 3500);
       } catch {
         setStatus('error');
       }
@@ -148,44 +154,64 @@ export function useDownloads(section: 'map' | 'database') {
   const mapPng = (cta: string) =>
     gate('map_png', cta, async (p, a) => {
       const png = await renderMap();
-      // Drawn in the browser: the download is recorded before the file is handed over.
-      if (p) await recordGatedEvent(p, { reason: 'map_png', origin: a.origin, requestId: a.requestId });
+      // Drawn in the browser: recorded only once the file exists, before it is handed over.
+      if (p) await recordGatedEvent(p, { reason: 'map_png', origin: a.origin, requestId: a.requestId, rowCount: results.length, filterQuery: query(false).toString() });
       saveBlob(png, `italian-rainforest-map-${today()}.png`);
       track('database_download_success', { format: 'png', rows: results.length });
     });
 
   const mapPdf = (cta: string) =>
     gate('map_pdf', cta, async (p, a) => {
-      const [png, { exportMapPdf }, rows] = await Promise.all([
-        renderMap(),
-        import('./pdfExport'),
-        // Recorded by /api/download (EVENT, MAP_PDF) when it returns the list.
-        request('table', false, p, a).then((r) => r.json() as Promise<PdfTable>),
-      ]);
+      // 1. The map image first: if the map cannot be drawn, nothing is requested or recorded.
+      const png = await renderMap();
+      // 2. The list of the filtered players (not recorded by itself).
+      const [{ exportMapPdf }, rows] = await Promise.all([import('./pdfExport'), request('table', false, p, a).then((r) => r.json() as Promise<PdfTable>)]);
       const meta: PdfMeta = {
         title: `Italian Rainforest — ${fmt(t.explorer.results, { n: formatNumber(rows.rows.length, locale) })}`,
         subtitle: filterSummary(),
         footer: footer(),
       };
-      saveBlob(await exportMapPdf(png, rows, meta), `italian-rainforest-map-${today()}.pdf`);
+      const pdf = await exportMapPdf(png, rows, meta);
+      // 3. The PDF exists: recorded (EVENT, MAP_PDF) before it is handed over; no file if this fails.
+      if (p) await recordGatedEvent(p, { reason: 'map_pdf', origin: a.origin, requestId: a.requestId, rowCount: rows.rows.length, filterQuery: query(false).toString() });
+      saveBlob(pdf, `italian-rainforest-map-${today()}.pdf`);
       track('database_download_success', { format: 'map_pdf', rows: rows.rows.length });
     });
 
   return { status, data, mapPng, mapPdf };
 }
 
-function StatusNote({ status }: { status: Status }) {
+/**
+ * Preparing / done / error of the last download. `compact`: the mobile toolbar version —
+ * a full-width line under the buttons (always in the DOM, so the live region announces it).
+ */
+function StatusNote({ status, compact = false }: { status: Status; compact?: boolean }) {
   const { t } = useExplorer();
   return (
-    <span aria-live="polite" className="text-[0.8125rem] font-semibold">
-      {status === 'busy' && <span className="text-muted">{t.download.preparing}</span>}
+    <span
+      aria-live="polite"
+      data-download-status={status}
+      // Idle: visually hidden but kept in the accessibility tree, so the change is announced.
+      className={compact ? `basis-full text-right text-xs font-semibold ${status === 'idle' ? 'sr-only' : ''}` : 'text-[0.8125rem] font-semibold'}
+    >
+      {status === 'busy' && (
+        <span className="inline-flex items-center gap-1 text-muted">
+          {compact && <Icon name="download" size={13} />}
+          {t.download.preparing}
+        </span>
+      )}
       {status === 'done' && (
         <span className="inline-flex items-center gap-1 text-success">
-          <Icon name="check" size={15} />
+          <Icon name="check" size={compact ? 13 : 15} />
           {t.download.success}
         </span>
       )}
-      {status === 'error' && <span className="text-danger">{t.download.error}</span>}
+      {status === 'error' && (
+        <span className="inline-flex items-center gap-1 text-danger">
+          {compact && <Icon name="info" size={13} />}
+          {t.download.error}
+        </span>
+      )}
     </span>
   );
 }
@@ -307,6 +333,7 @@ export function MapDownloads({ compact = false }: { compact?: boolean }) {
         primary
         align={compact ? 'right' : 'left'}
       />
+      {compact && <StatusNote status={d.status} compact />}
     </div>
   );
 }

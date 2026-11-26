@@ -356,6 +356,26 @@ English on both home pages), `utm` (first-touch UTM of the session), the request
   (`SUPABASE_SERVICE_ROLE_KEY`, never `NEXT_PUBLIC_`), the client module is `server-only`;
   logs carry the table and the Postgres code only — never a key or a submitted value.
 
+### 4b. Corrections after the authorised QA (approved 2026-11-26)
+
+1. **Map PDF recorded only when generated.** The map image is produced first, then the
+   list of the filtered players (`/api/download` format `table`, never recorded by itself),
+   then the PDF; the EVENT `MAP_PDF` (with `row_count`, `filter_query`, `download_scope`) is
+   sent only once the PDF exists, before it is handed over — as for the PNG. A failure
+   anywhere: no event, no file, the error is shown.
+2. **Status in the compact mobile toolbar.** Preparing / done / error are shown there too
+   (live region); a newer download cancels the timer that clears the "done" note, so it can
+   never hide a newer error.
+3. **Embed code language = page language** (IT on `/it`, EN on `/en`), IT / EN still
+   selectable; the event stores the chosen code language (`embed_locale`) and the page
+   language (`locale`).
+4. **Text lengths in characters, as PostgreSQL counts them** (Unicode code points: an emoji
+   is one character), aligned with the SQL CHECK constraints; U+0000 refused up front (400,
+   never a database error). The update form counts the same way in the browser.
+- Found by the new regression tests and fixed: the time-to-submit bot check applied to the
+  clicks of signed-up visitors, so a copy within 1.5 s of the page load was answered "ok"
+  and not recorded. Events and later downloads now use the honeypot only (forms unchanged).
+
 ### 5. Implementation (codebase)
 
 - `supabase/sql/01–05` — the schema (run in the Supabase SQL Editor; the MCP connection is

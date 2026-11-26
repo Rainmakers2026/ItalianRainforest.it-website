@@ -248,7 +248,8 @@ const post = async (body: object, ip = nextIp()) => {
     headers: { 'content-type': 'application/json', origin: BASE, 'x-forwarded-for': ip },
     body: JSON.stringify({ email: 'e2e@example.com', firstName: 'E2E', lastName: 'Test', company: '', consent: true, locale: 'it', company_url: '', elapsed: 5000, requestId: randomUUID(), origin: E2E_ORIGIN, ...body }),
   });
-  if (res.ok) downloadsOk++;
+  // The map PDF list ("table") is not a download by itself: the PDF is recorded by the browser.
+  if (res.ok && (body as { format?: string }).format !== 'table') downloadsOk++;
   return res;
 };
 const postForm = (route: string, body: object, ip = nextIp()) =>
@@ -578,6 +579,83 @@ try {
     check(stored && u.length === 1, `update form: success shown and one row stored (${u.length})`);
     check(u[0]?.change_type === 'CORRECTION' && u[0]?.organization_name === 'E2E Example Hub' && u[0]?.locale === 'en' && u[0]?.page_section === 'update' && u[0]?.cta === 'update_form', `update form provenance: ${u[0]?.change_type} · ${u[0]?.page_path} · ${u[0]?.cta} · ${u[0]?.locale}`);
     check(tbl('newsletter_subscribers').length === 0, 'update form without newsletter box: no subscriber');
+
+    // h) Regression of the four pre-newsletter fixes (signed-up visitor)
+    const mapReadyJs = `!![...document.querySelectorAll('button')].find((b) => b.textContent.trim().startsWith(${JSON.stringify(UI.downloadFiltered)}) && b.offsetParent && !b.disabled)`;
+    const openMenuItem = async (item: string) => {
+      await js(`(() => { const b = [...document.querySelectorAll('button')].find((x) => x.textContent.trim().startsWith(${JSON.stringify(UI.downloadFiltered)}) && x.offsetParent); b.scrollIntoView({ block: 'center' }); b.click(); })()`);
+      await until(`!!document.querySelector('[role=menu]')`, 3000);
+      await js(`[...document.querySelectorAll('[role=menu] [role=menuitem]')].find((x) => x.textContent.trim().startsWith(${JSON.stringify(item)})).click()`);
+    };
+    const waitFile = async (before: Set<string>, re: RegExp, ms = 45000) => {
+      for (let t = 0; t < ms; t += 250) {
+        const f = readdirSync(dlDir).find((n) => !before.has(n) && re.test(n) && !n.endsWith('.crdownload'));
+        if (f) return f;
+        await wait(250);
+      }
+      return '';
+    };
+    const pdfEvents = () => tbl('download_registrations').filter((r) => r.request_type === 'MAP_PDF');
+    const pngEvents = () => tbl('download_registrations').filter((r) => r.request_type === 'MAP_PNG');
+    // Fix 1 — desktop map PDF: one EVENT only once the file exists; none when it cannot be generated.
+    supa.reset();
+    await openTab(`${BASE}/it?region=lombardia#map`);
+    await until(mapReadyJs, 45000);
+    await js(`document.querySelector('.maplibregl-canvas')?.scrollIntoView({ block: 'center' })`);
+    await wait(6000);
+    let before = new Set(readdirSync(dlDir));
+    await openMenuItem(UI.formats.mapPdf);
+    const pdf = await waitFile(before, /^italian-rainforest-map-.*\.pdf$/);
+    await wait(1500);
+    const expectedRows = applyFilters(players, parseFilters(new URLSearchParams('region=lombardia'))).length;
+    check(!!pdf && pdfEvents().length === 1 && pdfEvents()[0]!.row_count === expectedRows && String(pdfEvents()[0]!.filter_query).includes('region=lombardia'), `fix 1: map PDF downloaded (${pdf}) → one MAP_PDF event with ${String(pdfEvents()[0]?.row_count)} rows = ${expectedRows}`);
+    await js(`HTMLCanvasElement.prototype.toBlob = function (cb) { cb(null); }`); // the map image cannot be produced
+    const spy = `(() => { window.__req = []; const f = window.__origFetch ?? window.fetch; window.__origFetch = f; window.fetch = async (...a) => { const r = await f(...a); window.__req.push(r.status + ' ' + String(a[0]).replace(location.origin, '').slice(0, 40) + ' ' + (await r.clone().text()).slice(0, 60)); return r; }; })()`;
+    await js(spy);
+    // No pause on purpose: the "done" timer of the previous download must not hide this error.
+    before = new Set(readdirSync(dlDir));
+    await openMenuItem(UI.formats.mapPdf);
+    await until(`document.querySelector('[data-download-status=error]') !== null`, 15000);
+    await wait(1500);
+    check(pdfEvents().length === 1 && !(await waitFile(before, /\.pdf$/, 2000)), 'fix 1: map image failure → no MAP_PDF event, no file');
+    const statuses = await js<string>(`[...document.querySelectorAll('[data-download-status]')].map((s) => s.dataset.downloadStatus + (s.offsetParent ? ':visible' : ':hidden') + ' ' + s.textContent.trim()).join(' | ')`);
+    check(/error:visible/.test(statuses) && statuses.includes(en.download.error), 'fix 1: the error is shown to the visitor', `${statuses} · requests: ${await js<string>(`JSON.stringify(window.__req)`)}`);
+    // Fix 2 — compact mobile toolbar: preparing / done / error states visible.
+    supa.reset();
+    await openTab(`${BASE}/it#map`);
+    await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+    await until(mapReadyJs, 45000);
+    await js(`document.querySelector('.maplibregl-canvas')?.scrollIntoView({ block: 'center' })`);
+    await wait(6000);
+    before = new Set(readdirSync(dlDir));
+    await openMenuItem(UI.formats.mapPng);
+    const sawBusy = await until(`document.querySelector('[data-download-status=busy]')?.offsetParent !== null && !!document.querySelector('[data-download-status=busy]')`, 8000);
+    const png = await waitFile(before, /^italian-rainforest-map-.*\.png$/);
+    const done = await until(`(() => { const s = document.querySelector('[data-download-status=done]'); return !!s && !!s.offsetParent && s.textContent.includes(${JSON.stringify(en.download.success)}); })()`, 8000);
+    check(sawBusy && done && !!png && pngEvents().length === 1, `fix 2: phone toolbar shows "${en.download.preparing}" then "${en.download.success}" (${png})`);
+    await js(`HTMLCanvasElement.prototype.toBlob = function (cb) { cb(null); }`);
+    await wait(3800); // the "done" note clears
+    await openMenuItem(UI.formats.mapPng);
+    const err = await until(`(() => { const s = document.querySelector('[data-download-status=error]'); return !!s && !!s.offsetParent && s.textContent.includes(${JSON.stringify(en.download.error)}); })()`, 15000);
+    check(err && pngEvents().length === 1, `fix 2: phone toolbar shows "${en.download.error}"; failed PNG not recorded`);
+    await send('Emulation.clearDeviceMetricsOverride');
+    // Fix 3 — embed code language = page language (IT / EN), still switchable.
+    for (const [loc, other] of [['it', 'en'], ['en', 'it']] as const) {
+      supa.reset();
+      await openTab(`${BASE}/${loc}#map-embed`);
+      await until(`!!document.querySelector('#map-embed textarea')`, 45000);
+      const pressed = await js<string>(`[...document.querySelectorAll('#map-embed button[aria-pressed=true]')].map((b) => b.textContent.trim().toLowerCase()).join()`);
+      const code = await js<string>(`document.querySelector('#map-embed textarea').value`);
+      check(pressed === loc && code.includes(`/${loc}/embed/map`), `fix 3: on /${loc} the embed code defaults to ${loc.toUpperCase()} (${pressed}, ${code.match(/\/(it|en)\/embed\/map/)?.[0]})`);
+      await js(`[...document.querySelectorAll('#map-embed button')].find((b) => b.textContent.trim().toLowerCase() === '${other}').click()`);
+      await js(spy);
+      await wait(300);
+      await js(`[...document.querySelectorAll('#map-embed button')].find((b) => b.textContent.trim() === ${JSON.stringify(en.share.copy)}).click()`);
+      const copiedOk = await until(`[...document.querySelectorAll('#map-embed button')].some((b) => b.textContent.includes(${JSON.stringify(en.share.copied)}))`, 10000);
+      const row = tbl('sharing_is_caring_registrations')[0];
+      if (!row) console.log('    embed debug:', copiedOk, await js<string>(`JSON.stringify({ req: window.__req, buttons: [...document.querySelectorAll('#map-embed button')].map((b) => b.textContent.trim()) })`), 'supabase calls:', supa.calls.slice(-3).map((c) => `${c.method} ${c.table} ${c.status}`).join(', '));
+      check((await js<string>(`document.querySelector('#map-embed textarea').value`)).includes(`/${other}/embed/map`) && row?.embed_locale === other && row?.locale === loc, `fix 3: switched to ${other.toUpperCase()} on /${loc} → code and event (embed_locale ${String(row?.embed_locale)}, page locale ${String(row?.locale)})`);
+    }
 
     // g) RAINFOREST RADAR form on /en (desktop), then the layout on a phone
     supa.reset();
