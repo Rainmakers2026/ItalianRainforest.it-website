@@ -77,7 +77,7 @@ automatically.
   `byName` refines ~40 organisations into the types the export has no MAIN TYPE value for
   (startup studio, regional finance, banks, universities, mentors).
 
-## Public database download — P0 (updates 1/6 and 2/6)
+## Public database download — P0 (updates 1/6, 2/6 and 4/6)
 
 Prevails over earlier implementations. Applies to every download entry point (map and
 database, CSV / JSON / PDF and any future format).
@@ -109,7 +109,7 @@ Rainmakers OS master export. The master (`data/source/`) is never served, copied
 § 5 above).
 
 ### 5. Master column structure (update 2/6)
-Every downloadable file (CSV, JSON, PDF) keeps exactly the structure of the Rainmakers OS
+Every downloadable data file (CSV, XLSX) keeps exactly the structure of the Rainmakers OS
 master: same number of columns, same original names, same order, same meaning of each
 field. No column is added, removed, renamed or merged. MAIN TYPE keeps its master name and
 value in the file, even though the interface calls it PLAYER TYPE. The export schema is
@@ -129,17 +129,39 @@ Public values per column: COMPANY NAME, WEBSITE, SHORT DESCRIPTION, MAIN TYPE (m
 value), ADDRESS, REGION, CITY, INDUSTRY, STATUS (ACTIVE, empty when not verified), GOOGLE
 MAPS LINK (built from the public position), LOGO (SI/NO, public logo present).
 
+### 7. Formats and file names (update 4/6)
+The database is downloadable as **CSV (UTF-8)** and **XLSX**, both compatible with Excel
+and Google Sheets and subject to the same publishability, structure, privacy and filtering
+rules. File names, where the date is the generation date of the file (Italian time):
+- `Italian_Rainforest_Database_YYYY-MM-DD.csv` / `.xlsx` — complete database;
+- `Italian_Rainforest_Database_Filtered_YYYY-MM-DD.csv` / `.xlsx` — filtered results.
+JSON and the database PDF table, offered earlier, are replaced by these two formats. The
+map keeps its image exports (PNG, map + list PDF), which are renderings, not data files.
+
+### 8. "Scarica database" (update 4/6)
+The database section has one "Scarica database" button. It opens a dialog where the user
+chooses: complete database or filtered results, each showing the number of exportable
+players; CSV or Excel. With active filters the filtered download is the default; with no
+results it is disabled and an informative message is shown. The dialog uses the existing
+design system; other site components are unchanged (the map menus only swap JSON / PDF for
+CSV / Excel).
+
 ### Implementation (codebase)
 - `src/lib/export.ts` — `selectForExport()` (modes), `exportTable()` (column allowlist,
   reserved/unknown columns empty), `buildExport()` (pipeline steps 7–11), `toCsv()` (UTF-8
-  BOM, formula-injection guard), `toJsonRecords()`.
+  BOM, CRLF, formula-injection guard), `exportFilename()` / `generationDate()`.
+- `src/lib/xlsx.ts` — minimal OOXML writer, no dependency: one sheet, bold frozen header
+  with autofilter, text-only cells (never formulas, numbers or dates), no cell for empty
+  values.
 - `src/lib/data/provider.ts` — `getExportColumns()`: validated schema metadata, with the
   documented 16-column structure as fallback.
-- `src/app/api/download/route.ts` — the only data-file endpoint (CSV, JSON, and the PDF
-  table as JSON); `x-row-count` and `x-export-scope` headers; `full-` in the filename for
-  the complete mode.
-- `src/components/explorer/Downloads.tsx` / `pdfExport.ts` — send `serializeFilters` +
-  `scope`; the PDF (A3 landscape) is rendered from the rows returned by the endpoint.
+- `src/app/api/download/route.ts` — the only data-file endpoint (CSV, XLSX, and the table
+  as JSON for the map PDF); `x-row-count` and `x-export-scope` headers.
+- `src/components/explorer/Downloads.tsx` — `DatabaseDownload` (button + dialog),
+  `MapDownloads` (menus); both send `serializeFilters` + `scope`. `pdfExport.ts` renders the
+  map PDF (A3) from the rows returned by the endpoint.
+- `tests/download-formats.test.ts` — file names and generation date, CSV UTF-8, XLSX
+  container, header, values equal to the CSV, empty reserved columns, text-only cells.
 - `tests/download-scope.test.ts` — modes, combined filters, no pagination, count, filter
   round trip, empty result, master structure, empty reserved columns, master never reachable.
 

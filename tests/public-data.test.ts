@@ -15,8 +15,30 @@ import { dedupe, isStartup, normalizeRecord, RESERVED_FIELDS, type Lookups, type
 import { PublicPlayerSchema, type PublicPlayer } from '@/lib/data/schema';
 import { computeStats } from '@/lib/data/stats';
 import { CATEGORY_FAMILIES } from '@/lib/data/taxonomy';
-import { exportTable, RESERVED_EXPORT_COLUMNS, toCsv, toJsonRecords } from '@/lib/export';
+import { exportTable, RESERVED_EXPORT_COLUMNS, toCsv } from '@/lib/export';
+import { toXlsx } from '@/lib/xlsx';
+import { inflateRawSync } from 'node:zlib';
 import { applyFilters, DEFAULT_FILTERS } from '@/lib/filters';
+
+/** One file of a zip (the XLSX container). */
+function unzipEntry(zip: Buffer, name: string): string {
+  let i = zip.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
+  const count = zip.readUInt16LE(i + 10);
+  let p = zip.readUInt32LE(i + 16);
+  for (let n = 0; n < count; n++) {
+    const nameLen = zip.readUInt16LE(p + 28);
+    const extra = zip.readUInt16LE(p + 30) + zip.readUInt16LE(p + 32);
+    const entry = zip.toString('utf8', p + 46, p + 46 + nameLen);
+    if (entry === name) {
+      const off = zip.readUInt32LE(p + 42);
+      const size = zip.readUInt32LE(p + 20);
+      i = off + 30 + zip.readUInt16LE(off + 26) + zip.readUInt16LE(off + 28);
+      return inflateRawSync(zip.subarray(i, i + size)).toString('utf8');
+    }
+    p += 46 + nameLen + extra;
+  }
+  throw new Error(`${name} not in zip`);
+}
 
 function parseCsv(t: string): string[][] {
   const rows: string[][] = [];
@@ -136,7 +158,8 @@ describe('reserved fields never reach the browser', () => {
   it('no phone, reference, email, information source or secondary type value in the public payload or the downloads', () => {
     const payload = JSON.stringify({ players }).toUpperCase();
     const table = exportTable(players, header);
-    const download = toCsv(header, table).toUpperCase() + JSON.stringify(toJsonRecords(header, table)).toUpperCase();
+    const sheet = unzipEntry(toXlsx(header, table), 'xl/worksheets/sheet1.xml').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+    const download = toCsv(header, table).toUpperCase() + sheet.toUpperCase();
     expect(reservedValues.size).toBeGreaterThan(100);
     const leaks = [...reservedValues].filter((v) => !secondaryOnly.has(v) && (payload.includes(v) || download.includes(v)));
     expect(leaks).toEqual([]);

@@ -31,6 +31,7 @@ const person = { firstName: personName, lastName: personName, referent: personNa
 
 export const LEAD_REASONS = [
   'download_csv',
+  'download_xlsx',
   'download_json',
   'download_pdf',
   'download_bulk',
@@ -67,7 +68,7 @@ export const DownloadRequestSchema = z.object({
   lastName: personName.optional(),
   referent: personName.optional(),
   company,
-  format: z.enum(['csv', 'json', 'pdf']),
+  format: z.enum(['csv', 'xlsx', 'table']),
   query: z.string().max(1000),
 });
 

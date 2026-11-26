@@ -35,7 +35,7 @@ Full text: `docs/PRD.md` § "Public data visibility & player type classification
    snapshot. After every database update run `npm run data:import`, `npm run
    infographic:build` and `npm test`; never ship with a failing test.
 
-## Downloads (P0 — updates 1–3/6, full text: `docs/PRD.md` § "Public database download")
+## Downloads (P0 — updates 1–4/6, full text: `docs/PRD.md` § "Public database download")
 
 1. **Two modes.** "Scarica database completo" = every publishable player; "Scarica database
    filtrato" = only the players matching the active filters and search.
@@ -50,7 +50,7 @@ Full text: `docs/PRD.md` § "Public data visibility & player type classification
    `src/lib/export.ts` (the only data-file endpoint is `/api/download`; PDF is rendered in the
    browser from the rows that endpoint returns). The Rainmakers OS master (`data/source/`) is
    never served, copied to `public/` or downloadable.
-5. **Master structure.** Every downloadable file (CSV, JSON, PDF) has exactly the columns of
+5. **Master structure.** Every downloadable data file (CSV, XLSX) has exactly the columns of
    the master: same number, original names, same order, same meaning — nothing added,
    removed, renamed or merged. The file says `MAIN TYPE` (master name, with the master
    value) even though the interface says PLAYER TYPE. The structure is read from the import
@@ -61,7 +61,21 @@ Full text: `docs/PRD.md` § "Public data visibility & player type classification
    with completely empty cells — no values, placeholders, formulas, comments or metadata.
    This exception is structural and for files only; interface, public dataset, APIs and
    payloads still never contain reserved fields (names or values).
-Guarded by `tests/download-scope.test.ts` and `tests/export-pipeline.test.ts`.
+7. **Formats: CSV UTF-8 and XLSX only**, both for Excel and Google Sheets, with the same
+   publishability, structure, privacy and filtering rules. CSV: UTF-8 with BOM, CRLF,
+   formula-injection guard. XLSX: `src/lib/xlsx.ts` (no dependency), text cells only — no
+   formulas, numbers or dates — and no cell at all for empty values. JSON and the database
+   PDF table are no longer offered; the map keeps its PNG and map + list PDF.
+8. **File names**, date = generation date (Europe/Rome), not the database date:
+   `Italian_Rainforest_Database_YYYY-MM-DD.{csv,xlsx}` (complete) and
+   `Italian_Rainforest_Database_Filtered_YYYY-MM-DD.{csv,xlsx}` (filtered) — `exportFilename()`.
+9. **Database section UI.** One "Scarica database" button opens a dialog: complete database
+   or filtered results, each with its number of exportable players; CSV or Excel. With
+   active filters the filtered download is preselected; with zero results it is disabled
+   and a message explains why. Same design system (`Dialog`, `btn`), no change to other
+   components beyond the download menus of the map (CSV / Excel instead of JSON / PDF).
+Guarded by `tests/download-scope.test.ts`, `tests/download-formats.test.ts` and
+`tests/export-pipeline.test.ts`.
 
 ## Export pipeline (P0 — update 3/6, full text: `docs/PRD.md` § "Export pipeline")
 

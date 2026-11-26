@@ -3,11 +3,12 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { getUtm, track } from '@/lib/analytics';
 import { CATEGORY_BY_KEY, type CategoryKey } from '@/lib/data/taxonomy';
-import { serializeFilters } from '@/lib/filters';
+import { activeFilterCount, serializeFilters } from '@/lib/filters';
 import { formatDate, formatNumber } from '@/lib/i18n/config';
 import { fmt } from '@/lib/i18n';
 import type { LeadProfile } from '@/lib/lead-profile';
 import { SITE } from '@/lib/site';
+import { Dialog } from '../ui/Dialog';
 import { Icon, type IconName } from '../ui/Icon';
 import { useExplorer, type LeadReason } from './ExplorerProvider';
 import { regionName } from './labels';
@@ -25,13 +26,15 @@ function saveBlob(blob: Blob, filename: string) {
 }
 
 type Status = 'idle' | 'busy' | 'done' | 'error';
-type Format = 'csv' | 'json' | 'pdf';
+/** Data files the user can download. */
+export type FileFormat = 'csv' | 'xlsx';
+type Format = FileFormat | 'table';
 const today = () => new Date().toISOString().slice(0, 10);
 
 /**
- * Pay-per-data downloads: the filtered database (exactly the results on screen, map or
- * database) or the complete database, in CSV / JSON / PDF, plus the filtered map as PNG or
- * PDF. Every data file comes from /api/download, built on the server from the public
+ * Pay-per-data downloads: the complete database or the filtered results (exactly the
+ * results on screen, map or database), as CSV UTF-8 or Excel, plus the filtered map as PNG
+ * or PDF. Every data file comes from /api/download, built on the server from the public
  * dataset with the column structure of the Rainmakers OS master (CLAUDE.md "Downloads").
  * Browsing is free; the first download asks for the one-time sign-up.
  */
@@ -64,7 +67,7 @@ export function useDownloads() {
     requireLead(reason, (p) => void go(p));
   };
 
-  /** The file (CSV / JSON) or, for "pdf", its rows in the master structure, from the server. */
+  /** The file (CSV / XLSX) or, for "table", its rows in the master structure, from the server. */
   const request = async (format: Format, all: boolean, p: LeadProfile | null) => {
     const sp = query(all);
     const res = p
@@ -91,15 +94,13 @@ export function useDownloads() {
     return res;
   };
 
-  const data = (format: 'csv' | 'json', all = false, reason: LeadReason = format === 'csv' ? 'download_csv' : 'download_json') =>
+  const data = (format: FileFormat, all = false, reason: LeadReason = format === 'csv' ? 'download_csv' : 'download_xlsx') =>
     gate(all ? 'download_bulk' : reason, async (p) => {
       const res = await request(format, all, p);
-      const name = /filename="([^"]+)"/.exec(res.headers.get('content-disposition') ?? '')?.[1] ?? `italian-rainforest.${format}`;
+      const name = /filename="([^"]+)"/.exec(res.headers.get('content-disposition') ?? '')?.[1] ?? `Italian_Rainforest_Database.${format}`;
       saveBlob(await res.blob(), name);
       track('database_download_success', { format, all, rows: Number(res.headers.get('x-row-count') ?? 0) });
     });
-
-  const table = async (all: boolean, p: LeadProfile | null): Promise<PdfTable> => (await (await request('pdf', all, p)).json()) as PdfTable;
 
   const legend = useMemo(() => {
     const counts = new Map<CategoryKey, number>();
@@ -123,20 +124,6 @@ export function useDownloads() {
   const footer = () =>
     `${SITE.url.replace(/^https?:\/\//, '')} · ${fmt(t.explorer.updated, { date: formatDate(updatedAt) })} · copyleft, non-commercial`;
 
-  const pdfMeta = (count: number, subtitle: string): PdfMeta => ({
-    title: `Italian Rainforest — ${fmt(t.explorer.results, { n: formatNumber(count, locale) })}`,
-    subtitle,
-    footer: footer(),
-  });
-
-  const pdf = (all = false) =>
-    gate('download_pdf', async (p) => {
-      const [{ exportDatabasePdf }, rows] = await Promise.all([import('./pdfExport'), table(all, p)]);
-      const blob = await exportDatabasePdf(rows, pdfMeta(rows.rows.length, all ? t.map.exportAll : filterSummary()));
-      saveBlob(blob, `italian-rainforest-${all ? 'full-' : ''}${today()}.pdf`);
-      track('database_download_success', { format: 'pdf', all, rows: rows.rows.length });
-    });
-
   const renderMap = async () => {
     const map = mapRef.current;
     if (!map) throw new Error('map not ready');
@@ -157,15 +144,22 @@ export function useDownloads() {
 
   const mapPdf = () =>
     gate('map_pdf', async (p) => {
-      const [png, { exportMapPdf }, rows] = await Promise.all([renderMap(), import('./pdfExport'), table(false, p)]);
-      const blob = await exportMapPdf(png, rows, pdfMeta(rows.rows.length, filterSummary()));
-      saveBlob(blob, `italian-rainforest-map-${today()}.pdf`);
+      const [png, { exportMapPdf }, rows] = await Promise.all([
+        renderMap(),
+        import('./pdfExport'),
+        request('table', false, p).then((r) => r.json() as Promise<PdfTable>),
+      ]);
+      const meta: PdfMeta = {
+        title: `Italian Rainforest — ${fmt(t.explorer.results, { n: formatNumber(rows.rows.length, locale) })}`,
+        subtitle: filterSummary(),
+        footer: footer(),
+      };
+      saveBlob(await exportMapPdf(png, rows, meta), `italian-rainforest-map-${today()}.pdf`);
       track('database_download_success', { format: 'map_pdf', rows: rows.rows.length });
     });
 
-  return { status, data, pdf, mapPng, mapPdf };
+  return { status, data, mapPng, mapPdf };
 }
-
 
 function StatusNote({ status }: { status: Status }) {
   const { t } = useExplorer();
@@ -264,59 +258,197 @@ function DownloadMenu({
   );
 }
 
-function useMenus(withMap: boolean) {
+/** Map: the filtered results (CSV, Excel, the map itself as PNG / PDF) and the complete database. */
+export function MapDownloads({ compact = false }: { compact?: boolean }) {
   const { t, results, players, state, locale } = useExplorer();
   const d = useDownloads();
   const busy = state !== 'ready' || d.status === 'busy';
   const f = t.database.formats;
   const filtered: MenuItem[] = [
-    { key: 'csv', label: f.csv, hint: f.csvHint, icon: 'download', run: () => d.data('csv', false, withMap ? 'map_csv' : 'download_csv') },
-    { key: 'json', label: f.json, hint: f.jsonHint, icon: 'code', run: () => d.data('json') },
-    { key: 'pdf', label: f.pdf, hint: f.pdfHint, icon: 'list', run: () => d.pdf() },
-    ...(withMap
-      ? [
-          { key: 'map-png', label: f.mapPng, hint: f.mapPngHint, icon: 'map' as IconName, run: d.mapPng },
-          { key: 'map-pdf', label: f.mapPdf, hint: f.mapPdfHint, icon: 'map' as IconName, run: d.mapPdf },
-        ]
-      : []),
+    { key: 'csv', label: f.csv, hint: f.csvHint, icon: 'download', run: () => d.data('csv', false, 'map_csv') },
+    { key: 'xlsx', label: f.xlsx, hint: f.xlsxHint, icon: 'download', run: () => d.data('xlsx') },
+    { key: 'map-png', label: f.mapPng, hint: f.mapPngHint, icon: 'map', run: d.mapPng },
+    { key: 'map-pdf', label: f.mapPdf, hint: f.mapPdfHint, icon: 'map', run: d.mapPdf },
   ];
   const full: MenuItem[] = [
     { key: 'csv', label: f.csv, hint: f.csvHint, icon: 'download', run: () => d.data('csv', true) },
-    { key: 'json', label: f.json, hint: f.jsonHint, icon: 'code', run: () => d.data('json', true) },
-    { key: 'pdf', label: f.pdf, hint: f.pdfHint, icon: 'list', run: () => d.pdf(true) },
+    { key: 'xlsx', label: f.xlsx, hint: f.xlsxHint, icon: 'download', run: () => d.data('xlsx', true) },
   ];
-  return {
-    status: d.status,
-    busy,
-    filtered,
-    full,
-    filteredCount: formatNumber(results.length, locale),
-    fullCount: formatNumber(players.length, locale),
-    noResults: !results.length,
-    t,
-  };
-}
-
-/** Database: the filtered results and the whole database, each in CSV / JSON / PDF. */
-export function DownloadButtons() {
-  const m = useMenus(false);
   return (
-    <div className="flex flex-wrap items-center gap-2" role="group" aria-label={m.t.database.download}>
-      <StatusNote status={m.status} />
-      <DownloadMenu label={m.t.database.downloadFiltered} count={m.filteredCount} items={m.filtered} disabled={m.busy || m.noResults} />
-      <DownloadMenu label={m.t.database.downloadFull} count={m.fullCount} items={m.full} disabled={m.busy} primary />
+    <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label={t.database.download}>
+      {!compact && <StatusNote status={d.status} />}
+      <DownloadMenu
+        label={t.database.downloadFiltered}
+        count={compact ? undefined : formatNumber(results.length, locale)}
+        items={filtered}
+        disabled={busy || !results.length}
+        align="left"
+      />
+      <DownloadMenu
+        label={compact ? t.database.downloadFullShort : t.database.downloadFull}
+        count={compact ? undefined : formatNumber(players.length, locale)}
+        items={full}
+        disabled={busy}
+        primary
+        align={compact ? 'right' : 'left'}
+      />
     </div>
   );
 }
 
-/** Map: same two menus; the filtered one also offers the map itself (PNG, PDF). */
-export function MapDownloads({ compact = false }: { compact?: boolean }) {
-  const m = useMenus(true);
+type Scope = 'filtered' | 'all';
+
+/** One choice card of the download dialog (native radio, styled as a card). */
+function Choice({
+  name,
+  value,
+  checked,
+  disabled,
+  onChange,
+  title,
+  hint,
+  badge,
+}: {
+  name: string;
+  value: string;
+  checked: boolean;
+  disabled?: boolean;
+  onChange: () => void;
+  title: string;
+  hint?: string;
+  badge?: string;
+}) {
   return (
-    <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label={m.t.database.download}>
-      {!compact && <StatusNote status={m.status} />}
-      <DownloadMenu label={m.t.database.downloadFiltered} count={compact ? undefined : m.filteredCount} items={m.filtered} disabled={m.busy || m.noResults} align="left" />
-      <DownloadMenu label={compact ? m.t.database.downloadFullShort : m.t.database.downloadFull} items={m.full} disabled={m.busy} primary align={compact ? 'right' : 'left'} />
+    <label
+      className={`flex items-start gap-3 rounded-2xl border px-4 py-3 transition-colors ${
+        disabled ? 'cursor-not-allowed border-line bg-mist/40 opacity-60' : checked ? 'cursor-pointer border-savoia bg-savoia-50' : 'cursor-pointer border-line hover:bg-mist/60'
+      }`}
+    >
+      <input type="radio" name={name} value={value} checked={checked} disabled={disabled} onChange={onChange} className="mt-1 size-4 accent-savoia" />
+      <span className="min-w-0 flex-1">
+        <span className="flex flex-wrap items-center gap-2 font-bold text-ink">
+          {title}
+          {badge && <span className="rounded-full bg-white px-2 text-xs font-semibold text-savoia-700 tabular-nums ring-1 ring-savoia-100">{badge}</span>}
+        </span>
+        {hint && <span className="mt-0.5 block text-sm text-muted">{hint}</span>}
+      </span>
+    </label>
+  );
+}
+
+/**
+ * Database section: one "Scarica database" button. The dialog lets the user pick the
+ * complete database or the filtered results (with the number of players of each) and
+ * CSV or Excel. With active filters the filtered download is preselected; with no
+ * results it is disabled and a message explains why.
+ */
+export function DatabaseDownload() {
+  const { t, filters, results, players, state, locale } = useExplorer();
+  const d = useDownloads();
+  const c = t.database.downloadDialog;
+  const [open, setOpen] = useState(false);
+  const [scope, setScope] = useState<Scope>('all');
+  const [format, setFormat] = useState<FileFormat>('csv');
+  const titleId = useId();
+  const scopeName = useId();
+  const formatName = useId();
+  const hasFilters = activeFilterCount(filters) > 0;
+  const noResults = results.length === 0;
+  const busy = state !== 'ready' || d.status === 'busy';
+
+  const openDialog = () => {
+    // Default: the filtered results when filters are active (and there is something to export).
+    setScope(hasFilters && !noResults ? 'filtered' : 'all');
+    setOpen(true);
+  };
+  const chosen = scope === 'filtered' && noResults ? 'all' : scope;
+  const count = chosen === 'all' ? players.length : results.length;
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <StatusNote status={d.status} />
+      <button type="button" className="btn btn-primary btn-sm min-h-10 gap-2 rounded-full px-4" onClick={openDialog} disabled={busy} aria-haspopup="dialog">
+        <Icon name="download" size={16} />
+        {t.database.downloadDatabase}
+      </button>
+      <Dialog open={open} onClose={() => setOpen(false)} closeLabel={c.cancel} labelledBy={titleId} bare>
+        <div className="flex items-start justify-between gap-4">
+          <h2 id={titleId} className="text-[1.75rem] leading-tight font-extrabold text-navy">
+            {c.title}
+          </h2>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="-mt-1 -mr-2 inline-flex size-10 shrink-0 items-center justify-center rounded-full text-muted hover:bg-mist hover:text-ink"
+            aria-label={c.cancel}
+          >
+            <Icon name="x" />
+          </button>
+        </div>
+        <p className="mt-1 text-sm text-muted">{c.lead}</p>
+
+        <fieldset className="mt-5">
+          <legend className="mb-2 text-xs font-bold tracking-wide text-subtle uppercase">{c.scopeLabel}</legend>
+          <div className="grid gap-2">
+            <Choice
+              name={scopeName}
+              value="filtered"
+              checked={chosen === 'filtered'}
+              disabled={noResults}
+              onChange={() => setScope('filtered')}
+              title={c.filtered}
+              hint={hasFilters ? c.filteredHint : c.filteredHintNone}
+              badge={fmt(c.players, { n: formatNumber(results.length, locale) })}
+            />
+            <Choice
+              name={scopeName}
+              value="all"
+              checked={chosen === 'all'}
+              onChange={() => setScope('all')}
+              title={c.full}
+              hint={c.fullHint}
+              badge={fmt(c.players, { n: formatNumber(players.length, locale) })}
+            />
+          </div>
+          {noResults && (
+            <p role="status" className="mt-2 flex items-start gap-1.5 text-sm text-muted">
+              <Icon name="info" size={15} className="mt-0.5 shrink-0" />
+              {c.noResults}
+            </p>
+          )}
+        </fieldset>
+
+        <fieldset className="mt-5">
+          <legend className="mb-2 text-xs font-bold tracking-wide text-subtle uppercase">{c.formatLabel}</legend>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Choice name={formatName} value="csv" checked={format === 'csv'} onChange={() => setFormat('csv')} title={c.csv} hint={c.csvHint} />
+            <Choice name={formatName} value="xlsx" checked={format === 'xlsx'} onChange={() => setFormat('xlsx')} title={c.xlsx} hint={c.xlsxHint} />
+          </div>
+        </fieldset>
+
+        <p className="mt-4 flex items-start gap-1.5 text-xs text-subtle">
+          <Icon name="info" size={14} className="mt-0.5 shrink-0" />
+          {c.note}
+        </p>
+
+        <div className="mt-5 flex flex-wrap justify-end gap-2">
+          <button type="button" className="btn btn-outline btn-sm" onClick={() => setOpen(false)}>
+            {c.cancel}
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            disabled={busy || count === 0}
+            onClick={() => {
+              setOpen(false);
+              d.data(format, chosen === 'all');
+            }}
+          >
+            <Icon name="download" size={16} />
+            {fmt(c.confirm, { format: format === 'csv' ? 'CSV' : 'Excel', n: formatNumber(count, locale) })}
+          </button>
+        </div>
+      </Dialog>
     </div>
   );
 }

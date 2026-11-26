@@ -10,7 +10,7 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { dedupe, normalizeRecord, type Lookups, type RawRecord } from '@/lib/data/normalize';
 import type { PublicPlayer } from '@/lib/data/schema';
-import { exportTable, MASTER_COLUMNS, parseExportScope, RESERVED_EXPORT_COLUMNS, selectForExport, toCsv, toJsonRecords } from '@/lib/export';
+import { exportTable, MASTER_COLUMNS, parseExportScope, RESERVED_EXPORT_COLUMNS, selectForExport, toCsv } from '@/lib/export';
 import { applyFilters, DEFAULT_FILTERS, FILTER_PARAM_KEYS, parseFilters, serializeFilters, type Filters } from '@/lib/filters';
 
 const snapshot = JSON.parse(readFileSync('data/snapshot/irf-records.json', 'utf8')) as { records: RawRecord[] };
@@ -142,11 +142,6 @@ describe('downloads keep the Rainmakers OS master structure', () => {
     // Public columns are filled where the public dataset has a value.
     const name = cols.indexOf('COMPANY NAME');
     expect(rows.every((r) => r[name]!.length > 0)).toBe(true);
-  });
-
-  it('JSON keeps the master keys in the master order', () => {
-    const [first] = toJsonRecords(schema, exportTable(players.slice(0, 1), schema));
-    expect(Object.keys(first!)).toEqual(schema);
   });
 
   it('an empty result still has the master header row', () => {

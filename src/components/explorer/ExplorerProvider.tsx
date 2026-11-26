@@ -14,6 +14,7 @@ export type ExplorerStrings = Pick<Dictionary, 'explorer' | 'map' | 'database' |
 type Source = 'map' | 'database';
 export type LeadReason =
   | 'download_csv'
+  | 'download_xlsx'
   | 'download_json'
   | 'download_pdf'
   | 'download_bulk'

@@ -153,7 +153,16 @@ export function toCsv(columns: readonly string[], rows: string[][]): string {
   return `﻿${lines.join('\r\n')}\r\n`;
 }
 
-/** JSON: one object per player with the master columns as keys, in the master order. */
-export function toJsonRecords(columns: readonly string[], rows: string[][]): Record<string, string>[] {
-  return rows.map((r) => Object.fromEntries(columns.map((c, i) => [c, r[i] ?? ''])));
+/** Download formats (CLAUDE.md "Downloads" 7): CSV UTF-8 and Excel. */
+export const EXPORT_FORMATS = ['csv', 'xlsx'] as const;
+export type ExportFormat = (typeof EXPORT_FORMATS)[number];
+
+/** Generation date (Europe/Rome) as YYYY-MM-DD. */
+export function generationDate(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Rome', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
+}
+
+/** Italian_Rainforest_Database_YYYY-MM-DD.ext / Italian_Rainforest_Database_Filtered_YYYY-MM-DD.ext */
+export function exportFilename(scope: ExportScope, format: ExportFormat, now: Date = new Date()): string {
+  return `Italian_Rainforest_Database_${scope === 'filtered' ? 'Filtered_' : ''}${generationDate(now)}.${format}`;
 }

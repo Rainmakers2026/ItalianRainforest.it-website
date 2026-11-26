@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * PDF exports (database table, map + list). Loaded on demand: jsPDF never ships in
+ * PDF export (map + list of the filtered players). Loaded on demand: jsPDF never ships in
  * the main bundle. Standard PDF fonts only cover Windows-1252, so text is folded to
  * it (emoji and other symbols are dropped, accented Latin letters are kept).
  */
@@ -96,15 +96,6 @@ function table(doc: import('jspdf').jsPDF, autoTable: typeof import('jspdf-autot
 }
 
 let logoCache: string | null = null;
-
-/** Database: the filtered rows as a landscape table. */
-export async function exportDatabasePdf(rows: PdfTable, meta: PdfMeta): Promise<Blob> {
-  const { doc, autoTable } = await setup('landscape');
-  logoCache = await loadLogo();
-  table(doc, autoTable, rows, meta, 30);
-  footers(doc, meta);
-  return doc.output('blob');
-}
 
 /** Map: the rendered map (PNG from mapExport) on page 1, the listed players after it. */
 export async function exportMapPdf(mapPng: Blob, rows: PdfTable, meta: PdfMeta): Promise<Blob> {

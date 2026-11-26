@@ -8,7 +8,7 @@ import { formatNumber, type Locale } from '@/lib/i18n/config';
 import { fmt } from '@/lib/i18n';
 import { Icon } from '../ui/Icon';
 import { Avatar } from './Avatar';
-import { DownloadButtons } from './Downloads';
+import { DatabaseDownload } from './Downloads';
 import { useExplorer, useLoadWhenNear } from './ExplorerProvider';
 import { categoryColor, categoryName, locationLabel } from './labels';
 import { StatusBadge, WebsiteLink } from './PlayerBits';
@@ -152,7 +152,7 @@ export function DatabaseExplorer() {
         className="flex scroll-mt-[calc(var(--header-h)+8px)] flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3"
       >
         <ResultsCount />
-        <DownloadButtons />
+        <DatabaseDownload />
       </div>
 
       {state === 'error' ? (
