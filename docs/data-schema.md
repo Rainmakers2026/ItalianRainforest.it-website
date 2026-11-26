@@ -27,7 +27,7 @@ Public data rules (P0, also in `CLAUDE.md` and `docs/PRD.md`): the importer and 
 | COMPANY NAME (`Map` in old CSVs) | ✔ | `name`, `slug` |
 | WEBSITE | ✔ | `website`, `websiteHost` (normalised, tracking params removed) |
 | SHORT DESCRIPTION | ✔ | `description` (cookie/404 boilerplate and CRM notes dropped by the importer) |
-| MAIN TYPE (`PLAYER TYPE` in older exports) | ✔ | `categories` — **exactly one** per player. `STARTUP` (exact match, spaces/case normalised) is excluded |
+| MAIN TYPE (`PLAYER TYPE` in older exports) | ✔ | `categories` — **exactly one** per player. `STARTUP` (exact match, spaces/case normalised) is excluded. `mainType` keeps the master value, used only as the MAIN TYPE cell of the downloads |
 | ADDRESS | ✔ | `location.address` — hidden when it contradicts REGION |
 | REGION | ✔ | `location.region` (slug) |
 | CITY | ✔ | `location.city` (normalised: Turin → Torino, …) |

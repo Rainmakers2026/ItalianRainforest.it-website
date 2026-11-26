@@ -15,8 +15,7 @@ import { dedupe, isStartup, normalizeRecord, RESERVED_FIELDS, type Lookups, type
 import { PublicPlayerSchema, type PublicPlayer } from '@/lib/data/schema';
 import { computeStats } from '@/lib/data/stats';
 import { CATEGORY_FAMILIES } from '@/lib/data/taxonomy';
-import { DOWNLOAD_FIELDS, parseDownloadFields } from '@/lib/download-fields';
-import { exportRows, toCsv } from '@/lib/export';
+import { exportTable, RESERVED_EXPORT_COLUMNS, toCsv, toJsonRecords } from '@/lib/export';
 import { applyFilters, DEFAULT_FILTERS } from '@/lib/filters';
 
 function parseCsv(t: string): string[][] {
@@ -44,7 +43,8 @@ function parseCsv(t: string): string[][] {
 const normName = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '');
 
 // ---------- master export (first occurrence of each name, like the importer) ----------
-const [header, ...rows] = parseCsv(readFileSync('data/source/irf-database.csv', 'utf8').replace(/^﻿/, ''));
+const [headerRow, ...rows] = parseCsv(readFileSync('data/source/irf-database.csv', 'utf8').replace(/^﻿/, ''));
+const header = headerRow!;
 const col = (n: string) => header!.findIndex((h) => h.trim().toUpperCase() === n);
 const typeCol = col('MAIN TYPE') >= 0 ? col('MAIN TYPE') : col('PLAYER TYPE');
 const statusCol = col('STATUS');
@@ -135,15 +135,19 @@ describe('reserved fields never reach the browser', () => {
 
   it('no phone, reference, email, information source or secondary type value in the public payload or the downloads', () => {
     const payload = JSON.stringify({ players }).toUpperCase();
-    const all = [...DOWNLOAD_FIELDS];
-    const download = toCsv(exportRows(players, 'it', all), 'x').toUpperCase() + JSON.stringify(exportRows(players, 'en', all)).toUpperCase();
+    const table = exportTable(players, header);
+    const download = toCsv(header, table).toUpperCase() + JSON.stringify(toJsonRecords(header, table)).toUpperCase();
     expect(reservedValues.size).toBeGreaterThan(100);
     const leaks = [...reservedValues].filter((v) => !secondaryOnly.has(v) && (payload.includes(v) || download.includes(v)));
     expect(leaks).toEqual([]);
     for (const k of RESERVED_FIELDS) expect(payload).not.toContain(`"${k}"`);
     expect(payload).not.toMatch(/SECONDARY/);
-    // Download columns: an explicit list, none of them reserved.
-    expect(Object.keys(exportRows(players, 'it', all)[0]!).join(',')).not.toMatch(/secondary|reference|source|phone|email/i);
+    // Reserved columns are in the files as headers only: every cell is empty.
+    for (const c of RESERVED_EXPORT_COLUMNS) {
+      const i = header.findIndex((h) => h.trim().toUpperCase() === c);
+      expect(i, c).toBeGreaterThanOrEqual(0);
+      expect(table.every((r) => r[i] === '')).toBe(true);
+    }
   });
 
   it('a raw record with reserved fields is sanitised', () => {
@@ -188,14 +192,19 @@ describe('MAIN TYPE is the only public classification', () => {
     expect(both.every((p) => p.categories[0] === 'vc' && p.location?.region === 'lombardia')).toBe(true);
   });
 
-  it('downloads only allow public columns, in the chosen subset', () => {
-    expect(parseDownloadFields('email,phone,reference,secondary,website')).toEqual(['name', 'website']);
-    expect(Object.keys(exportRows(players, 'it', ['website', 'region'])[0]!)).toEqual(['company_name', 'website', 'region']);
-    const filtered = applyFilters(players, { ...DEFAULT_FILTERS, categories: ['vc'], region: 'lombardia' });
-    expect(exportRows(filtered, 'it', ['type']).every((r) => r.player_type === exportRows(filtered, 'it', ['type'])[0]!.player_type)).toBe(true);
+  it('downloads keep the master structure: same names, number and order of columns', () => {
+    const csv = toCsv(header, exportTable(players, header));
+    const first = parseCsv(csv.replace(/^\uFEFF/, ''))[0]!;
+    expect(first).toEqual(header);
+    expect(header).toContain('MAIN TYPE'); // not renamed PLAYER TYPE in the file
   });
 
-  it('downloads use one type per row', () => {
-    for (const r of exportRows(players, 'it')) expect(r.player_type).not.toContain(';');
+  it('downloads use one MAIN TYPE per row, as written in the master', () => {
+    const i = header.indexOf('MAIN TYPE');
+    const masterTypes = new Set(rows.map((r) => (r[i] ?? '').split(';')[0]!.trim().toUpperCase()));
+    for (const r of exportTable(players, header)) {
+      expect(r[i]).not.toContain(';');
+      expect(masterTypes.has(r[i]!)).toBe(true);
+    }
   });
 });

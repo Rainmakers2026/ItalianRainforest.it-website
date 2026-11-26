@@ -43,6 +43,8 @@ export const PublicPlayerSchema = z.object({
   name: z.string().min(1),
   /** Exactly one: the player's MAIN TYPE. Kept as an array for the filter helpers. */
   categories: z.array(categoryKey).length(1),
+  /** MAIN TYPE as written in the Rainmakers OS master (downloads keep the master values). */
+  mainType: z.string().nullable(),
   status: z.enum(STATUSES),
   website: z.url().nullable(),
   websiteHost: z.string().nullable(),

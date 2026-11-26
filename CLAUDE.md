@@ -18,21 +18,24 @@ Full text: `docs/PRD.md` § "Public data visibility & player type classification
    colour, counted once. Never combine MAIN and SECONDARY TYPE, never hybrid categories.
    `data/source/player-type-overrides.json` only maps/refines MAIN TYPE into the site
    taxonomy (one value, never for startups).
-4. **Reserved fields never reach the browser** (API, JSON, page payload, static assets,
-   downloads): REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE — plus EMAIL, read
-   only server-side for the gated contact request. Use allowlists, never blocklists.
-5. **One pipeline, one public dataset.** import → validate/normalise → dedupe → exclude
-   STARTUP → other publishability rules (template rows, INACTIVE) → strip reserved fields →
-   public dataset → counts computed from it → every component. The rules live only in
-   `scripts/import-irf-csv.mjs` (snapshot) and `src/lib/data/normalize.ts` (snapshot and
-   Airtable); components never filter on their own and never hide data with CSS.
+4. **Reserved field values never reach the browser** (API, JSON, page payload, static
+   assets, downloads): REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE — plus EMAIL,
+   read only server-side for the gated contact request. Use allowlists, never blocklists.
+   Only exception, structural and limited to downloadable files: their column *names* appear
+   as headers with empty cells (see "Downloads" 5–6).
+5. **One pipeline, one public dataset.** See "Export pipeline" below. The rules live only in
+   `scripts/import-irf-csv.mjs` (snapshot) and `src/lib/data/normalize.ts`
+   (`buildPublicDataset()`, snapshot and Airtable); every consumer — site, APIs, downloads,
+   infographic build — uses that one public dataset. Components never filter on their own
+   and never hide data with CSS.
 6. **No hardcoded numbers.** KPIs come from `computeStats()` on the public dataset; the
    per-type counts always add up to the total.
-7. **Tests guard it.** `tests/public-data.test.ts` reads the real master export and the
+7. **Tests guard it.** `tests/public-data.test.ts`, `tests/download-scope.test.ts` and
+   `tests/export-pipeline.test.ts` read the real master export and the
    snapshot. After every database update run `npm run data:import`, `npm run
    infographic:build` and `npm test`; never ship with a failing test.
 
-## Downloads (P0 — update 1/6, full text: `docs/PRD.md` § "Public database download")
+## Downloads (P0 — updates 1–3/6, full text: `docs/PRD.md` § "Public database download")
 
 1. **Two modes.** "Scarica database completo" = every publishable player; "Scarica database
    filtrato" = only the players matching the active filters and search.
@@ -43,9 +46,36 @@ Full text: `docs/PRD.md` § "Public data visibility & player type classification
 3. **No pagination, exact count.** Every matching result, regardless of the table page;
    exported rows = filtered results on screen; with no filters the two modes coincide; zero
    results never fall back to the full database.
-4. **Public data layer only.** Files come from `getDataset()` via `selectForExport()` in
-   `src/lib/export.ts`; the Rainmakers OS master (`data/source/`) is never served, copied to
-   `public/` or downloadable. Guarded by `tests/download-scope.test.ts`.
+4. **Public data layer only.** Files come from `getDataset()` via `buildExport()` in
+   `src/lib/export.ts` (the only data-file endpoint is `/api/download`; PDF is rendered in the
+   browser from the rows that endpoint returns). The Rainmakers OS master (`data/source/`) is
+   never served, copied to `public/` or downloadable.
+5. **Master structure.** Every downloadable file (CSV, JSON, PDF) has exactly the columns of
+   the master: same number, original names, same order, same meaning — nothing added,
+   removed, renamed or merged. The file says `MAIN TYPE` (master name, with the master
+   value) even though the interface says PLAYER TYPE. The structure is read from the import
+   (`data/snapshot/export-schema.json`, column names only) and follows the master
+   automatically. No per-user column picking.
+6. **Reserved columns: headers only.** REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE,
+   EMAIL and any master column not in the public allowlist (also future ones) are present
+   with completely empty cells — no values, placeholders, formulas, comments or metadata.
+   This exception is structural and for files only; interface, public dataset, APIs and
+   payloads still never contain reserved fields (names or values).
+Guarded by `tests/download-scope.test.ts` and `tests/export-pipeline.test.ts`.
+
+## Export pipeline (P0 — update 3/6, full text: `docs/PRD.md` § "Export pipeline")
+
+1. import/update Rainmakers OS (read-only: the master is never modified or deleted) →
+2. validate, normalise, deduplicate → 3. exclude MAIN TYPE exactly `STARTUP` (spaces and
+   case normalised; `VENTURE BUILDER/STARTUP STUDIO` and every other type containing the word
+   stay) → 4. other publishability rules → 5. public field allowlist → 6. public dataset
+   (`buildPublicDataset()`) → 7. user filters (`applyFilters`) → 8. rebuild the master columns
+   → 9. public values only → 10. reserved columns as empty cells → 11. validate and
+   generate the file (`buildExport()`: schema check, row count, width, empty reserved cells).
+- File generation never fetches reserved values: its only inputs are the public dataset and
+  the authorised schema metadata (column names).
+- MAIN TYPE is the only public classification; SECONDARY TYPE affects no classification,
+  filter or export. The master never reaches the browser.
 
 ## Working rules
 

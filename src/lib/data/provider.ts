@@ -3,8 +3,9 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { airtableConfigFromEnv, readAllRecords, type AirtableConfig } from './airtable-readonly';
 import { applyDemoGeo, isGeoDemoEnabled } from './demo-geo';
-import { dedupe, extractGatedContacts, normalizeRecord, publicId, type Lookups, type RawRecord } from './normalize';
+import { buildPublicDataset, extractGatedContacts, publicId, type Lookups, type RawRecord } from './normalize';
 import type { Dataset, GatedContacts, PublicPlayer } from './schema';
+import { MASTER_COLUMNS, validateExportSchema } from '@/lib/export';
 
 /**
  * Frontend code never talks to a data source directly: it asks a DataProvider.
@@ -23,6 +24,22 @@ export interface DataProvider {
 }
 
 const dataFile = (...p: string[]) => path.join(process.cwd(), 'data', ...p);
+
+let schemaCache: string[] | null = null;
+/**
+ * Column names and order of the Rainmakers OS master, as written by the importer
+ * (data/snapshot/export-schema.json). Used only to shape the downloadable files.
+ */
+export async function getExportColumns(): Promise<string[]> {
+  if (schemaCache) return schemaCache;
+  try {
+    const { columns } = JSON.parse(await readFile(dataFile('snapshot', 'export-schema.json'), 'utf8')) as { columns: unknown };
+    return (schemaCache = validateExportSchema(columns));
+  } catch (err) {
+    console.error('[export] schema metadata unusable, using the documented structure:', (err as Error).message);
+  }
+  return (schemaCache = [...MASTER_COLUMNS]);
+}
 
 export class SnapshotProvider implements DataProvider {
   readonly name = 'snapshot' as const;
@@ -95,12 +112,9 @@ async function load(): Promise<Cache> {
   }
 
   const lookups = await loadLookups();
-  const normalized = raw.map((r) => normalizeRecord(r, lookups)).filter((p): p is PublicPlayer => !!p);
-  const { players: unique, duplicates } = dedupe(normalized);
+  const { players: unique, duplicates } = buildPublicDataset(raw, lookups);
   if (duplicates.length) warnings.push(`duplicates:${duplicates.length}`);
-  const players = (isGeoDemoEnabled() ? applyDemoGeo(unique) : unique).sort((a, b) =>
-    a.name.localeCompare(b.name, 'it', { sensitivity: 'base' }),
-  );
+  const players = isGeoDemoEnabled() ? applyDemoGeo(unique) : unique;
 
   const ageDays = (Date.now() - new Date(readAt).getTime()) / 86_400_000;
   if (ageDays > STALE_AFTER_DAYS) warnings.push(`stale:${Math.round(ageDays)}d`);

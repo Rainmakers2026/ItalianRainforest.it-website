@@ -39,7 +39,9 @@ overrides any earlier use of SECONDARY TYPE in public aggregations.
 ### 5. Reserved fields
 REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE and every field already hidden
 (EMAIL) are never sent to the browser (API, JSON, payloads, assets). Implemented with an
-explicit allowlist of publishable fields.
+explicit allowlist of publishable fields. Downloadable files are the only, structural,
+exception: they carry these column names as headers with empty cells (see "Public database
+download" § 5–6); their values never appear anywhere.
 
 ### 6. Pipeline
 1. Import the master database. 2. Validate and normalise. 3. Deduplicate. 4. Exclude
@@ -75,7 +77,7 @@ automatically.
   `byName` refines ~40 organisations into the types the export has no MAIN TYPE value for
   (startup studio, regional finance, banks, universities, mentors).
 
-## Public database download — P0 (update 1/6)
+## Public database download — P0 (updates 1/6 and 2/6)
 
 Prevails over earlier implementations. Applies to every download entry point (map and
 database, CSV / JSON / PDF and any future format).
@@ -106,12 +108,74 @@ Rainmakers OS master export. The master (`data/source/`) is never served, copied
 `public/`, read by an API route or offered as a download. Reserved fields stay out (see
 § 5 above).
 
+### 5. Master column structure (update 2/6)
+Every downloadable file (CSV, JSON, PDF) keeps exactly the structure of the Rainmakers OS
+master: same number of columns, same original names, same order, same meaning of each
+field. No column is added, removed, renamed or merged. MAIN TYPE keeps its master name and
+value in the file, even though the interface calls it PLAYER TYPE. The export schema is
+aligned automatically: the importer records the master header (names and order only) in
+`data/snapshot/export-schema.json`. This supersedes the earlier "Columns" dialog (per-user
+column choice), which has been removed.
+
+### 6. Reserved columns in the files
+The headers of REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE and every other hidden
+field (EMAIL) are included; their cells are completely empty — no values, placeholders,
+formulas, comments or metadata with reserved information. The same applies to any master
+column not in the public allowlist, including future ones (private by default). This is a
+structural exception for downloadable files only: in the interface, the public dataset,
+the APIs and the payloads reserved fields remain completely absent.
+
+Public values per column: COMPANY NAME, WEBSITE, SHORT DESCRIPTION, MAIN TYPE (master
+value), ADDRESS, REGION, CITY, INDUSTRY, STATUS (ACTIVE, empty when not verified), GOOGLE
+MAPS LINK (built from the public position), LOGO (SI/NO, public logo present).
+
 ### Implementation (codebase)
-- `src/lib/export.ts` — `selectForExport(players, params)`: `scope=all` → whole public
-  dataset (filter params ignored); otherwise `applyFilters(players, parseFilters(params))`.
-- `src/app/api/download/route.ts` — the only data-file endpoint; `x-row-count` and
-  `x-export-scope` response headers; `full-` in the filename for the complete mode.
-- `src/components/explorer/Downloads.tsx` — sends `serializeFilters(filters)` + `scope`;
-  PDF uses the same `results` / `players` lists (provider → `applyFilters`).
+- `src/lib/export.ts` — `selectForExport()` (modes), `exportTable()` (column allowlist,
+  reserved/unknown columns empty), `buildExport()` (pipeline steps 7–11), `toCsv()` (UTF-8
+  BOM, formula-injection guard), `toJsonRecords()`.
+- `src/lib/data/provider.ts` — `getExportColumns()`: validated schema metadata, with the
+  documented 16-column structure as fallback.
+- `src/app/api/download/route.ts` — the only data-file endpoint (CSV, JSON, and the PDF
+  table as JSON); `x-row-count` and `x-export-scope` headers; `full-` in the filename for
+  the complete mode.
+- `src/components/explorer/Downloads.tsx` / `pdfExport.ts` — send `serializeFilters` +
+  `scope`; the PDF (A3 landscape) is rendered from the rows returned by the endpoint.
 - `tests/download-scope.test.ts` — modes, combined filters, no pagination, count, filter
-  round trip, empty result, master never reachable.
+  round trip, empty result, master structure, empty reserved columns, master never reachable.
+
+## Export pipeline — P0 (update 3/6)
+
+The export runs through one centralised flow:
+1. Import and update from Rainmakers OS (read-only: no record of the master is ever
+   modified or deleted).
+2. Validation, normalisation and deduplication.
+3. Exclusion of MAIN TYPE exactly equal to `STARTUP`, after normalising spaces and case.
+   `VENTURE BUILDER/STARTUP STUDIO` and every other admissible type containing the word are
+   never excluded.
+4. The other publishability rules (template rows, INACTIVE).
+5. The allowlist of public fields.
+6. The public dataset — the same one used by every component of the site.
+7. The filters selected by the user.
+8. Reconstruction of the original column structure.
+9. Publishable values only.
+10. Reserved columns with empty cells.
+11. Validation and generation of the file.
+
+MAIN TYPE remains the only public classification; SECONDARY TYPE influences no
+classification, filter or export. Reserved values are never fetched while generating a
+file: only the public dataset and the authorised schema metadata (column names) are used.
+The master database is never transmitted to the browser.
+
+### Implementation (codebase)
+- Steps 1–5: `scripts/import-irf-csv.mjs` (CSV snapshot, column allowlist, writes only
+  `data/snapshot/`, `docs/` and public logos) and `src/lib/data/normalize.ts`
+  (`normalizeRecord`, also for Airtable, read-only client).
+- Step 6: `buildPublicDataset()` in `normalize.ts`, used by `getDataset()` (pages, APIs,
+  downloads) and by `scripts/build-infographic.mts` (run with `scripts/register-ts.mjs`, so
+  the script imports the same TypeScript module as the site).
+- Steps 7–11: `buildExport()` in `src/lib/export.ts` — filters, master columns, public
+  values, empty reserved columns, then checks (valid schema, row count = selection, row
+  width = schema, reserved cells empty); it throws rather than produce a non-compliant file.
+- `tests/export-pipeline.test.ts` — exact STARTUP match, SECONDARY TYPE without effect,
+  dedupe, filters, structure, schema validation, importer never writing the master, one
+  dataset builder for every consumer.

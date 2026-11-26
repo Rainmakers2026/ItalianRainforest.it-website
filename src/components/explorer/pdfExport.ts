@@ -6,13 +6,15 @@
  * it (emoji and other symbols are dropped, accented Latin letters are kept).
  */
 
-export type PdfRow = Record<string, string>;
+/**
+ * The table, as built by /api/download (format "pdf"): the column names, number and order
+ * of the Rainmakers OS master, one row per player; reserved columns are empty cells.
+ */
+export type PdfTable = { columns: string[]; rows: string[][] };
 export type PdfMeta = {
   title: string;
   subtitle: string;
   footer: string;
-  /** Columns chosen in the "Columns" dialog, in order (key of PdfRow + header label). */
-  columns: { key: string; label: string }[];
 };
 
 const CP1252_EXTRA = new Set('€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ'.split(''));
@@ -48,7 +50,8 @@ async function loadLogo(): Promise<string | null> {
 
 async function setup(orientation: 'landscape' | 'portrait') {
   const [{ jsPDF }, { autoTable }] = await Promise.all([import('jspdf'), import('jspdf-autotable')]);
-  const doc = new jsPDF({ orientation, unit: 'mm', format: 'a4', compress: true });
+  // A3: room for every column of the master structure.
+  const doc = new jsPDF({ orientation, unit: 'mm', format: 'a3', compress: true });
   return { doc, autoTable };
 }
 
@@ -74,19 +77,19 @@ function footers(doc: import('jspdf').jsPDF, meta: PdfMeta) {
   }
 }
 
-function table(doc: import('jspdf').jsPDF, autoTable: typeof import('jspdf-autotable').autoTable, rows: PdfRow[], meta: PdfMeta, startY: number) {
-  const c = meta.columns;
-  const many = c.length > 7;
+const WIDTH: Record<string, number> = { 'COMPANY NAME': 34, 'SHORT DESCRIPTION': 78, ADDRESS: 34, INDUSTRY: 30, 'GOOGLE MAPS LINK': 34, WEBSITE: 30 };
+
+function table(doc: import('jspdf').jsPDF, autoTable: typeof import('jspdf-autotable').autoTable, t: PdfTable, meta: PdfMeta, startY: number) {
   autoTable(doc, {
     startY,
     margin: { left: 12, right: 12, top: 30, bottom: 14 },
-    head: [c.map((col) => toWinAnsi(col.label))],
-    body: rows.map((r) => c.map((col) => toWinAnsi(r[col.key] ?? ''))),
-    styles: { font: 'helvetica', fontSize: many ? 6.5 : 7.5, cellPadding: 1.6, textColor: [30, 40, 60], overflow: 'linebreak', lineColor: [225, 230, 240], lineWidth: 0.1 },
+    head: [t.columns.map(toWinAnsi)],
+    body: t.rows.map((r) => r.map((v) => toWinAnsi(v ?? ''))),
+    styles: { font: 'helvetica', fontSize: 6, cellPadding: 1.2, textColor: [30, 40, 60], overflow: 'linebreak', lineColor: [225, 230, 240], lineWidth: 0.1 },
     headStyles: { fillColor: BRAND, textColor: 255, fontStyle: 'bold' },
     alternateRowStyles: { fillColor: [245, 248, 253] },
     columnStyles: Object.fromEntries(
-      c.map((col, i) => [i, col.key === 'name' ? { fontStyle: 'bold' as const, cellWidth: 40 } : col.key === 'description' ? { cellWidth: many ? 70 : 90 } : col.key === 'status' ? { cellWidth: 20 } : {}]),
+      t.columns.map((c, i) => [i, { ...(WIDTH[c.trim().toUpperCase()] ? { cellWidth: WIDTH[c.trim().toUpperCase()] } : {}), ...(i === 0 ? { fontStyle: 'bold' as const } : {}) }]),
     ),
     didDrawPage: () => header(doc, meta, logoCache),
   });
@@ -95,7 +98,7 @@ function table(doc: import('jspdf').jsPDF, autoTable: typeof import('jspdf-autot
 let logoCache: string | null = null;
 
 /** Database: the filtered rows as a landscape table. */
-export async function exportDatabasePdf(rows: PdfRow[], meta: PdfMeta): Promise<Blob> {
+export async function exportDatabasePdf(rows: PdfTable, meta: PdfMeta): Promise<Blob> {
   const { doc, autoTable } = await setup('landscape');
   logoCache = await loadLogo();
   table(doc, autoTable, rows, meta, 30);
@@ -104,7 +107,7 @@ export async function exportDatabasePdf(rows: PdfRow[], meta: PdfMeta): Promise<
 }
 
 /** Map: the rendered map (PNG from mapExport) on page 1, the listed players after it. */
-export async function exportMapPdf(mapPng: Blob, rows: PdfRow[], meta: PdfMeta): Promise<Blob> {
+export async function exportMapPdf(mapPng: Blob, rows: PdfTable, meta: PdfMeta): Promise<Blob> {
   const { doc, autoTable } = await setup('landscape');
   logoCache = await loadLogo();
   header(doc, meta, logoCache);

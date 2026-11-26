@@ -4,7 +4,7 @@ import { dedupe, nameKey, normalizeIndustries, normalizeRecord, normalizeWebsite
 import type { PublicPlayer } from '@/lib/data/schema';
 import { computeStats } from '@/lib/data/stats';
 import { categoryFromSource } from '@/lib/data/taxonomy';
-import { exportRows, toCsv } from '@/lib/export';
+import { exportTable, MASTER_COLUMNS, toCsv } from '@/lib/export';
 import { applyFilters, DEFAULT_FILTERS, facetCounts, parseFilters, searchSuggestions, serializeFilters } from '@/lib/filters';
 
 const snapshot = JSON.parse(readFileSync('data/snapshot/irf-records.json', 'utf8')) as { exportDate: string; records: RawRecord[] };
@@ -119,15 +119,15 @@ describe('normalisation & sanitisation', () => {
 
 describe('export', () => {
   it('excludes gated contacts', () => {
-    const csv = toCsv(exportRows([normalizeRecord(sensitive)!], 'en'), 'x');
+    const csv = toCsv(MASTER_COLUMNS, exportTable([normalizeRecord(sensitive)!]));
     expect(csv).not.toContain('secret.person');
     expect(csv).not.toContain('Mario Rossi');
     expect(csv).toContain('Acme Ventures');
-    expect(csv.split('\r\n')[0]).toContain('company_name,website,short_description,player_type');
+    expect(csv.split('\r\n')[0]).toBe('\uFEFF' + MASTER_COLUMNS.join(','));
   });
 
   it('neutralises spreadsheet formulas', () => {
-    const csv = toCsv([{ name: '=HYPERLINK("x")' }], 'x');
+    const csv = toCsv(['COMPANY NAME'], [['=HYPERLINK("x")']]);
     expect(csv).toContain(`"'=HYPERLINK(""x"")"`);
   });
 });

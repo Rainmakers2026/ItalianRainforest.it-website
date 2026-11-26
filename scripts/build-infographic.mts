@@ -7,24 +7,30 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
-import { CATEGORY_BY_KEY, CATEGORY_FAMILIES, categoryFromSource, type CategoryKey } from '../src/lib/data/taxonomy.ts';
+import { buildPublicDataset, type Lookups, type RawRecord } from '../src/lib/data/normalize.ts';
+import { CATEGORY_BY_KEY, CATEGORY_FAMILIES, type CategoryKey } from '../src/lib/data/taxonomy.ts';
 import itDict from '../src/lib/i18n/dictionaries/it.ts';
 import enDict from '../src/lib/i18n/dictionaries/en.ts';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 type Logo = { src: string; onLight?: string | null; w: number; h: number; tone: 'light' | 'dark' };
-type Rec = { id: string; fields: Record<string, unknown> };
-
-const snap = JSON.parse(await readFile(path.join(root, 'data/snapshot/irf-records.json'), 'utf8')) as { exportDate: string; records: Rec[] };
-// The snapshot is the public dataset (startups and inactive organisations already left
-// out by the importer): one tile per player, under its single MAIN TYPE.
-const players = snap.records
-  .map((r) => {
-    const mainType = r.fields['MAIN TYPE'] ?? (r.fields['PLAYER TYPE'] as string[] | undefined)?.[0];
-    const type = typeof mainType === 'string' ? categoryFromSource(mainType) : null;
-    return { name: String(r.fields['COMPANY NAME']), type: type ?? ('unclassified' as CategoryKey), logo: (r.fields.LOGO as Logo | undefined) ?? null };
-  })
-  .sort((a, b) => a.name.localeCompare(b.name, 'it', { sensitivity: 'base' }));
+const readJson = async <T,>(p: string): Promise<T> => JSON.parse(await readFile(path.join(root, p), 'utf8')) as T;
+const snap = await readJson<{ exportDate: string; records: RawRecord[] }>('data/snapshot/irf-records.json');
+// Same lookups and the same public dataset as the site (src/lib/data/provider.ts): one
+// perimeter for map, database, KPIs, downloads and this infographic. One tile per player,
+// under its single MAIN TYPE.
+const lookups: Lookups = {
+  logos: {
+    ...(await readJson<{ logos: Lookups['logos'] }>('data/snapshot/logos-scraped.json')).logos,
+    ...(await readJson<{ logos: Lookups['logos'] }>('data/snapshot/logos.json')).logos,
+  },
+  geo: await readJson<Lookups['geo']>('data/snapshot/geocode-cache.json'),
+};
+const players = buildPublicDataset(snap.records, lookups).players.map((p) => ({
+  name: p.name,
+  type: p.categories[0]! as CategoryKey,
+  logo: (p.logo as Logo | null) ?? null,
+}));
 
 // ---- layout (px) ----
 const W = 4200;

@@ -202,7 +202,8 @@ for (const [key, r] of seen) {
   const rawName = clean(r[C.name]);
   // MAIN TYPE, normalised (spaces, case, "A / B" → "A/B"). Old PLAYER TYPE exports could
   // hold a list: only its first value is used, the classification is always single.
-  const mainType = clean((r[C.type] ?? '').split(';')[0])?.toUpperCase().replace(/\s*\/\s*/g, '/') ?? null;
+  const mainTypeExport = clean((r[C.type] ?? '').split(';')[0])?.toUpperCase() ?? null;
+  const mainType = mainTypeExport?.replace(/\s*\/\s*/g, '/') ?? null;
   // Step 4: exact match only. "VENTURE BUILDER/STARTUP STUDIO" is not a startup.
   if (mainType === 'STARTUP') { report.startups.push(rawName); continue; }
   // Step 5, other publishability rule: organisations marked INACTIVE are not public.
@@ -241,6 +242,7 @@ for (const [key, r] of seen) {
       WEBSITE: text.website,
       'SHORT DESCRIPTION': text.description,
       'MAIN TYPE': mainType,
+      'MAIN TYPE (EXPORT)': mainTypeExport,
       ADDRESS: address,
       'ADDRESS CHECK': address ? (addressConsistent ? 'ok' : addrRegion ? 'region-mismatch' : 'unparsed') : null,
       REGION: region?.it ?? null,
@@ -266,7 +268,6 @@ report.retyped = [];
 for (const r of records) {
   const exported = r.fields['MAIN TYPE'];
   const own = byName.get(r._key);
-  r.fields['MAIN TYPE (EXPORT)'] = exported;
   r.fields['MAIN TYPE'] = own ?? (exported ? typeMap.rename[exported] ?? exported : null);
   if (own) report.retyped.push(`${r.fields['COMPANY NAME']}: ${exported ?? '—'} → ${own}`);
 }
@@ -372,6 +373,13 @@ const out = {
   }),
 };
 await writeFile(path.join(root, 'data/snapshot/irf-records.json'), JSON.stringify(out, null, 1));
+
+// Official column structure of the master (names and order only, never values): the
+// downloads reproduce it exactly (CLAUDE.md "Downloads"). Server-side file, never served.
+await writeFile(
+  path.join(root, 'data/snapshot/export-schema.json'),
+  JSON.stringify({ _about: 'Column names and order of the Rainmakers OS export, written by scripts/import-irf-csv.mjs. Names only: no values.', source: path.basename(csvPath), columns: header }, null, 1) + '\n',
+);
 
 // ---------- report ----------
 const list = (a) => (a.length ? a.map((s) => `- ${s}`).join('\n') : '_none_');

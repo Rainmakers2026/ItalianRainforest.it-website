@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { PROVINCES, REGIONS } from '@/lib/geo/territories';
+import { PROVINCES, REGIONS } from '../geo/territories';
 import { PublicPlayerSchema, type GatedContacts, type PlayerLocation, type PlayerLogo, type PublicPlayer } from './schema';
 import { categoryFromSource, type CategoryKey, type StatusKey } from './taxonomy';
 
@@ -17,6 +17,7 @@ const DEFAULT_FIELDS = {
   // SECONDARY TYPE is never read. Older exports and snapshots call it PLAYER TYPE.
   types: 'MAIN TYPE',
   legacyTypes: 'PLAYER TYPE',
+  exportType: 'MAIN TYPE (EXPORT)', // MAIN TYPE as written in the master (set by the CSV importer)
   address: 'ADDRESS',
   addressCheck: 'ADDRESS CHECK', // set by the CSV importer only
   region: 'REGION',
@@ -233,6 +234,7 @@ export function normalizeRecord(rec: RawRecord, lookups: Lookups = { logos: {}, 
     slug: slugify(name),
     name,
     categories: [category],
+    mainType: str(f[FIELDS.exportType]) ?? mainType,
     status,
     website: url,
     websiteHost: host,
@@ -250,6 +252,18 @@ export function normalizeRecord(rec: RawRecord, lookups: Lookups = { logos: {}, 
  * Collapses records with the same normalised name (the export repeats blocks),
  * keeping the first one. Returns the duplicates found for the audit log.
  */
+/**
+ * THE public dataset (CLAUDE.md "Export pipeline", steps 2–6): every record normalised
+ * through the field allowlist, MAIN TYPE = STARTUP (exact match) and the other
+ * non-publishable rows dropped, duplicates collapsed, sorted by name. Used by the data
+ * provider (site, API, downloads), the infographic build and the tests: one perimeter.
+ */
+export function buildPublicDataset(records: RawRecord[], lookups: Lookups = { logos: {}, geo: {} }): { players: PublicPlayer[]; duplicates: string[] } {
+  const normalized = records.map((r) => normalizeRecord(r, lookups)).filter((p): p is PublicPlayer => !!p);
+  const { players, duplicates } = dedupe(normalized);
+  return { players: players.sort((a, b) => a.name.localeCompare(b.name, 'it', { sensitivity: 'base' })), duplicates };
+}
+
 export function dedupe(players: PublicPlayer[]): { players: PublicPlayer[]; duplicates: string[] } {
   const seen = new Map<string, PublicPlayer>();
   const duplicates: string[] = [];

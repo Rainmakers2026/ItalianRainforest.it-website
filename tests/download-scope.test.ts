@@ -10,7 +10,7 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { dedupe, normalizeRecord, type Lookups, type RawRecord } from '@/lib/data/normalize';
 import type { PublicPlayer } from '@/lib/data/schema';
-import { exportRows, parseExportScope, selectForExport, toCsv } from '@/lib/export';
+import { exportTable, MASTER_COLUMNS, parseExportScope, RESERVED_EXPORT_COLUMNS, selectForExport, toCsv, toJsonRecords } from '@/lib/export';
 import { applyFilters, DEFAULT_FILTERS, FILTER_PARAM_KEYS, parseFilters, serializeFilters, type Filters } from '@/lib/filters';
 
 const snapshot = JSON.parse(readFileSync('data/snapshot/irf-records.json', 'utf8')) as { records: RawRecord[] };
@@ -22,6 +22,12 @@ const lookups: Lookups = {
   geo: JSON.parse(readFileSync('data/snapshot/geocode-cache.json', 'utf8')) as Lookups['geo'],
 };
 const players = dedupe(snapshot.records.map((r) => normalizeRecord(r, lookups)).filter((p): p is PublicPlayer => !!p)).players;
+
+const files = (dir: string): string[] =>
+  readdirSync(dir).flatMap((n) => {
+    const p = path.join(dir, n);
+    return statSync(p).isDirectory() ? files(p) : [p];
+  });
 
 /** What the download route receives from the explorer (Downloads.tsx `query`). */
 const query = (f: Filters, all = false) => {
@@ -75,10 +81,10 @@ describe('download modes', () => {
     const f: Filters = { ...DEFAULT_FILTERS, region };
     const onScreen = applyFilters(players, f).length;
     expect(onScreen).toBeGreaterThan(25); // more than one table page
-    const rows = exportRows(selectForExport(players, query(f)).list, 'it');
+    const rows = exportTable(selectForExport(players, query(f)).list);
     expect(rows).toHaveLength(onScreen);
     // CSV: header + one line per player.
-    expect(toCsv(rows, 'x').trim().split('\r\n')).toHaveLength(onScreen + 1);
+    expect(toCsv(MASTER_COLUMNS, rows).trim().split('\r\n')).toHaveLength(onScreen + 1);
   });
 
   it('every public filter survives the URL round trip used by the download', () => {
@@ -95,12 +101,6 @@ describe('download modes', () => {
 });
 
 describe('the master file is never downloadable', () => {
-  const files = (dir: string): string[] =>
-    readdirSync(dir).flatMap((n) => {
-      const p = path.join(dir, n);
-      return statSync(p).isDirectory() ? files(p) : [p];
-    });
-
   it('public/ contains no copy of the Rainmakers OS export', () => {
     for (const f of files('public')) {
       expect(path.basename(f)).not.toMatch(/irf-database|rainmakers.?os/i);
@@ -114,10 +114,53 @@ describe('the master file is never downloadable', () => {
     }
   });
 
-  it('the download route builds files only from getDataset() + selectForExport()', () => {
+  it('the download route builds files only from getDataset() + buildExport()', () => {
     const route = readFileSync('src/app/api/download/route.ts', 'utf8');
     expect(route).toMatch(/getDataset\(\)/);
-    expect(route).toMatch(/selectForExport\(/);
+    expect(route).toMatch(/buildExport\(/);
     expect(route).not.toMatch(/readFile|node:fs/);
+  });
+});
+
+describe('downloads keep the Rainmakers OS master structure', () => {
+  const masterHeader = readFileSync('data/source/irf-database.csv', 'utf8').replace(/^\uFEFF/, '').split(/\r?\n/)[0]!.split(',').map((h) => h.trim());
+  const schema = (JSON.parse(readFileSync('data/snapshot/export-schema.json', 'utf8')) as { columns: string[] }).columns;
+
+  it('the export schema is aligned automatically to the master export (names, number, order)', () => {
+    expect(schema).toEqual(masterHeader);
+    expect(MASTER_COLUMNS).toEqual(schema); // documented fallback in sync with the master
+  });
+
+  it('every row has one cell per master column; reserved and unknown columns are empty', () => {
+    const cols = [...schema, 'SOME FUTURE COLUMN'];
+    const rows = exportTable(players, cols);
+    for (const r of rows) expect(r).toHaveLength(cols.length);
+    for (const c of [...RESERVED_EXPORT_COLUMNS, 'SOME FUTURE COLUMN']) {
+      const i = cols.indexOf(c);
+      expect(rows.every((r) => r[i] === ''), c).toBe(true);
+    }
+    // Public columns are filled where the public dataset has a value.
+    const name = cols.indexOf('COMPANY NAME');
+    expect(rows.every((r) => r[name]!.length > 0)).toBe(true);
+  });
+
+  it('JSON keeps the master keys in the master order', () => {
+    const [first] = toJsonRecords(schema, exportTable(players.slice(0, 1), schema));
+    expect(Object.keys(first!)).toEqual(schema);
+  });
+
+  it('an empty result still has the master header row', () => {
+    expect(toCsv(schema, []).replace(/^\uFEFF/, '').trim()).toBe(schema.join(','));
+  });
+
+  it('reserved column names never reach the public payload or the browser code', () => {
+    const payload = JSON.stringify(players);
+    for (const c of RESERVED_EXPORT_COLUMNS) expect(payload).not.toContain(c);
+    const clientFiles = files('src/components').filter((f) => /\.(ts|tsx)$/.test(f));
+    for (const f of clientFiles) {
+      const t = readFileSync(f, 'utf8');
+      expect(t, f).not.toMatch(/SECONDARY TYPE|INFORMATION SOURCE|'REFERENCE'|'PHONE'/);
+      expect(t, f).not.toMatch(/from '@\/lib\/export'/);
+    }
   });
 });

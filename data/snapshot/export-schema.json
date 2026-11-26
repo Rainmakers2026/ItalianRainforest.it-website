@@ -1,0 +1,22 @@
+{
+ "_about": "Column names and order of the Rainmakers OS export, written by scripts/import-irf-csv.mjs. Names only: no values.",
+ "source": "irf-database.csv",
+ "columns": [
+  "COMPANY NAME",
+  "WEBSITE",
+  "REFERENCE",
+  "SHORT DESCRIPTION",
+  "INFORMATION SOURCE",
+  "MAIN TYPE",
+  "SECONDARY TYPE",
+  "ADDRESS",
+  "REGION",
+  "CITY",
+  "EMAIL",
+  "PHONE",
+  "INDUSTRY",
+  "STATUS",
+  "GOOGLE MAPS LINK",
+  "LOGO"
+ ]
+}

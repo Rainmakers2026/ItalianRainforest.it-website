@@ -135,12 +135,10 @@ export function serializeQuery(q: DatabaseQuery): string {
 /** CSV of the given (already filtered) contacts. Public fields only, by construction. */
 export function contactsCsv(contacts: PublicContact[]): string {
   const rows = contacts.map((c) =>
-    Object.fromEntries(
-      PUBLIC_CONTACT_FIELDS.map((k) => {
-        const v = c[k];
-        return [k, Array.isArray(v) ? v.join('; ') : typeof v === 'boolean' ? (v ? 'yes' : 'no') : (v ?? '')];
-      }),
-    ),
+    PUBLIC_CONTACT_FIELDS.map((k) => {
+      const v = c[k];
+      return Array.isArray(v) ? v.join('; ') : typeof v === 'boolean' ? (v ? 'yes' : 'no') : String(v ?? '');
+    }),
   );
-  return rows.length ? toCsv(rows, '') : `﻿${PUBLIC_CONTACT_FIELDS.join(',')}\r\n`;
+  return toCsv(PUBLIC_CONTACT_FIELDS, rows);
 }

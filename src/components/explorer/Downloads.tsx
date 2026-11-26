@@ -2,19 +2,16 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { getUtm, track } from '@/lib/analytics';
-import type { PublicPlayer } from '@/lib/data/schema';
 import { CATEGORY_BY_KEY, type CategoryKey } from '@/lib/data/taxonomy';
-import { googleMapsLink, loadDownloadFields, saveDownloadFields, serializeDownloadFields, type DownloadField } from '@/lib/download-fields';
 import { serializeFilters } from '@/lib/filters';
 import { formatDate, formatNumber } from '@/lib/i18n/config';
 import { fmt } from '@/lib/i18n';
 import type { LeadProfile } from '@/lib/lead-profile';
 import { SITE } from '@/lib/site';
 import { Icon, type IconName } from '../ui/Icon';
-import { ColumnsDialog, type ColumnsRequest } from './ColumnsDialog';
 import { useExplorer, type LeadReason } from './ExplorerProvider';
 import { regionName } from './labels';
-import type { PdfMeta, PdfRow } from './pdfExport';
+import type { PdfMeta, PdfTable } from './pdfExport';
 
 function saveBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
@@ -28,18 +25,19 @@ function saveBlob(blob: Blob, filename: string) {
 }
 
 type Status = 'idle' | 'busy' | 'done' | 'error';
+type Format = 'csv' | 'json' | 'pdf';
 const today = () => new Date().toISOString().slice(0, 10);
 
 /**
- * Pay-per-data downloads: filtered CSV / JSON / PDF (exactly the results on screen, map
- * or database), the whole database, and the filtered map as PNG or PDF. Browsing is free;
- * the first download asks for the one-time sign-up. After the sign-up, every data file
- * opens the "Columns" dialog: the user picks the fields per player (remembered locally).
+ * Pay-per-data downloads: the filtered database (exactly the results on screen, map or
+ * database) or the complete database, in CSV / JSON / PDF, plus the filtered map as PNG or
+ * PDF. Every data file comes from /api/download, built on the server from the public
+ * dataset with the column structure of the Rainmakers OS master (CLAUDE.md "Downloads").
+ * Browsing is free; the first download asks for the one-time sign-up.
  */
 export function useDownloads() {
-  const { t, filters, results, players, locale, downloadRequiresEmail, requireLead, mapRef, updatedAt } = useExplorer();
+  const { t, filters, results, locale, downloadRequiresEmail, requireLead, mapRef, updatedAt } = useExplorer();
   const [status, setStatus] = useState<Status>('idle');
-  const [columns, setColumns] = useState<ColumnsRequest | null>(null);
 
   const query = (all: boolean) => {
     const sp = all ? new URLSearchParams() : serializeFilters(filters);
@@ -48,72 +46,60 @@ export function useDownloads() {
     return sp;
   };
 
-  type Run = (p: LeadProfile | null, fields: DownloadField[]) => Promise<void>;
-  /** Sign-up (when required) → "Columns" dialog (data files only) → download. */
-  const gate = (reason: LeadReason, run: Run, pick?: { format: string; rows: number }) => {
+  type Run = (p: LeadProfile | null) => Promise<void>;
+  /** Sign-up (when required) → download. */
+  const gate = (reason: LeadReason, run: Run) => {
     track('database_download_click', { reason, rows: results.length });
-    const go = async (p: LeadProfile | null, fields: DownloadField[]) => {
+    const go = async (p: LeadProfile | null) => {
       setStatus('busy');
       try {
-        await run(p, fields);
+        await run(p);
         setStatus('done');
         setTimeout(() => setStatus('idle'), 3500);
       } catch {
         setStatus('error');
       }
     };
-    const choose = (p: LeadProfile | null) => {
-      if (!pick) return void go(p, loadDownloadFields());
-      setColumns({
-        format: pick.format,
-        rows: formatNumber(pick.rows, locale),
-        initial: loadDownloadFields(),
-        onConfirm: (fields) => {
-          saveDownloadFields(fields);
-          track('download_columns', { format: pick.format, fields: fields.length });
-          void go(p, fields);
-        },
-      });
-    };
-    if (!downloadRequiresEmail) return choose(null);
-    requireLead(reason, choose);
+    if (!downloadRequiresEmail) return void go(null);
+    requireLead(reason, (p) => void go(p));
+  };
+
+  /** The file (CSV / JSON) or, for "pdf", its rows in the master structure, from the server. */
+  const request = async (format: Format, all: boolean, p: LeadProfile | null) => {
+    const sp = query(all);
+    const res = p
+      ? await fetch('/api/download', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            email: p.email,
+            firstName: p.firstName,
+            lastName: p.lastName,
+            referent: p.referent,
+            company: p.company,
+            consent: true,
+            format,
+            query: sp.toString(),
+            locale,
+            utm: getUtm(),
+            company_url: '',
+            elapsed: Math.round(performance.now()),
+          }),
+        })
+      : await fetch(`/api/download?${sp}&format=${format}`);
+    if (!res.ok) throw new Error(String(res.status));
+    return res;
   };
 
   const data = (format: 'csv' | 'json', all = false, reason: LeadReason = format === 'csv' ? 'download_csv' : 'download_json') =>
-    gate(all ? 'download_bulk' : reason, async (p, fields) => {
-      const sp = query(all);
-      sp.set('fields', serializeDownloadFields(fields));
-      if (!p) {
-        sp.set('format', format);
-        const a = document.createElement('a');
-        a.href = `/api/download?${sp}`;
-        a.download = '';
-        a.click();
-        return;
-      }
-      const res = await fetch('/api/download', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          email: p.email,
-          firstName: p.firstName,
-          lastName: p.lastName,
-          referent: p.referent,
-          company: p.company,
-          consent: true,
-          format,
-          query: sp.toString(),
-          locale,
-          utm: getUtm(),
-          company_url: '',
-          elapsed: Math.round(performance.now()),
-        }),
-      });
-      if (!res.ok) throw new Error(String(res.status));
+    gate(all ? 'download_bulk' : reason, async (p) => {
+      const res = await request(format, all, p);
       const name = /filename="([^"]+)"/.exec(res.headers.get('content-disposition') ?? '')?.[1] ?? `italian-rainforest.${format}`;
       saveBlob(await res.blob(), name);
       track('database_download_success', { format, all, rows: Number(res.headers.get('x-row-count') ?? 0) });
-    }, { format: format.toUpperCase(), rows: all ? players.length : results.length });
+    });
+
+  const table = async (all: boolean, p: LeadProfile | null): Promise<PdfTable> => (await (await request('pdf', all, p)).json()) as PdfTable;
 
   const legend = useMemo(() => {
     const counts = new Map<CategoryKey, number>();
@@ -137,41 +123,19 @@ export function useDownloads() {
   const footer = () =>
     `${SITE.url.replace(/^https?:\/\//, '')} · ${fmt(t.explorer.updated, { date: formatDate(updatedAt) })} · copyleft, non-commercial`;
 
-  const pdfRows = (list: PublicPlayer[]): PdfRow[] =>
-    list.map((p) => {
-      const loc = p.location?.source === 'data' ? p.location : null;
-      return {
-        name: p.name,
-        website: p.websiteHost ?? '',
-        description: p.description ?? '',
-        type: CATEGORY_BY_KEY[p.categories[0]!].short[locale],
-        address: loc?.address ?? '',
-        region: loc?.region ? regionName(loc.region, locale) : '',
-        city: loc?.city ?? '',
-        industry: p.industries.join(', '),
-        status: t.explorer.statusLabels[p.status],
-        maps: loc ? googleMapsLink(p.name, loc) : '',
-      };
-    });
-  const pdfMeta = (list: PublicPlayer[], subtitle: string, fields: DownloadField[]): PdfMeta => ({
-    title: `Italian Rainforest — ${fmt(t.explorer.results, { n: formatNumber(list.length, locale) })}`,
+  const pdfMeta = (count: number, subtitle: string): PdfMeta => ({
+    title: `Italian Rainforest — ${fmt(t.explorer.results, { n: formatNumber(count, locale) })}`,
     subtitle,
     footer: footer(),
-    columns: fields.map((key) => ({ key, label: key === 'maps' ? 'Google Maps' : t.download.columns.fields[key] })),
   });
 
   const pdf = (all = false) =>
-    gate(
-      'download_pdf',
-      async (_p, fields) => {
-        const list = all ? players : results;
-        const { exportDatabasePdf } = await import('./pdfExport');
-        const blob = await exportDatabasePdf(pdfRows(list), pdfMeta(list, all ? t.map.exportAll : filterSummary(), fields));
-        saveBlob(blob, `italian-rainforest-${all ? 'full-' : ''}${today()}.pdf`);
-        track('database_download_success', { format: 'pdf', all, rows: list.length });
-      },
-      { format: 'PDF', rows: all ? players.length : results.length },
-    );
+    gate('download_pdf', async (p) => {
+      const [{ exportDatabasePdf }, rows] = await Promise.all([import('./pdfExport'), table(all, p)]);
+      const blob = await exportDatabasePdf(rows, pdfMeta(rows.rows.length, all ? t.map.exportAll : filterSummary()));
+      saveBlob(blob, `italian-rainforest-${all ? 'full-' : ''}${today()}.pdf`);
+      track('database_download_success', { format: 'pdf', all, rows: rows.rows.length });
+    });
 
   const renderMap = async () => {
     const map = mapRef.current;
@@ -192,21 +156,16 @@ export function useDownloads() {
     });
 
   const mapPdf = () =>
-    gate(
-      'map_pdf',
-      async (_p, fields) => {
-        const png = await renderMap();
-        const { exportMapPdf } = await import('./pdfExport');
-        const blob = await exportMapPdf(png, pdfRows(results), pdfMeta(results, filterSummary(), fields));
-        saveBlob(blob, `italian-rainforest-map-${today()}.pdf`);
-        track('database_download_success', { format: 'map_pdf', rows: results.length });
-      },
-      { format: 'PDF', rows: results.length },
-    );
+    gate('map_pdf', async (p) => {
+      const [png, { exportMapPdf }, rows] = await Promise.all([renderMap(), import('./pdfExport'), table(false, p)]);
+      const blob = await exportMapPdf(png, rows, pdfMeta(rows.rows.length, filterSummary()));
+      saveBlob(blob, `italian-rainforest-map-${today()}.pdf`);
+      track('database_download_success', { format: 'map_pdf', rows: rows.rows.length });
+    });
 
-  const columnsDialog = <ColumnsDialog request={columns} onClose={() => setColumns(null)} />;
-  return { status, data, pdf, mapPng, mapPdf, columnsDialog };
+  return { status, data, pdf, mapPng, mapPdf };
 }
+
 
 function StatusNote({ status }: { status: Status }) {
   const { t } = useExplorer();
@@ -334,7 +293,6 @@ function useMenus(withMap: boolean) {
     filteredCount: formatNumber(results.length, locale),
     fullCount: formatNumber(players.length, locale),
     noResults: !results.length,
-    columnsDialog: d.columnsDialog,
     t,
   };
 }
@@ -347,7 +305,6 @@ export function DownloadButtons() {
       <StatusNote status={m.status} />
       <DownloadMenu label={m.t.database.downloadFiltered} count={m.filteredCount} items={m.filtered} disabled={m.busy || m.noResults} />
       <DownloadMenu label={m.t.database.downloadFull} count={m.fullCount} items={m.full} disabled={m.busy} primary />
-      {m.columnsDialog}
     </div>
   );
 }
@@ -360,7 +317,6 @@ export function MapDownloads({ compact = false }: { compact?: boolean }) {
       {!compact && <StatusNote status={m.status} />}
       <DownloadMenu label={m.t.database.downloadFiltered} count={compact ? undefined : m.filteredCount} items={m.filtered} disabled={m.busy || m.noResults} align="left" />
       <DownloadMenu label={compact ? m.t.database.downloadFullShort : m.t.database.downloadFull} items={m.full} disabled={m.busy} primary align={compact ? 'right' : 'left'} />
-      {m.columnsDialog}
     </div>
   );
 }

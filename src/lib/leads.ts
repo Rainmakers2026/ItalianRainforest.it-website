@@ -67,7 +67,7 @@ export const DownloadRequestSchema = z.object({
   lastName: personName.optional(),
   referent: personName.optional(),
   company,
-  format: z.enum(['csv', 'json']),
+  format: z.enum(['csv', 'json', 'pdf']),
   query: z.string().max(1000),
 });
 
