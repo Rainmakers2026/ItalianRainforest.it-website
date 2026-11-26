@@ -13,3 +13,6 @@ public/vendor/
 
 .vercel
 .env*
+
+# Local MCP client configuration (never committed)
+.mcp.json
