@@ -1,5 +1,5 @@
 import { getDataset, getExportColumns } from '@/lib/data/provider';
-import { buildExport, exportFilename, toCsv } from '@/lib/export';
+import { buildExport, exportFilename, publicColumnsOnly, toCsv } from '@/lib/export';
 import {
   clientKey,
   deliverLead,
@@ -13,7 +13,10 @@ import {
 } from '@/lib/leads';
 import { toXlsx, XLSX_MIME } from '@/lib/xlsx';
 
-/** "csv" and "xlsx" are the files; "table" is the same table as JSON for the map PDF. */
+/**
+ * "csv" and "xlsx" are the files (master structure, reserved headers with empty cells);
+ * "table" is the list for the map PDF, as JSON, with the public columns only.
+ */
 type Format = 'csv' | 'xlsx' | 'table';
 
 /**
@@ -30,7 +33,7 @@ async function buildFile(query: string, format: Format) {
     'x-export-scope': scope,
   };
   if (format === 'table') {
-    return new Response(JSON.stringify({ columns, rows }), { headers: { ...headers, 'content-type': 'application/json; charset=utf-8' } });
+    return new Response(JSON.stringify(publicColumnsOnly(columns, rows)), { headers: { ...headers, 'content-type': 'application/json; charset=utf-8' } });
   }
   const name = exportFilename(scope, format);
   const body = format === 'csv' ? toCsv(columns, rows) : new Uint8Array(toXlsx(columns, rows));

@@ -1,10 +1,10 @@
 import 'server-only';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { airtableConfigFromEnv, readAllRecords, type AirtableConfig } from './airtable-readonly';
+import { airtableConfigFromEnv, readAllRecords, readTableColumns, type AirtableConfig } from './airtable-readonly';
 import { applyDemoGeo, isGeoDemoEnabled } from './demo-geo';
-import { buildPublicDataset, extractGatedContacts, publicId, type Lookups, type RawRecord } from './normalize';
-import type { Dataset, GatedContacts, PublicPlayer } from './schema';
+import { buildPublicDataset, readFields, type Lookups, type RawRecord } from './normalize';
+import type { Dataset } from './schema';
 import { MASTER_COLUMNS, validateExportSchema } from '@/lib/export';
 
 /**
@@ -20,17 +20,29 @@ import { MASTER_COLUMNS, validateExportSchema } from '@/lib/export';
  */
 export interface DataProvider {
   readonly name: Dataset['source'];
-  readRecords(): Promise<{ records: RawRecord[]; readAt: string }>;
+  /** `columns`: the source's column names (names only), when the source exposes them. */
+  readRecords(): Promise<{ records: RawRecord[]; readAt: string; columns?: string[] | null }>;
 }
 
 const dataFile = (...p: string[]) => path.join(process.cwd(), 'data', ...p);
 
 let schemaCache: string[] | null = null;
 /**
- * Column names and order of the Rainmakers OS master, as written by the importer
- * (data/snapshot/export-schema.json). Used only to shape the downloadable files.
+ * Column names and order of the Rainmakers OS master — names only, never values. Used only
+ * to shape the downloadable files, and follows the source automatically: the live
+ * Airtable table (Metadata API) when available, otherwise the importer's
+ * data/snapshot/export-schema.json. A new master column appears as an empty header until
+ * its publication is approved (allowlist in src/lib/export.ts).
  */
 export async function getExportColumns(): Promise<string[]> {
+  const live = (await getCache()).columns;
+  if (live) {
+    try {
+      return validateExportSchema(live);
+    } catch (err) {
+      console.error('[export] live schema unusable, using the snapshot schema:', (err as Error).message);
+    }
+  }
   if (schemaCache) return schemaCache;
   try {
     const { columns } = JSON.parse(await readFile(dataFile('snapshot', 'export-schema.json'), 'utf8')) as { columns: unknown };
@@ -57,8 +69,10 @@ export class AirtableReadOnlyProvider implements DataProvider {
   readonly name = 'airtable' as const;
   constructor(private cfg: AirtableConfig) {}
   async readRecords() {
-    const records = await readAllRecords(this.cfg);
-    return { records, readAt: new Date().toISOString() };
+    const columns = await readTableColumns(this.cfg);
+    // Only the public allowlist is requested: reserved values are never fetched.
+    const records = await readAllRecords(this.cfg, readFields(columns));
+    return { records, readAt: new Date().toISOString(), columns };
   }
 }
 
@@ -89,7 +103,7 @@ async function loadLookups(): Promise<Lookups> {
 const STALE_AFTER_DAYS = Number(process.env.DATA_STALE_AFTER_DAYS ?? 60);
 const TTL_MS = Number(process.env.DATA_REVALIDATE_SECONDS ?? 3600) * 1000;
 
-type Cache = { at: number; dataset: Dataset; raw: RawRecord[] };
+type Cache = { at: number; dataset: Dataset; columns: string[] | null };
 let cache: Cache | null = null;
 let inflight: Promise<Cache> | null = null;
 
@@ -97,10 +111,11 @@ async function load(): Promise<Cache> {
   const primary = getProvider();
   let raw: RawRecord[];
   let readAt: string;
+  let columns: string[] | null | undefined = null;
   let source = primary.name;
   const warnings: string[] = [];
   try {
-    ({ records: raw, readAt } = await primary.readRecords());
+    ({ records: raw, readAt, columns } = await primary.readRecords());
   } catch (err) {
     if (primary.name !== 'airtable') throw err;
     // Source temporarily unavailable: keep serving the last good copy or the snapshot.
@@ -121,7 +136,7 @@ async function load(): Promise<Cache> {
 
   return {
     at: Date.now(),
-    raw,
+    columns: columns ?? null,
     dataset: {
       players,
       updatedAt: readAt,
@@ -144,9 +159,3 @@ export async function getDataset(): Promise<Dataset> {
   return (await getCache()).dataset;
 }
 
-/** Server-only: gated contacts for one public id. Never serialised into public payloads. */
-export async function getGatedContacts(id: string): Promise<GatedContacts | null> {
-  const { raw } = await getCache();
-  const rec = raw.find((r) => publicId(r.id) === id);
-  return rec ? extractGatedContacts(rec.fields) : null;
-}

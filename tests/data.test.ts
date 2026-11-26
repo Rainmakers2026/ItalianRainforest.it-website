@@ -79,7 +79,7 @@ describe('normalisation & sanitisation', () => {
     expect(json).not.toContain('333');
     expect(json).not.toContain('Mario Rossi');
     expect(json).not.toContain('recTEST123'); // source id stays server-side
-    expect(p.hasGatedContacts).toBe(true);
+    expect(Object.keys(p)).not.toContain('hasGatedContacts'); // no metadata derived from reserved fields
     expect(p.name).toBe('Acme Ventures');
     expect(p.categories).toEqual(['vc']);
     expect(p.status).toBe('active');

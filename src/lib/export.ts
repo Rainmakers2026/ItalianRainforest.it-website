@@ -51,7 +51,12 @@ const REGION_NAME = new Map(REGIONS.map((r) => [r.slug, r.it.toUpperCase()]));
 /** Master STATUS vocabulary: ACTIVE, or empty when not verified (INACTIVE is never public). */
 const STATUS_VALUE = { active: 'ACTIVE', unverified: '', inactive: 'INACTIVE' } as const;
 
-/** The allowlist: master column (normalised name) → public value. Same meaning as in the master. */
+/**
+ * The allowlist: master column (normalised name) → public value. Same meaning as in the
+ * master. Private by default: a column is published only when it is listed here, by an
+ * explicit, approved code change (guarded by tests/public-rules.test.ts). New master
+ * columns are never added automatically: they appear in the files as empty headers.
+ */
 const PUBLIC_VALUES: Record<string, (p: PublicPlayer) => string> = {
   'COMPANY NAME': (p) => p.name,
   WEBSITE: (p) => p.website ?? '',
@@ -73,6 +78,9 @@ const PUBLIC_VALUES: Record<string, (p: PublicPlayer) => string> = {
 
 const norm = (c: string) => c.replace(/\s+/g, ' ').trim().toUpperCase();
 const RESERVED = new Set<string>(RESERVED_EXPORT_COLUMNS);
+
+/** Master columns approved for publication (read-only view of the allowlist). */
+export const PUBLIC_EXPORT_COLUMNS: readonly string[] = Object.freeze(Object.keys(PUBLIC_VALUES));
 
 /** Value getter of a master column, or null when the cell must stay empty. */
 export function columnValue(column: string): ((p: PublicPlayer) => string) | null {
@@ -140,12 +148,27 @@ export function buildExport(players: PublicPlayer[], schema: readonly string[], 
   return { scope, columns, rows };
 }
 
+/**
+ * CSV / formula injection: a cell a spreadsheet could evaluate — starting with = + - @
+ * (also their full-width forms), possibly after spaces, or with a tab / CR / LF — gets a
+ * leading apostrophe, so Excel, Google Sheets and LibreOffice show it as plain text.
+ */
+const FORMULA_START = /^[\s\u00A0]*[=+\-@\uFF1D\uFF0B\uFF0D\uFF20]|^[\t\r\n]/;
+export const neutralizeFormula = (v: string) => (FORMULA_START.test(v) ? `'${v}` : v);
+
 const csvCell = (v: string) => {
-  let s = v;
-  // Neutralise spreadsheet formula injection.
-  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
-  return /[",\n\r;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  const s = neutralizeFormula(v);
+  return /[",\n\r;]|^\s|\s$/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 };
+
+/**
+ * The table without the columns that are empty by rule (reserved, not approved). For the
+ * map PDF list: reserved headers appear only in the CSV / XLSX files, nowhere else.
+ */
+export function publicColumnsOnly(columns: readonly string[], rows: string[][]): { columns: string[]; rows: string[][] } {
+  const keep = columns.map((c, i) => (columnValue(c) ? i : -1)).filter((i) => i >= 0);
+  return { columns: keep.map((i) => columns[i]!), rows: rows.map((r) => keep.map((i) => r[i] ?? '')) };
+}
 
 /** CSV UTF-8 (BOM, CRLF): the master header row, then the rows. An empty result still has the header. */
 export function toCsv(columns: readonly string[], rows: string[][]): string {

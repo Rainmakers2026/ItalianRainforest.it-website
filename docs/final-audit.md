@@ -52,8 +52,8 @@ Checked at 1440, 1000 (embed) and 390 px: header collapses to menu + "Mappa" CTA
 | Check | Result |
 |---|---|
 | Public payload `/api/players` | 0 emails, 0 phone numbers, 0 Airtable record ids (pseudonymous ids only) |
-| CSV/JSON export | Public fields only; demo positions blank |
-| Gated contacts | Only `/api/contact-request`, after email + consent, and only if `REVEAL_GATED_CONTACTS=true` |
+| CSV / XLSX export | Master column structure; public values only; reserved columns empty (update 5/6) |
+| Contact requests | Recorded for Rainmakers; no contact detail is ever returned (update 5/6 removed `REVEAL_GATED_CONTACTS`) |
 | Forms | Zod validation server-side, honeypot, time-to-submit check, per-IP rate limit, same-origin/JSON CSRF check |
 | Analytics | No PII (emails, phone-like strings and search text are never sent) |
 | Headers | `nosniff`, referrer policy, permissions policy, `X-Frame-Options: SAMEORIGIN` on site pages, `frame-ancestors *` only on embeds |

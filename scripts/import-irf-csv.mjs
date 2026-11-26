@@ -113,7 +113,8 @@ function parseAddress(addr) {
 const rows = parseCsv((await readFile(csvPath, 'utf8')).replace(/^﻿/, ''));
 const header = rows.shift().map((h) => h.trim());
 const col = (name) => {
-  const i = header.findIndex((h) => h.toUpperCase().startsWith(name));
+  const exact = header.findIndex((h) => h.toUpperCase() === name);
+  const i = exact >= 0 ? exact : header.findIndex((h) => h.toUpperCase().startsWith(name));
   if (i < 0) throw new Error(`Column "${name}" not found in ${csvPath}`);
   return i;
 };

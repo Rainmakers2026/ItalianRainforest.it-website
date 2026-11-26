@@ -4,7 +4,8 @@ import { deflateRawSync } from 'node:zlib';
  * Minimal XLSX (Office Open XML) writer for the database downloads: one sheet, text cells
  * only, bold frozen header row with an autofilter. Opens in Excel, Google Sheets, Numbers
  * and LibreOffice. Every value is an inline *string*: nothing is ever interpreted as a
- * formula, number or date. Empty values produce no cell at all (completely empty).
+ * formula, number or date (text format + quotePrefix, so they stay text when edited).
+ * Empty values produce no cell at all (completely empty).
  */
 
 const XML_INVALID = /[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]/g;
@@ -27,7 +28,7 @@ const colName = (i: number) => {
 
 function sheetXml(columns: readonly string[], rows: readonly (readonly string[])[]): string {
   const cell = (v: string, r: number, c: number, style = 0) =>
-    v === '' ? '' : `<c r="${colName(c)}${r}" t="inlineStr"${style ? ` s="${style}"` : ''}><is><t xml:space="preserve">${esc(v.slice(0, XLSX_MAX_CELL))}</t></is></c>`;
+    v === '' ? '' : `<c r="${colName(c)}${r}" t="inlineStr" s="${style}"><is><t xml:space="preserve">${esc(v.slice(0, XLSX_MAX_CELL))}</t></is></c>`;
   const widths = columns.map((h, c) => {
     const longest = Math.max(h.length, ...rows.slice(0, 200).map((r) => Math.min((r[c] ?? '').length, 60)));
     return Math.max(10, Math.min(60, longest + 2));
@@ -56,7 +57,8 @@ const STYLES =
   '<fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>' +
   '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>' +
   '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
-  '<cellXfs count="2"><xf numFmtId="49" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="49" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1" applyNumberFormat="1"/></cellXfs>' +
+  // numFmt 49 = Text and quotePrefix: cells stay text even when edited and re-entered.
+  '<cellXfs count="2"><xf numFmtId="49" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" quotePrefix="1"/><xf numFmtId="49" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1" applyNumberFormat="1" quotePrefix="1"/></cellXfs>' +
   '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
   '</styleSheet>';
 

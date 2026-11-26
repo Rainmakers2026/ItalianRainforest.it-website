@@ -2,8 +2,56 @@
 
 The product requirements ("Italian Rainforest 2.0", see `docs/audit.md`) are kept by
 Rainmakers. This file holds the requirements that are permanent rules of the codebase.
-In case of conflict with earlier implementations or instructions, the section below
-prevails for record publishability and player classification.
+In case of conflict with earlier implementations or instructions, "Consolidated public
+data rules" (update 5/6) prevails, then the sections below.
+
+## Consolidated public data rules — P0 (update 5/6, prevailing)
+
+| Surface | Startups | Reserved fields (REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE, EMAIL) |
+|---|---|---|
+| Rainmakers OS master | preserved | every field, value and record preserved (never modified or deleted) |
+| Public dataset | excluded | fields and values absent |
+| Public interface | excluded | fields hidden, values absent |
+| Public APIs | excluded | fields and values absent |
+| CSV and XLSX files | excluded | headers present, cells completely empty |
+
+**Single structural exception.** The presence of the reserved headers in the CSV and XLSX
+files is the only exception to the exclusion of reserved fields. It must not be possible
+to retrieve reserved information through APIs, JSON, payloads, metadata or any other public
+asset. Consequences applied in the codebase:
+- `/api/contact-request` records the visitor's request for Rainmakers and never returns
+  contact details (the former `REVEAL_GATED_CONTACTS` option is removed); EMAIL is no
+  longer read at all, and the `hasGatedContacts` flag (metadata derived from EMAIL) is
+  removed from the public player.
+- The JSON list used to draw the map PDF contains the public columns only.
+- Live sources (Airtable) are read through the public allowlist only (`fields[]`): reserved
+  values are never fetched; the column names come from the Metadata API (names only).
+
+**Automatic updates.** Every update of Rainmakers OS is reflected automatically in the
+public dataset and in the downloadable files: `npm run data:import` for the CSV export (then
+`npm run infographic:build` and `npm test`), or the live read of the Airtable source.
+
+**New master columns — private by default.**
+1. The export schema is updated automatically (importer → `data/snapshot/export-schema.json`;
+   Airtable → Metadata API).
+2. The new headers are included in the CSV / XLSX files.
+3. Their cells stay completely empty until the field is explicitly approved for
+   publication.
+4. New fields are never added to the public allowlist automatically: publishing one is an
+   explicit code change to `PUBLIC_VALUES` in `src/lib/export.ts`, whose list is frozen by
+   `tests/public-rules.test.ts`. The importer matches its columns by exact name first, so a
+   new column (e.g. "REGION NOTES") can never be read in place of a public one.
+5. `AIRTABLE_FIELD_MAP` overrides that point a public field at a reserved column are ignored.
+
+**CSV and formula injection.** CSV: any cell starting with `=`, `+`, `-`, `@` (also their
+full-width forms, also after leading spaces) or with tab / CR / LF is prefixed with an
+apostrophe. XLSX: every cell is an inline text string with the Text number format and
+quotePrefix; formulas are never written.
+
+**Tests.** `tests/public-rules.test.ts` checks the whole matrix on the real master export:
+master preserved, allowlist frozen, new columns empty in CSV and XLSX, allowlisted reads,
+field-map guard, injection payloads, no reserved key or value in payload, files, map list,
+APIs and public assets.
 
 ## Public data visibility & player type classification — P0
 
@@ -38,10 +86,10 @@ overrides any earlier use of SECONDARY TYPE in public aggregations.
 
 ### 5. Reserved fields
 REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE and every field already hidden
-(EMAIL) are never sent to the browser (API, JSON, payloads, assets). Implemented with an
-explicit allowlist of publishable fields. Downloadable files are the only, structural,
-exception: they carry these column names as headers with empty cells (see "Public database
-download" § 5–6); their values never appear anywhere.
+(EMAIL) are never read and never sent to the browser (API, JSON, payloads, metadata,
+assets). Implemented with an explicit allowlist of publishable fields. CSV / XLSX files are
+the only, structural, exception: they carry these column names as headers with empty cells
+(see "Consolidated public data rules"); their values never appear anywhere.
 
 ### 6. Pipeline
 1. Import the master database. 2. Validate and normalise. 3. Deduplicate. 4. Exclude

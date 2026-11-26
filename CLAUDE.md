@@ -2,7 +2,37 @@
 
 # Italian Rainforest — permanent project rules
 
-## Public data rules (P0 — prevail over any earlier implementation or instruction)
+## Consolidated rules (P0 — update 5/6, prevail over every earlier incompatible instruction)
+
+Full text: `docs/PRD.md` § "Consolidated public data rules".
+
+| Surface | Startups | Reserved fields (REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE, EMAIL) |
+|---|---|---|
+| Rainmakers OS master | preserved | every field, value and record preserved (never modified or deleted) |
+| Public dataset | excluded | fields and values absent |
+| Public interface | excluded | fields hidden, values absent |
+| Public APIs | excluded | fields and values absent |
+| CSV and XLSX files | excluded | headers present, cells completely empty |
+
+- **The only structural exception** to the exclusion of reserved fields is the presence of
+  their headers in the CSV / XLSX files. Nothing else — API, JSON (also the map PDF list),
+  payload, metadata (no flags such as "has an email"), static assets — can expose a
+  reserved field, its name outside those files, or its values. `/api/contact-request`
+  records the request and never returns contact details.
+- **Every Rainmakers OS update flows through automatically** (`npm run data:import`, or the
+  live Airtable source): public dataset, counts and files follow it.
+- **New master columns: private by default.** The export schema follows the master
+  automatically (import → `data/snapshot/export-schema.json`; Airtable → Metadata API,
+  names only) and the files show the new headers with completely empty cells. A field is
+  published only after explicit approval, by adding it to the allowlist in
+  `src/lib/export.ts` (`PUBLIC_VALUES`, frozen by `tests/public-rules.test.ts`) — never
+  automatically. Live sources are read through the allowlist only (`readFields()`);
+  `AIRTABLE_FIELD_MAP` can never point a public field at a reserved column.
+- **CSV / formula injection.** CSV cells starting with = + - @ (also full-width, also after
+  spaces) or tab / CR / LF get a leading apostrophe; XLSX cells are inline text with text
+  format and quotePrefix, never formulas.
+
+## Public data rules (P0)
 
 Full text: `docs/PRD.md` § "Public data visibility & player type classification".
 
@@ -18,11 +48,10 @@ Full text: `docs/PRD.md` § "Public data visibility & player type classification
    colour, counted once. Never combine MAIN and SECONDARY TYPE, never hybrid categories.
    `data/source/player-type-overrides.json` only maps/refines MAIN TYPE into the site
    taxonomy (one value, never for startups).
-4. **Reserved field values never reach the browser** (API, JSON, page payload, static
-   assets, downloads): REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE — plus EMAIL,
-   read only server-side for the gated contact request. Use allowlists, never blocklists.
-   Only exception, structural and limited to downloadable files: their column *names* appear
-   as headers with empty cells (see "Downloads" 5–6).
+4. **Reserved fields never reach the browser** (API, JSON, page payload, metadata, static
+   assets): REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE, EMAIL — never read at
+   all, not even server-side. Use allowlists, never blocklists. Only exception, structural
+   and limited to CSV / XLSX files: their column *names* appear as headers with empty cells.
 5. **One pipeline, one public dataset.** See "Export pipeline" below. The rules live only in
    `scripts/import-irf-csv.mjs` (snapshot) and `src/lib/data/normalize.ts`
    (`buildPublicDataset()`, snapshot and Airtable); every consumer — site, APIs, downloads,
@@ -30,8 +59,9 @@ Full text: `docs/PRD.md` § "Public data visibility & player type classification
    and never hide data with CSS.
 6. **No hardcoded numbers.** KPIs come from `computeStats()` on the public dataset; the
    per-type counts always add up to the total.
-7. **Tests guard it.** `tests/public-data.test.ts`, `tests/download-scope.test.ts` and
-   `tests/export-pipeline.test.ts` read the real master export and the
+7. **Tests guard it.** `tests/public-data.test.ts`, `tests/download-scope.test.ts`,
+   `tests/export-pipeline.test.ts` and `tests/public-rules.test.ts` read the real master
+   export and the
    snapshot. After every database update run `npm run data:import`, `npm run
    infographic:build` and `npm test`; never ship with a failing test.
 
@@ -59,8 +89,9 @@ Full text: `docs/PRD.md` § "Public data visibility & player type classification
 6. **Reserved columns: headers only.** REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE,
    EMAIL and any master column not in the public allowlist (also future ones) are present
    with completely empty cells — no values, placeholders, formulas, comments or metadata.
-   This exception is structural and for files only; interface, public dataset, APIs and
-   payloads still never contain reserved fields (names or values).
+   This exception is structural and for CSV / XLSX only; interface, public dataset, APIs,
+   payloads (also the map PDF list) and metadata never contain reserved fields (names or
+   values).
 7. **Formats: CSV UTF-8 and XLSX only**, both for Excel and Google Sheets, with the same
    publishability, structure, privacy and filtering rules. CSV: UTF-8 with BOM, CRLF,
    formula-injection guard. XLSX: `src/lib/xlsx.ts` (no dependency), text cells only — no
@@ -74,8 +105,8 @@ Full text: `docs/PRD.md` § "Public data visibility & player type classification
    active filters the filtered download is preselected; with zero results it is disabled
    and a message explains why. Same design system (`Dialog`, `btn`), no change to other
    components beyond the download menus of the map (CSV / Excel instead of JSON / PDF).
-Guarded by `tests/download-scope.test.ts`, `tests/download-formats.test.ts` and
-`tests/export-pipeline.test.ts`.
+Guarded by `tests/download-scope.test.ts`, `tests/download-formats.test.ts`,
+`tests/export-pipeline.test.ts` and `tests/public-rules.test.ts`.
 
 ## Export pipeline (P0 — update 3/6, full text: `docs/PRD.md` § "Export pipeline")
 

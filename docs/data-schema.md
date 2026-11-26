@@ -11,7 +11,7 @@ Airtable "Rainmakers OS" (READ-ONLY) ──GET──▶ AirtableReadOnlyProvider
                         normalizeRecord(record, {logos, geo}) → dedupe()          (server only)
                                                                                                                     ▼
                         PublicPlayer[] ──▶ /api/players ──▶ map, database, embeds, hero numbers, categories, FAQ, infographic
-                        GatedContacts  ──▶ /api/contact-request only
+                        (no contact detail is ever returned: /api/contact-request only records the request)
 ```
 
 The provider is chosen automatically: Airtable when `AIRTABLE_TOKEN`, `AIRTABLE_BASE_ID` and `AIRTABLE_TABLE` are set, otherwise the snapshot. If Airtable fails, the last good copy (or the snapshot) is served. The browser never receives the raw record or the Airtable record id.
@@ -35,9 +35,10 @@ Public data rules (P0, also in `CLAUDE.md` and `docs/PRD.md`): the importer and 
 | STATUS | ✔ | `status`: ACTIVE… → `active`, DA VERIFICARE/empty → `unverified`. **INACTIVE → not public** |
 | LOGO (attachment in Airtable; SI/NO in the CSV) | ✔ | `logo` {src, w, h, tone} |
 | OPEN STREET MAP | ✔ | `location.lat/lng` when the link carries coordinates |
-| EMAIL | ✖ gated | `GatedContacts.email`, server-side only (contact request, `REVEAL_GATED_CONTACTS`) |
+| EMAIL | ✖ reserved | never read (not even requested from Airtable); empty column in CSV / XLSX |
 | SECONDARY TYPE | ✖ reserved | never read, never used for classification or counts |
-| REFERENCE, INFORMATION SOURCE, PHONE | ✖ reserved | never read |
+| REFERENCE, INFORMATION SOURCE, PHONE | ✖ reserved | never read; empty columns in CSV / XLSX |
+| any new master column | ✖ private by default | empty header in CSV / XLSX until added to the allowlist in `src/lib/export.ts` |
 | GOOGLE MAPS LINK | ✖ | not used |
 
 The export is upper-case: names, websites, descriptions and industries take the mixed-case spelling of `data/source/display-text.json` when it is equal ignoring case, otherwise a conservative case conversion (listed in `docs/data-quality.md`).
@@ -83,7 +84,7 @@ Rows without a region are not placed. Players sharing a point are fanned out on 
 
 ## Public schema (`PublicPlayer`)
 
-`id, slug, name, categories[], status, website, websiteHost, description, logo, industries[], location {country, region, province, city, address, lat, lng, precision, source}, hasGatedContacts` — see `src/lib/data/schema.ts` (zod).
+`id, slug, name, categories[], status, website, websiteHost, description, logo, industries[], location {country, region, province, city, address, lat, lng, precision, source}, mainType` — see `src/lib/data/schema.ts` (zod).
 
 ## Leads (approval queue)
 

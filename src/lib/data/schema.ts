@@ -53,17 +53,11 @@ export const PublicPlayerSchema = z.object({
   logo: LogoSchema.nullable(),
   industries: z.array(z.string()),
   location: LocationSchema.nullable(),
-  hasGatedContacts: z.boolean(),
-});
-
-export const GatedContactsSchema = z.object({
-  email: z.string().nullable(),
 });
 
 export type PublicPlayer = z.infer<typeof PublicPlayerSchema>;
 export type PlayerLocation = z.infer<typeof LocationSchema>;
 export type PlayerLogo = z.infer<typeof LogoSchema>;
-export type GatedContacts = z.infer<typeof GatedContactsSchema>;
 
 export type Dataset = {
   players: PublicPlayer[];

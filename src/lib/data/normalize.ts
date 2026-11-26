@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { PROVINCES, REGIONS } from '../geo/territories';
-import { PublicPlayerSchema, type GatedContacts, type PlayerLocation, type PlayerLogo, type PublicPlayer } from './schema';
+import { PublicPlayerSchema, type PlayerLocation, type PlayerLogo, type PublicPlayer } from './schema';
 import { categoryFromSource, type CategoryKey, type StatusKey } from './taxonomy';
 
 /**
@@ -30,24 +30,50 @@ const DEFAULT_FIELDS = {
   lat: 'Latitude',
   lng: 'Longitude',
   geoPrecision: 'GEO PRECISION',
-  // SENSITIVE — never in the public payload. Only EMAIL is read, server-side, for the
-  // gated contact request. REFERENCE, PHONE, INFORMATION SOURCE and SECONDARY TYPE are
-  // reserved: never read at all.
-  email: 'EMAIL',
+  // REFERENCE, INFORMATION SOURCE, SECONDARY TYPE, PHONE and EMAIL are reserved: never
+  // read at all (private by default — CLAUDE.md "Public data rules").
 } as const;
 type FieldKey = keyof typeof DEFAULT_FIELDS;
 
-function fieldMapFromEnv(): Record<FieldKey, string> {
-  try {
-    const custom = process.env.AIRTABLE_FIELD_MAP ? (JSON.parse(process.env.AIRTABLE_FIELD_MAP) as Partial<Record<FieldKey, string>>) : {};
-    return { ...DEFAULT_FIELDS, ...custom };
-  } catch {
-    return { ...DEFAULT_FIELDS };
-  }
-}
-export const FIELDS = fieldMapFromEnv();
 /** Reserved columns of the master database: never read, never published. */
 export const RESERVED_FIELDS = ['REFERENCE', 'INFORMATION SOURCE', 'SECONDARY TYPE', 'PHONE', 'EMAIL'] as const;
+const isReserved = (name: string) => (RESERVED_FIELDS as readonly string[]).includes(name.replace(/\s+/g, ' ').trim().toUpperCase());
+
+/**
+ * Column names, with AIRTABLE_FIELD_MAP overrides. An override can rename a public field,
+ * never point it at a reserved column (that would publish it): such overrides are ignored.
+ */
+export function fieldMap(env: string | undefined = process.env.AIRTABLE_FIELD_MAP): Record<FieldKey, string> {
+  let custom: Partial<Record<FieldKey, string>> = {};
+  try {
+    custom = env ? (JSON.parse(env) as Partial<Record<FieldKey, string>>) : {};
+  } catch {
+    custom = {};
+  }
+  const out: Record<string, string> = { ...DEFAULT_FIELDS };
+  for (const [k, v] of Object.entries(custom)) {
+    if (!(k in DEFAULT_FIELDS) || typeof v !== 'string' || !v.trim()) continue;
+    if (isReserved(v)) {
+      console.error(`[data] AIRTABLE_FIELD_MAP.${k} -> "${v}" ignored: reserved column`);
+      continue;
+    }
+    out[k] = v;
+  }
+  return out as Record<FieldKey, string>;
+}
+export const FIELDS = fieldMap();
+
+/** Master columns that carry public data (the read allowlist of a live source). */
+const CORE_READ: FieldKey[] = ['name', 'website', 'description', 'types', 'address', 'region', 'city', 'industry', 'status', 'logo'];
+/**
+ * Fields requested from a live source (Airtable): the allowlist only, never a reserved or
+ * unknown column. With the table's column names, every allowlisted column that exists;
+ * without them, the core public columns of the master.
+ */
+export function readFields(columns: readonly string[] | null): string[] {
+  const all = [...new Set(Object.values(FIELDS))].filter((f) => !isReserved(f));
+  return columns ? all.filter((f) => columns.includes(f)) : CORE_READ.map((k) => FIELDS[k]);
+}
 
 /** MAIN TYPE normalised for comparisons: spaces collapsed, upper case, "A / B" → "A/B". */
 export const normalizeMainType = (v: string | null): string | null =>
@@ -198,10 +224,6 @@ function normalizeStatus(v: unknown): StatusKey {
   return 'unverified';
 }
 
-export function extractGatedContacts(f: Record<string, unknown>): GatedContacts {
-  return { email: str(f[FIELDS.email]) };
-}
-
 /** The single MAIN TYPE of a record (first value if a legacy list slips through). */
 export function mainTypeOf(f: Record<string, unknown>): string | null {
   const v = f[FIELDS.types] !== undefined ? f[FIELDS.types] : f[FIELDS.legacyTypes];
@@ -226,7 +248,6 @@ export function normalizeRecord(rec: RawRecord, lookups: Lookups = { logos: {}, 
   // database, map, KPIs, ring and infographic all share the same perimeter.
   if (status === 'inactive') return null;
   const { url, host } = normalizeWebsite(str(f[FIELDS.website]));
-  const gated = extractGatedContacts(f);
   const key = nameKey(name);
 
   const player: PublicPlayer = {
@@ -242,7 +263,6 @@ export function normalizeRecord(rec: RawRecord, lookups: Lookups = { logos: {}, 
     logo: normalizeLogo(f[FIELDS.logo]) ?? lookups.logos[key] ?? null,
     industries: normalizeIndustries(list(f[FIELDS.industry])),
     location: normalizeLocation(f, lookups.geo[key]),
-    hasGatedContacts: !!gated.email,
   };
   const parsed = PublicPlayerSchema.safeParse(player);
   return parsed.success ? parsed.data : null;
