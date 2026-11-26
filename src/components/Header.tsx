@@ -19,6 +19,7 @@ export function Header({ locale, t }: { locale: Locale; t: Pick<Dictionary, 'nav
     ['for-whom', t.nav.forWhom],
     ['who', t.nav.who],
     ['partners', t.nav.partners],
+    ['newsletter', t.nav.newsletter],
   ] as const;
 
   // Highlight the section under the middle of the viewport. Re-queries the DOM on

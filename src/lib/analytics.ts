@@ -30,7 +30,10 @@ export type AnalyticsEvent =
   | 'partner_outbound'
   | 'rainmakers_outbound'
   | 'update_form_submit'
-  | 'update_form_success';
+  | 'update_form_success'
+  | 'newsletter_submit'
+  | 'newsletter_success'
+  | 'newsletter_confirm_landing';
 
 type Props = Record<string, string | number | boolean | undefined>;
 

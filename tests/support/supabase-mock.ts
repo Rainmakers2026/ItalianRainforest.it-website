@@ -92,7 +92,7 @@ export const SCHEMA = {
     created_at: { default: now },
     updated_at: { default: now },
     source: { default: () => 'ITALIAN RAINFOREST WEBSITE' },
-    newsletter_name: { default: () => 'ITALIAN RAINFOREST' },
+    newsletter_name: { default: () => 'RAINFOREST RADAR', values: ['RAINFOREST RADAR'] },
     source_form: { required: true, values: ['NEWSLETTER_SIGNUP', 'DATABASE_UPDATE_REQUEST', 'EMBED_REQUEST', 'DOWNLOAD_REGISTRATION'] },
     locale: { values: LOCALE },
     first_name: {},
@@ -111,8 +111,65 @@ export const SCHEMA = {
     brevo_synced_at: {},
     brevo_sync_error: {},
     brevo_sync_attempts: { default: () => 0 },
+    // 06_rainforest_radar.sql
+    privacy_acknowledged: { default: () => false },
+    privacy_acknowledged_at: {},
+    page_path: {},
+    page_section: {},
+    cta: {},
+    utm: {},
+    doi_cycle_id: {},
+    doi_requested_at: {},
+    doi_clicked_at: {},
+    welcome_claimed_at: {},
+    welcome_sent_at: {},
+    welcome_message_id: {},
+    status_changed_at: { default: now },
+    unsubscribe_channel: { values: ['BREVO', 'WEBSITE', 'MANUAL'] },
+    unsubscribe_reason: {},
+    brevo_next_attempt_at: {},
+    airtable_subscriber_record_id: {},
+    airtable_unsubscriber_record_id: {},
+    airtable_sync_status: { default: () => 'PENDING', values: ['PENDING', 'SYNCED', 'ERROR', 'SKIPPED'] },
+    airtable_synced_at: {},
+    airtable_sync_error: {},
+    airtable_sync_attempts: { default: () => 0 },
+    airtable_next_attempt_at: {},
+  },
+  newsletter_consent_events: {
+    id: { default: uuid },
+    created_at: { default: now },
+    occurred_at: { default: now },
+    subscriber_id: req,
+    event_type: { required: true, values: ['CONSENT_GIVEN', 'RESUBSCRIBE_REQUESTED', 'DOI_REQUESTED', 'DOI_REQUEST_FAILED', 'DOI_CLICKED', 'DOI_CONFIRMED', 'WELCOME_SENT', 'WELCOME_FAILED', 'UNSUBSCRIBED', 'EVENT_IGNORED', 'BLOCKED_ATTEMPT'] },
+    previous_status: { values: ['PENDING', 'SUBSCRIBED', 'UNSUBSCRIBED', 'BLOCKED'] },
+    new_status: { values: ['PENDING', 'SUBSCRIBED', 'UNSUBSCRIBED', 'BLOCKED'] },
+    source_form: { values: ['NEWSLETTER_SIGNUP', 'DOWNLOAD_REGISTRATION', 'EMBED_REQUEST', 'DATABASE_UPDATE_REQUEST'] },
+    locale: { values: LOCALE },
+    newsletter_consent: {},
+    consent_text: {},
+    newsletter_consent_version: {},
+    privacy_acknowledged: {},
+    privacy_notice_version: {},
+    page_path: {},
+    page_section: {},
+    cta: {},
+    utm: {},
+    channel: { values: ['BREVO', 'WEBSITE', 'MANUAL'] },
+    reason: {},
+    request_id: {},
+    external_event_id: {},
+    details: {},
   },
 } satisfies Record<string, Table>;
+/** Unique constraints (besides the primary key). */
+const UNIQUE: Record<string, ((r: Row) => unknown)[]> = {
+  database_update_requests: [(r) => r.request_id],
+  sharing_is_caring_registrations: [(r) => r.request_id],
+  download_registrations: [(r) => r.request_id],
+  newsletter_subscribers: [(r) => String(r.email).trim().toLowerCase()],
+  newsletter_consent_events: [(r) => r.request_id, (r) => r.external_event_id],
+};
 export type TableName = keyof typeof SCHEMA;
 const COLUMNS: Record<string, Table> = SCHEMA;
 
@@ -145,13 +202,25 @@ export function createSupabaseMock(serviceKey: string) {
     [...sp.entries()]
       .filter(([k]) => !['select', 'limit', 'on_conflict', 'columns', 'order'].includes(k))
       .map(([col, expr]) => {
-        if (expr.startsWith('eq.')) return (r: Row) => String(r[col]) === expr.slice(3);
+        if (expr.startsWith('eq.')) return (r: Row) => r[col] !== null && r[col] !== undefined && String(r[col]) === expr.slice(3);
+        if (expr === 'is.null') return (r: Row) => r[col] === null || r[col] === undefined;
+        if (expr === 'not.is.null') return (r: Row) => r[col] !== null && r[col] !== undefined;
         if (expr.startsWith('in.(')) {
           const list = expr.slice(4, -1).split(',').map((s) => s.replace(/^"|"$/g, ''));
           return (r: Row) => list.includes(String(r[col]));
         }
         throw new Error(`mock: unsupported filter ${col}=${expr}`);
       });
+  const ordered = (rows: Row[], order: string | null) => {
+    if (!order) return rows;
+    const [col, dir] = order.split('.');
+    return [...rows].sort((a, b) => {
+      const x = a[col!] ?? '';
+      const y = b[col!] ?? '';
+      return (x < y ? -1 : x > y ? 1 : 0) * (dir === 'desc' ? -1 : 1);
+    });
+  };
+  const project = (r: Row, select: string | null) => (select && select !== '*' ? Object.fromEntries(select.split(',').map((c) => [c.trim(), r[c.trim()]])) : { ...r });
 
   async function handle(request: Request): Promise<Response> {
     const url = new URL(request.url);
@@ -170,12 +239,13 @@ export function createSupabaseMock(serviceKey: string) {
     const sp = url.searchParams;
 
     if (request.method === 'GET') {
-      const out = rows.filter((r) => filtersOf(sp).every((f) => f(r)));
+      const out = ordered(
+        rows.filter((r) => filtersOf(sp).every((f) => f(r))),
+        sp.get('order'),
+      );
       const limited = sp.get('limit') ? out.slice(0, Number(sp.get('limit'))) : out;
-      const select = sp.get('select');
-      const cols = select && select !== '*' ? select.split(',').map((s) => s.trim()) : null;
       record(200);
-      return Response.json(limited.map((r) => (cols ? Object.fromEntries(cols.map((c) => [c, r[c]])) : r)));
+      return Response.json(limited.map((r) => project(r, sp.get('select'))));
     }
 
     if (state.failOn === '*' || state.failOn === table) {
@@ -193,10 +263,14 @@ export function createSupabaseMock(serviceKey: string) {
           record(row.status, input);
           return row;
         }
-        const dupRequest = row.request_id !== undefined && rows.some((r) => r.request_id === row.request_id);
-        const dupEmail = table === 'newsletter_subscribers' && rows.some((r) => String(r.email).trim().toLowerCase() === String(row.email).trim().toLowerCase());
+        const keys = UNIQUE[table] ?? [];
+        const clash = keys.findIndex((k) => {
+          const v = k(row);
+          return v !== null && v !== undefined && rows.some((r) => k(r) === v);
+        });
+        const dupRequest = clash === 0 && row.request_id !== undefined && row.request_id !== null;
         if (dupRequest && ignoreDup && onConflict === 'request_id') continue;
-        if (dupRequest || dupEmail) {
+        if (clash >= 0) {
           record(409, input);
           return pgError(409, '23505', 'duplicate key value violates unique constraint');
         }
@@ -213,10 +287,19 @@ export function createSupabaseMock(serviceKey: string) {
         record(400, patch);
         return pgError(400, 'PGRST204', `Could not find the '${unknown[0]}' column`);
       }
+      const cols = COLUMNS[table]!;
+      for (const [name, v] of Object.entries(patch)) {
+        const col = cols[name]!;
+        if (v === null && col.required) return pgError(400, '23502', `null value in column "${name}"`);
+        if (v !== null && v !== undefined && col.values && !col.values.includes(String(v))) return pgError(400, '23514', `check constraint on "${name}"`);
+      }
       const fs = filtersOf(sp);
       if (!fs.length) throw new Error('mock: PATCH without filter');
-      for (const r of rows) if (fs.every((f) => f(r))) Object.assign(r, patch);
-      record(204, patch);
+      const hit = rows.filter((r) => fs.every((f) => f(r)));
+      for (const r of hit) Object.assign(r, patch);
+      record(hit.length ? 200 : 204, patch);
+      // Prefer: return=representation (supabase-js .update().select()) → the updated rows.
+      if ((request.headers.get('prefer') ?? '').includes('return=representation')) return Response.json(hit.map((r) => project(r, sp.get('select'))));
       return new Response(null, { status: 204 });
     }
 

@@ -27,6 +27,8 @@ import { inflateRawSync } from 'node:zlib';
 import { applyFilters, parseFilters } from '../src/lib/filters.ts';
 import type { PublicPlayer } from '../src/lib/data/schema.ts';
 import en from '../src/lib/i18n/dictionaries/en.ts';
+import it from '../src/lib/i18n/dictionaries/it.ts';
+import { createIntegrationsMock } from '../tests/support/integrations-mock.ts';
 import { createSupabaseMock } from '../tests/support/supabase-mock.ts';
 
 // The map and database explorer is in English on both locales (src/app/[locale]/page.tsx).
@@ -147,6 +149,19 @@ const MOCK_PORT = PORT + 1;
 const MOCK_URL = `http://127.0.0.1:${MOCK_PORT}`;
 const MOCK_KEY = `e2e-fake-service-role-${randomUUID()}`;
 const supa = createSupabaseMock(MOCK_KEY);
+// Simulated Brevo + Airtable for RAINFOREST RADAR (no email sent, no Airtable write).
+const RADAR = {
+  brevoKey: `xkeysib-e2e-${randomUUID()}`,
+  listId: 7,
+  pat: `pat-e2e-${randomUUID()}`,
+  baseId: 'appE2ESYNCBASE001',
+  subs: 'tblE2ESUBSCRIBE01',
+  unsubs: 'tblE2EUNSUBSCRB01',
+  webhook: `e2e-webhook-${randomUUID()}`,
+  cron: `e2e-cron-${randomUUID()}`,
+  token: `e2e-token-secret-${randomUUID()}`,
+};
+const ext = createIntegrationsMock({ brevoKey: RADAR.brevoKey, listId: RADAR.listId, attributes: ['FIRSTNAME', 'LASTNAME', 'LANGUAGE', 'SUPABASE_ID', 'SOURCE', 'SOURCE_FORM'], airtablePat: RADAR.pat, baseId: RADAR.baseId, subscribersTable: RADAR.subs, unsubscribersTable: RADAR.unsubs });
 const mockServer = createServer(async (req, res) => {
   try {
     const chunks: Buffer[] = [];
@@ -154,7 +169,8 @@ const mockServer = createServer(async (req, res) => {
     const headers = new Headers();
     for (const [k, v] of Object.entries(req.headers)) if (typeof v === 'string') headers.set(k, v);
     const hasBody = req.method !== 'GET' && req.method !== 'HEAD';
-    const r = await supa.handle(new Request(MOCK_URL + req.url, { method: req.method, headers, body: hasBody ? Buffer.concat(chunks) : undefined }));
+    const request = new Request(MOCK_URL + req.url, { method: req.method, headers, body: hasBody ? Buffer.concat(chunks) : undefined });
+    const r = /^\/(brevo|airtable)\//.test(req.url ?? '') ? await ext.handle(request) : await supa.handle(request);
     res.writeHead(r.status, Object.fromEntries(r.headers));
     res.end(Buffer.from(await r.arrayBuffer()));
   } catch (err) {
@@ -180,6 +196,22 @@ const env = {
   SUPABASE_SERVICE_ROLE_KEY: MOCK_KEY,
   PRIVACY_POLICY_VERSION: 'draft-2026-11',
   NEWSLETTER_CONSENT_VERSION: '',
+  BREVO_API_KEY: RADAR.brevoKey,
+  BREVO_API_BASE: `${MOCK_URL}/brevo`,
+  BREVO_LIST_ID: String(RADAR.listId),
+  BREVO_DOI_TEMPLATE_ID: '11',
+  BREVO_WELCOME_TEMPLATE_ID_IT: '21',
+  BREVO_WELCOME_TEMPLATE_ID_EN: '22',
+  BREVO_WEBHOOK_SECRET: RADAR.webhook,
+  BREVO_CONTACT_ATTRIBUTES: 'FIRSTNAME,LASTNAME,LANGUAGE,SUPABASE_ID,SOURCE,SOURCE_FORM',
+  AIRTABLE_SYNC_PAT: RADAR.pat,
+  AIRTABLE_SYNC_BASE_ID: RADAR.baseId,
+  AIRTABLE_NEWSLETTER_SUBSCRIBERS_TABLE_ID: RADAR.subs,
+  AIRTABLE_NEWSLETTER_UNSUBSCRIBERS_TABLE_ID: RADAR.unsubs,
+  AIRTABLE_API_BASE: `${MOCK_URL}/airtable`,
+  NEWSLETTER_TOKEN_SECRET: RADAR.token,
+  NEWSLETTER_CRON_SECRET: RADAR.cron,
+  NEWSLETTER_PUBLIC_URL: BASE,
 };
 const server: ChildProcess = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '-p', String(PORT)], { env, stdio: ['ignore', 'pipe', 'pipe'] });
 let serverLog = '';
@@ -192,7 +224,8 @@ const cleanup = () => {
   mockServer.close();
 };
 /** The service key, the mock URL or the key's variable name must never reach the browser. */
-const secretLeaks = (t: string) => [MOCK_KEY, 'SUPABASE_SERVICE_ROLE_KEY', `127.0.0.1:${MOCK_PORT}`].filter((s) => t.includes(s));
+const secretLeaks = (t: string) =>
+  [MOCK_KEY, 'SUPABASE_SERVICE_ROLE_KEY', `127.0.0.1:${MOCK_PORT}`, RADAR.brevoKey, RADAR.pat, RADAR.webhook, RADAR.cron, RADAR.token, 'BREVO_API_KEY', 'AIRTABLE_SYNC_PAT'].filter((s) => t.includes(s));
 process.on('exit', cleanup);
 
 for (let i = 0; i < 120; i++) {
@@ -546,6 +579,48 @@ try {
     check(u[0]?.change_type === 'CORRECTION' && u[0]?.organization_name === 'E2E Example Hub' && u[0]?.locale === 'en' && u[0]?.page_section === 'update' && u[0]?.cta === 'update_form', `update form provenance: ${u[0]?.change_type} · ${u[0]?.page_path} · ${u[0]?.cta} · ${u[0]?.locale}`);
     check(tbl('newsletter_subscribers').length === 0, 'update form without newsletter box: no subscriber');
 
+    // g) RAINFOREST RADAR form on /en (desktop), then the layout on a phone
+    supa.reset();
+    ext.reset();
+    await openTab(`${BASE}/en#newsletter`, false);
+    await until(`!!document.querySelector('#newsletter form [name=firstName]')`, 30000);
+    await wait(2500);
+    const a11y = await js<{ unlabeled: number; checked: number; required: number }>(`(() => {
+      const f = document.querySelector('#newsletter form');
+      const inputs = [...f.querySelectorAll('input:not([name=company_url])')];
+      return {
+        unlabeled: inputs.filter((i) => !(i.labels && i.labels.length)).length,
+        checked: [...f.querySelectorAll('input[type=checkbox]')].filter((c) => c.checked).length,
+        required: inputs.filter((i) => i.required).length,
+      };
+    })()`);
+    check(a11y.unlabeled === 0 && a11y.checked === 0 && a11y.required === 5, `RADAR form: every field labelled, no checkbox preselected, 5 required (${JSON.stringify(a11y)})`);
+    const twoCols = await js<boolean>(`(() => { const s = document.querySelector('#newsletter .container-irf'); const [a, b] = s.children; return b.getBoundingClientRect().left > a.getBoundingClientRect().right - 1; })()`);
+    check(twoCols, 'RADAR section: two columns on desktop (text | form)');
+    await js(`document.querySelector('#newsletter form button[type=submit]').click()`);
+    await wait(300);
+    check((await js<number>(`document.querySelectorAll('#newsletter [id$=-err]').length`)) === 5 && tbl('newsletter_subscribers').length === 0, 'RADAR form: empty submit → 5 field errors, nothing sent');
+    await js(`(() => {
+      const f = document.querySelector('#newsletter form');
+      f.querySelector('[name=firstName]').value = 'E2E';
+      f.querySelector('[name=lastName]').value = 'Radar';
+      f.querySelector('[name=email]').value = 'e2e.radar@example.com';
+      f.querySelector('[name=privacy]').click();
+      f.querySelector('[name=newsletter]').click();
+      f.querySelector('button[type=submit]').click();
+    })()`);
+    const ok = await until(`document.querySelector('#newsletter [role=status]')?.textContent.includes(${JSON.stringify(en.newsletter.successTitle)})`, 15000);
+    const row = tbl('newsletter_subscribers')[0];
+    check(ok && ext.brevo.doiRequests.length === 1, `RADAR form (EN): "${en.newsletter.successTitle}" shown after Brevo accepted the double opt-in`);
+    check(row?.source_form === 'NEWSLETTER_SIGNUP' && row?.locale === 'en' && row?.subscription_status === 'PENDING' && row?.cta === 'newsletter_form' && row?.page_path === '/en', `RADAR form row: ${row?.source_form} · ${row?.locale} · ${row?.subscription_status} · ${row?.page_path}`);
+    await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+    await openTab(`${BASE}/it#newsletter`, false);
+    await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+    await until(`!!document.querySelector('#newsletter form [name=firstName]')`, 30000);
+    await wait(800);
+    const stacked = await js<{ stacked: boolean; overflow: boolean }>(`(() => { const s = document.querySelector('#newsletter .container-irf'); const [a, b] = s.children; return { stacked: b.getBoundingClientRect().top >= a.getBoundingClientRect().bottom - 1, overflow: document.documentElement.scrollWidth > window.innerWidth + 1 }; })()`);
+    check(stacked.stacked && !stacked.overflow, `RADAR section on a phone: stacked, no horizontal scroll (${JSON.stringify(stacked)})`);
+
     ws!.close();
     chrome.kill();
     await wait(1000);
@@ -557,6 +632,46 @@ try {
   }
 
   // ---------- 4. master integrity -----------------------------------------------------
+  // ---------- 5. RAINFOREST RADAR over HTTP (simulated Brevo + Airtable) ----------------
+  section('5. RAINFOREST RADAR: double opt-in, welcome, Airtable, unsubscription');
+  for (const [p, d] of [['/it', it], ['/en', en]] as const) {
+    const html = await (await fetch(BASE + p)).text();
+    check(html.includes('id="newsletter"') && html.includes(d.newsletter.headline.replace(/’/g, '’')) && html.includes('#newsletter'), `${p}: RAINFOREST RADAR section, headline and #newsletter links`);
+  }
+  supa.reset();
+  ext.reset();
+  const radarEmail = 'e2e.radar.http@example.com';
+  const radarForm = { firstName: 'E2E', lastName: 'Radar', email: radarEmail, privacy: true, newsletter: true, locale: 'it', company_url: '', elapsed: 5000, requestId: randomUUID(), origin: { page: '/it', section: 'newsletter', cta: 'newsletter_form' } };
+  check((await postForm('/api/newsletter', { ...radarForm, newsletter: false })).status === 400, 'newsletter consent is mandatory in the dedicated form (400)');
+  check((await postForm('/api/newsletter', radarForm)).status === 200, 'dedicated form → 200 after Brevo accepted the double opt-in');
+  const r0 = tbl('newsletter_subscribers')[0];
+  const doi = ext.brevo.doiRequests[0];
+  check(r0?.subscription_status === 'PENDING' && r0?.newsletter_name === 'RAINFOREST RADAR' && r0?.source_form === 'NEWSLETTER_SIGNUP', 'Supabase: PENDING, RAINFOREST RADAR, NEWSLETTER_SIGNUP');
+  check(!!doi && doi.includeListIds.join() === String(RADAR.listId) && doi.redirectionUrl.startsWith(`${BASE}/api/newsletter/confirm?l=it&t=`), 'Brevo: double opt-in on the RADAR list only, signed confirmation link');
+  check(ext.airtable.records[RADAR.subs]!.length === 0 && ext.brevo.emails.length === 0, 'not confirmed yet: no welcome, nothing in Airtable');
+  ext.clickConfirmation(radarEmail);
+  const conf = await fetch(doi!.redirectionUrl, { redirect: 'manual' });
+  check(conf.status === 303 && conf.headers.get('location') === '/it?newsletter=confirmed#newsletter', `confirmation link → ${conf.status} ${conf.headers.get('location')}`);
+  const r1 = tbl('newsletter_subscribers')[0];
+  check(r1?.subscription_status === 'SUBSCRIBED' && r1?.double_opt_in_confirmed === true && !!r1?.brevo_contact_id, 'Supabase: SUBSCRIBED after the verified confirmation');
+  check(ext.brevo.emails.length === 1 && ext.brevo.emails[0]!.templateId === 21, 'Italian welcome email sent once');
+  const ar = ext.airtable.records[RADAR.subs]![0];
+  check(!!ar && Object.keys(ar.fields).length === 17 && ar.fields['DOUBLE OPT-IN'] === true && ar.fields['BREVO CONTACT ID'] === String(r1?.brevo_contact_id), `Airtable ISCRITTI: 17 typed fields (${ar ? Object.keys(ar.fields).length : 0})`);
+  await fetch(doi!.redirectionUrl, { redirect: 'manual' });
+  check(ext.brevo.emails.length === 1 && ext.airtable.records[RADAR.subs]!.length === 1, 'link opened again: no second welcome, no duplicate record');
+  const hookPost = (body: unknown, auth: string) => fetch(`${BASE}/api/newsletter/brevo-webhook`, { method: 'POST', headers: { 'content-type': 'application/json', authorization: auth }, body: JSON.stringify(body) });
+  const ev = { event: 'unsubscribe', email: radarEmail, id: 42, list_id: [RADAR.listId], ts: Math.floor(Date.now() / 1000) + 2 };
+  check((await hookPost(ev, 'Bearer wrong')).status === 401, 'webhook without the right bearer token → 401');
+  check((await hookPost(ev, `Bearer ${RADAR.webhook}`)).status === 200, 'authenticated unsubscribe webhook → 200');
+  const r2 = tbl('newsletter_subscribers')[0];
+  check(r2?.subscription_status === 'UNSUBSCRIBED' && r2?.unsubscribe_channel === 'BREVO', 'Supabase: UNSUBSCRIBED, channel BREVO');
+  check(ext.airtable.records[RADAR.unsubs]!.length === 1 && ext.airtable.records[RADAR.subs]!.length === 0, 'Airtable: in DISISCRITTI, removed from ISCRITTI after verification');
+  await hookPost(ev, `Bearer ${RADAR.webhook}`);
+  check(ext.airtable.records[RADAR.unsubs]!.length === 1 && tbl('newsletter_consent_events').filter((e) => e.event_type === 'UNSUBSCRIBED').length === 1, 'duplicate webhook: no change');
+  check((await postForm('/api/newsletter', { ...radarForm, requestId: randomUUID() })).status === 200 && tbl('newsletter_subscribers')[0]?.subscription_status === 'UNSUBSCRIBED', 're-subscription request: still UNSUBSCRIBED until the new double opt-in');
+  const rec = await fetch(`${BASE}/api/newsletter/reconcile`, { headers: { authorization: `Bearer ${RADAR.cron}` } });
+  check(rec.ok && (await fetch(`${BASE}/api/newsletter/reconcile`)).status === 401, 'reconciliation: runs with the cron secret, 401 without');
+
   section('4. Rainmakers OS master integrity');
   check(hashDir('data/source') === masterHashBefore, 'data/source byte-identical after the run (never modified)');
   check(secretLeaks(serverLog).filter((s) => s !== 'SUPABASE_SERVICE_ROLE_KEY').length === 0 && !/e2e[.\w]*@example\.com/i.test(serverLog), 'server log: no Supabase key, no submitted email');

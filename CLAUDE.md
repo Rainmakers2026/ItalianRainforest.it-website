@@ -173,3 +173,20 @@ Before every push, all of these pass (fix the cause, never weaken a test):
 - Privacy page: draft awaiting legal validation. Do not present it as approved, do not
   invent company name, VAT number, processors or retention periods.
 - Fix only unambiguous typos in the source data; no editorial markers on the site.
+
+## RAINFOREST RADAR newsletter (P0, full text: `docs/newsletter.md`)
+
+- Supabase `newsletter_subscribers` (+ append-only `newsletter_consent_events`) is the single
+  source of truth; Brevo = double opt-in, welcome, campaigns, unsubscriptions; Airtable =
+  one-way copy (`AIRTABLE_SYNC_*` on the "IRF push da Supabase" base — never the read-only
+  master base / token). Never a second newsletter table or list; never touch GOCCE.
+- PENDING → SUBSCRIBED only through the verified double opt-in; UNSUBSCRIBED / BLOCKED never
+  reactivated without a new explicit consent and a new double opt-in; the original consent is
+  never overwritten; answers never reveal whether an email is known.
+- "Check your inbox" only when Brevo accepted the request; welcome once per confirmed cycle.
+- Webhooks: bearer-authenticated, deduplicated (`external_event_id`), stale events ignored.
+- Schema changes: `supabase/sql/` + `tests/support/supabase-mock.ts`; Brevo / Airtable
+  contracts: `tests/support/integrations-mock.ts`. Tests and e2e use the mocks only; real
+  writes or emails need explicit authorization each time.
+- Airtable field types cannot be changed through the API: `npm run airtable:schema-check`
+  reports them; fixes are manual (never delete / rename / duplicate fields).

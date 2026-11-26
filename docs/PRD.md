@@ -368,3 +368,28 @@ English on both home pages), `utm` (first-touch UTM of the session), the request
   enforces the SQL schema) and e2e §2b–3 (production server + headless Chrome against a
   local Supabase mock: sign-up, events, update form, newsletter, failures, no secret in
   pages / chunks / logs).
+
+## RAINFOREST RADAR newsletter — P0 (2026-11-26)
+
+Full specification and operations: `docs/newsletter.md`.
+
+- **One newsletter, one table.** Every entry point (the `#newsletter` section on the IT / EN
+  home, the download and embed sign-ups, the update request) subscribes to RAINFOREST RADAR
+  in `public.newsletter_subscribers` (`newsletter_name = RAINFOREST RADAR`). Consent is
+  mandatory in the dedicated form, optional elsewhere (never blocking the service).
+- **Double opt-in.** PENDING until a verified confirmation: signed `redirectionUrl` of the
+  Brevo double opt-in + Brevo contact-list check. "Check your inbox" only when Brevo accepted
+  the request. Welcome email once per confirmed cycle, in the subscriber's language.
+- **History.** `newsletter_consent_events` (append-only): every consent with the text shown,
+  versions, privacy acknowledgment and provenance; every opt-in step, revocation and ignored
+  event. The original consent is never overwritten.
+- **No reactivation.** UNSUBSCRIBED / BLOCKED never return to SUBSCRIBED without a new
+  explicit consent and a new double opt-in. Duplicate and out-of-order webhook events are
+  ignored. Answers never reveal whether an address is known.
+- **Airtable (one-way).** ISCRITTI ALLA NEWSLETTER only for confirmed subscribers (17 fields,
+  upsert on SUPABASE ID, no typecast); DISISCRITTI DALLA NEWSLETTER on unsubscription, verified
+  before the removal from ISCRITTI. IRF - USERS REQUESTS stays a separate flow (not synced yet).
+  Sync credentials `AIRTABLE_SYNC_*`, never the read-only data base.
+- **Activation gate.** Off until migration 06, Brevo / Airtable ids and secrets are set and
+  the Brevo list-level unsubscription (GOCCE isolation) is verified.
+- Guarded by `tests/newsletter.test.ts` and e2e §3g / §5 (simulated Supabase, Brevo, Airtable).

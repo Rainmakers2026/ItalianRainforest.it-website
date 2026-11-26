@@ -19,7 +19,9 @@ export async function POST(req: Request) {
   if (failed) return failed;
 
   if (data.marketing) {
-    await storeOptional('suggest:newsletter', () => recordNewsletter({ email: data.email, locale: data.locale, sourceForm: 'DATABASE_UPDATE_REQUEST' }));
+    await storeOptional('suggest:newsletter', () =>
+      recordNewsletter({ email: data.email, locale: data.locale, sourceForm: 'DATABASE_UPDATE_REQUEST', requestId: data.requestId, origin: data.origin, utm: data.utm }),
+    );
   }
   if (sinkConfigured()) await deliverLead({ kind: 'suggestion', ...data }).catch((err) => console.error('[suggest] extra sink', (err as Error).message));
   return json({ ok: true });

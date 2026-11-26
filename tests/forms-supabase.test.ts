@@ -286,21 +286,28 @@ describe('explicit newsletter consent → newsletter_subscribers (separate, opti
     expect(db.tables.newsletter_subscribers[0]).toMatchObject({ newsletter_consent: true, newsletter_consent_version: 'draft-2026-11', privacy_notice_version: 'draft-2026-11', locale: 'it' });
   });
 
-  it('an unsubscribed or blocked contact is never reactivated; a subscribed one keeps its status', async () => {
-    const seed = (email: string, status: string) =>
-      db.tables.newsletter_subscribers.push({ id: id(), email, subscription_status: status, source_form: 'NEWSLETTER_SIGNUP', first_name: null, last_name: null, newsletter_consent_at: '2026-01-01T00:00:00.000Z' });
+  it('an unsubscribed or blocked contact is never reactivated; a subscribed one keeps status and original consent', async () => {
+    const seed = (email: string, status: string, confirmed = false) =>
+      db.tables.newsletter_subscribers.push({ id: id(), email, subscription_status: status, double_opt_in_confirmed: confirmed, source_form: 'NEWSLETTER_SIGNUP', first_name: null, last_name: null, newsletter_consent_at: '2026-01-01T00:00:00.000Z', status_changed_at: '2026-01-01T00:00:00.000Z' });
     seed('gone@example.com', 'UNSUBSCRIBED');
     seed('blocked@example.com', 'BLOCKED');
-    seed('fan@example.com', 'SUBSCRIBED');
+    seed('fan@example.com', 'SUBSCRIBED', true);
     await call(signup, '/api/signup', signupBody({ marketing: true, email: 'Gone@Example.com' }));
     await call(suggest, '/api/suggest', suggestBody({ marketing: true, email: 'blocked@example.com' }));
     await call(signup, '/api/signup', signupBody({ marketing: true, email: 'fan@example.com' }));
     const by = (e: string) => db.tables.newsletter_subscribers.find((r) => r.email === e)!;
+    const ev = (e: string) => db.tables.newsletter_consent_events.filter((x) => x.subscriber_id === by(e).id).map((x) => x.event_type);
     expect(db.tables.newsletter_subscribers).toHaveLength(3);
-    expect(by('gone@example.com')).toMatchObject({ subscription_status: 'UNSUBSCRIBED', newsletter_consent_at: '2026-01-01T00:00:00.000Z', first_name: null });
+    // Explicit new consent of an unsubscribed contact = a voluntary re-subscription REQUEST:
+    // still UNSUBSCRIBED until a new double opt-in; the original consent is kept.
+    expect(by('gone@example.com')).toMatchObject({ subscription_status: 'UNSUBSCRIBED', newsletter_consent_at: '2026-01-01T00:00:00.000Z' });
+    expect(by('gone@example.com').doi_cycle_id).toBeTruthy();
+    expect(ev('gone@example.com')).toEqual(['RESUBSCRIBE_REQUESTED']);
     expect(by('blocked@example.com')).toMatchObject({ subscription_status: 'BLOCKED', newsletter_consent_at: '2026-01-01T00:00:00.000Z' });
-    expect(by('fan@example.com')).toMatchObject({ subscription_status: 'SUBSCRIBED', first_name: 'Ada' });
-    expect(by('fan@example.com').newsletter_consent_at).not.toBe('2026-01-01T00:00:00.000Z');
+    expect(by('blocked@example.com').doi_cycle_id).toBeFalsy();
+    expect(ev('blocked@example.com')).toEqual(['BLOCKED_ATTEMPT']);
+    expect(by('fan@example.com')).toMatchObject({ subscription_status: 'SUBSCRIBED', first_name: 'Ada', newsletter_consent_at: '2026-01-01T00:00:00.000Z' });
+    expect(ev('fan@example.com')).toEqual(['CONSENT_GIVEN']);
     // The registrations themselves are stored in every case.
     expect(db.tables.download_registrations).toHaveLength(2);
   });

@@ -14,6 +14,7 @@ import { Faq } from '@/components/sections/Faq';
 import { ForWhom } from '@/components/sections/ForWhom';
 import { Hero } from '@/components/sections/Hero';
 import { How } from '@/components/sections/How';
+import { Newsletter } from '@/components/sections/Newsletter';
 import { Infographic } from '@/components/sections/Infographic';
 import { Partners } from '@/components/sections/Partners';
 import { Proof } from '@/components/sections/Proof';
@@ -117,6 +118,7 @@ export default async function Home({ params }: PageProps<'/[locale]'>) {
         />
         <Proof t={t.proof} locale={locale} />
         <Contact t={t.contact} />
+        <Newsletter t={t.newsletter} lead={t.lead} locale={locale} />
       </main>
       <Footer locale={locale} t={t.footer} />
       <RevealObserver />

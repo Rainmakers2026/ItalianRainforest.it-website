@@ -99,6 +99,24 @@ export const DownloadRequestSchema = z.object({
   registrationId: z.uuid().optional(),
 });
 
+/**
+ * POST /api/newsletter — the dedicated RAINFOREST RADAR form. Both checkboxes are
+ * mandatory here (privacy acknowledgment + newsletter consent), unlike the optional
+ * newsletter box of the other forms.
+ */
+export const NewsletterSignupSchema = z.object({
+  firstName: personName,
+  lastName: personName,
+  email: emailSchema,
+  privacy: z.literal(true),
+  newsletter: z.literal(true),
+  locale: z.enum(['it', 'en']),
+  utm,
+  ...tracking,
+  company_url: z.string().max(500).optional().default(''),
+  elapsed: z.number().int().min(0),
+});
+
 export type Lead =
   | ({ kind: 'signup' } & z.infer<typeof SignupSchema>)
   | ({ kind: 'contact_request' } & z.infer<typeof ContactRequestSchema>)

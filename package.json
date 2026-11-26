@@ -12,6 +12,7 @@
     "test": "vitest run",
     "test:e2e": "node --import ./scripts/register-ts.mjs scripts/e2e.mts",
     "check:airtable-readonly": "node scripts/check-airtable-readonly.mjs",
+    "airtable:schema-check": "node --conditions=react-server --import ./scripts/register-ts.mjs scripts/airtable-schema-check.mts",
     "geo:build": "node scripts/build-geo.mjs",
     "prebuild": "node scripts/check-airtable-readonly.mjs && node scripts/copy-vendor.mjs",
     "postinstall": "node scripts/copy-vendor.mjs",

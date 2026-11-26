@@ -32,6 +32,9 @@ export async function POST(req: Request) {
           lastName: data.lastName,
           locale: data.locale,
           sourceForm: data.reason === 'embed' ? 'EMBED_REQUEST' : 'DOWNLOAD_REGISTRATION',
+          requestId: data.requestId,
+          origin: data.origin,
+          utm: data.utm,
         }),
       );
     }

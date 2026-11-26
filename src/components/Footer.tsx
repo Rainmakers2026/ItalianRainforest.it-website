@@ -14,6 +14,7 @@ export function Footer({ locale, t }: { locale: Locale; t: Dictionary['footer'] 
     ['#partners', t.nav.partners],
     ['#faq', t.nav.faq],
     ['#contacts', t.contacts],
+    ['#newsletter', t.nav.newsletter],
   ] as const;
   return (
     <footer className="border-t border-line bg-white text-muted">

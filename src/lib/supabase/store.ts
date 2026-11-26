@@ -2,6 +2,7 @@ import 'server-only';
 import type { z } from 'zod';
 import type { DownloadReason, DownloadRequestSchema, SignupSchema, SuggestionSchema } from '../leads';
 import { json } from '../leads';
+import { subscribe, type SubscribeInput } from '../newsletter/service';
 import { getSupabase, supabaseConfigured } from './server';
 
 /**
@@ -38,9 +39,6 @@ export class StoreError extends Error {
 /** Version of the privacy notice the visitor accepted. Required: no default in code. */
 function privacyVersion(): string | null {
   return process.env.PRIVACY_POLICY_VERSION?.trim() || null;
-}
-function newsletterVersion(): string | null {
-  return process.env.NEWSLETTER_CONSENT_VERSION?.trim() || privacyVersion();
 }
 
 /** Supabase can store a submission: URL, service key and privacy-notice version are set. */
@@ -136,53 +134,21 @@ export async function recordSuggestion(s: Suggestion): Promise<void> {
 }
 
 export type NewsletterSource = 'EMBED_REQUEST' | 'DOWNLOAD_REGISTRATION' | 'DATABASE_UPDATE_REQUEST';
-export type NewsletterOutcome = 'created' | 'refreshed' | 'unchanged';
 
 /**
- * Explicit, optional newsletter consent. A new email → PENDING subscriber (double opt-in
- * happens later, outside the site). An existing email: PENDING / SUBSCRIBED → consent
- * refreshed (status untouched); UNSUBSCRIBED / BLOCKED → nothing is changed, never
- * reactivated.
+ * Explicit, optional RAINFOREST RADAR consent from the other forms (download, embed,
+ * update request): the same subscription lifecycle as the dedicated form
+ * (src/lib/newsletter/service.ts) — PENDING until a double opt-in, never a reactivation,
+ * the original consent kept, every consent recorded in the history.
  */
-export async function recordNewsletter(n: { email: string; firstName?: string; lastName?: string; locale: 'it' | 'en'; sourceForm: NewsletterSource }): Promise<NewsletterOutcome> {
-  const sb = getSupabase();
-  const email = normEmail(n.email);
-  const consent = { newsletter_consent: true, newsletter_consent_version: newsletterVersion()!, privacy_notice_version: privacyVersion()! };
-  const { error } = await sb.from(TABLES.newsletter).insert({
-    email,
-    first_name: n.firstName || null,
-    last_name: n.lastName || null,
-    locale: n.locale,
-    source_form: n.sourceForm,
-    subscription_status: 'PENDING',
-    ...consent,
-  });
-  if (!error) return 'created';
-  if (error.code !== '23505') throw new StoreError(TABLES.newsletter, error.code ?? '');
-
-  // Already known (unique on lower(trim(email))).
-  const found = await sb.from(TABLES.newsletter).select('id, subscription_status, first_name, last_name').eq('email', email).limit(1);
-  if (found.error) throw new StoreError(TABLES.newsletter, found.error.code ?? '');
-  const row = found.data?.[0] as { id: string; subscription_status: string; first_name: string | null; last_name: string | null } | undefined;
-  if (!row || row.subscription_status === 'UNSUBSCRIBED' || row.subscription_status === 'BLOCKED') return 'unchanged';
-  const now = new Date().toISOString();
-  const { error: upd } = await sb
-    .from(TABLES.newsletter)
-    .update({
-      ...consent,
-      newsletter_consent_at: now,
-      updated_at: now,
-      ...(!row.first_name && n.firstName ? { first_name: n.firstName } : {}),
-      ...(!row.last_name && n.lastName ? { last_name: n.lastName } : {}),
-    })
-    .eq('id', row.id)
-    // Guard against a concurrent unsubscribe: only active / pending contacts are refreshed.
-    .in('subscription_status', ['PENDING', 'SUBSCRIBED']);
-  if (upd) throw new StoreError(TABLES.newsletter, upd.code ?? '');
-  return 'refreshed';
+export async function recordNewsletter(n: Omit<SubscribeInput, 'sourceForm' | 'privacyAcknowledged'> & { sourceForm: NewsletterSource }) {
+  // The other forms require the privacy acknowledgment ("Ho letto l'informativa…").
+  return subscribe({ ...n, privacyAcknowledged: true }, 'optional');
 }
 
-const describe = (err: unknown) => (err instanceof StoreError ? err.message : `unexpected ${(err as Error)?.name ?? 'error'}`);
+/** Known error messages carry only the service, the table and a code — never a value. */
+const describe = (err: unknown) =>
+  err instanceof StoreError || (err instanceof Error && /^(Supabase|Brevo|Airtable) /.test(err.message)) ? (err as Error).message : `unexpected ${(err as Error)?.name ?? 'error'}`;
 
 /**
  * Mandatory write of a submission. Returns null when stored, or the error response:
