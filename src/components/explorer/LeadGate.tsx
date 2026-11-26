@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { getUtm, track } from '@/lib/analytics';
 import { saveLeadProfile } from '@/lib/lead-profile';
+import { newRequestId, originOf, pageLocale } from '@/lib/submission';
 import { ConsentFields, EMAIL_RE, errorMessage, FieldError, postJson, readCommon, useElapsed, type FormErrors } from '../forms/FormBits';
 import { Dialog, useLingering } from '../ui/Dialog';
 import { Icon } from '../ui/Icon';
@@ -48,9 +49,11 @@ function Input({ name, label, hint, error, required = true, className = '' }: { 
 }
 
 /**
- * One-time sign-up (pay-per-data) shown before the first download (CSV, JSON, PDF,
- * PNG) or embed code. Browsing and filtering map and database stay free. On success the profile is kept in this browser and the pending action
- * (the download, the reveal) runs immediately.
+ * One-time sign-up (pay-per-data) shown before the first download (CSV, Excel, map PNG /
+ * PDF) or embed code. Browsing and filtering map and database stay free. Stored in
+ * Supabase (/api/signup, REGISTRATION) with its provenance; on success the profile is kept
+ * in this browser and the pending action (the download, the copy) runs immediately and is
+ * recorded as an EVENT.
  */
 export function LeadGate() {
   const { leadGate, completeLead, t } = useExplorer();
@@ -63,11 +66,13 @@ export function LeadGate() {
 }
 
 function GateBody({ reason }: { reason: LeadReason }) {
-  const { completeLead, t, locale } = useExplorer();
+  const { completeLead, t, locale, leadContext } = useExplorer();
   const [errors, setErrors] = useState<FormErrors>({});
   const [busy, setBusy] = useState(false);
   const elapsed = useElapsed();
   const formRef = useRef<HTMLFormElement>(null);
+  // One sign-up = one id: a retry after an error never creates a second registration.
+  const requestId = useRef('');
 
   useEffect(() => {
     elapsed.reset();
@@ -96,12 +101,19 @@ function GateBody({ reason }: { reason: LeadReason }) {
       email,
       company: '',
     };
+    requestId.current ||= newRequestId();
+    const ctx = leadContext ?? { origin: originOf(reason === 'embed' ? 'share' : 'explorer', reason) };
     const res = await postJson('/api/signup', {
       ...profile,
       consent: true,
       marketing,
       reason,
-      locale,
+      entry: 'registration',
+      requestId: requestId.current,
+      origin: ctx.origin,
+      ...(reason === 'embed' ? { embedKind: ctx.embedKind ?? 'map', embedLocale: ctx.embedLocale ?? locale } : {}),
+      // The real page language (the explorer itself is in English on both home pages).
+      locale: pageLocale(),
       utm: getUtm(),
       company_url,
       elapsed: elapsed.get(),
@@ -109,8 +121,9 @@ function GateBody({ reason }: { reason: LeadReason }) {
     setBusy(false);
     if (!res.ok) return setErrors({ form: errorMessage(res.status, t.lead) });
     track('lead_signup', { reason });
-    saveLeadProfile(profile);
-    completeLead({ ...profile, at: new Date().toISOString() });
+    const saved = { ...profile, registrationId: requestId.current };
+    saveLeadProfile(saved);
+    completeLead({ ...saved, at: new Date().toISOString() });
   };
 
   return (

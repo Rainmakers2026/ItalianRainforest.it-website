@@ -400,6 +400,7 @@ const en: Dictionary = {
     unlock: 'Get the code',
     locked: 'Sign up once to unlock the embed code.',
     copied: 'Copied!',
+    copyError: 'The code could not be copied right now. Please try again in a moment.',
     preview: 'Open preview',
     language: 'Embed language',
     codeLabel: 'Embed code',

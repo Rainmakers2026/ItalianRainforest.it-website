@@ -398,6 +398,7 @@ const it = {
     unlock: 'Ottieni il codice',
     locked: 'Registrati una sola volta per sbloccare il codice di embed.',
     copied: 'Copiato!',
+    copyError: 'Al momento non è stato possibile copiare il codice. Riprova tra poco.',
     preview: 'Apri anteprima',
     language: 'Lingua dell’embed',
     codeLabel: 'Codice di incorporamento',

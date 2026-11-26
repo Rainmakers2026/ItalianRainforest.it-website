@@ -26,7 +26,8 @@ npm start
 | Script | What it does |
 |---|---|
 | `dev`, `build`, `start` | Next.js |
-| `test` | Vitest: read-only policy, sanitisation, export, query state |
+| `test` | Vitest, unit + integration: read-only policy, public data rules, downloads, export pipeline, API route handlers, one public dataset |
+| `test:e2e` | After `build`: production server, HTTP + headless Chrome checks of pages, APIs, CSV / XLSX downloads and the download dialog (`scripts/e2e.mts`) |
 | `lint`, `typecheck`, `format` | ESLint, `tsc --noEmit`, Prettier |
 | `check:airtable-readonly` | Static guard: fails on any Airtable write path |
 | `data:import [csv] [logo-dir]` | Imports the IRF database export (CSV) into `data/snapshot/irf-records.json`; with a logo folder (one sub-folder per type, `<Company>.webp`) also rebuilds `public/logos/players`. Writes `docs/data-quality.md` |
@@ -42,9 +43,12 @@ npm start
 src/app/[locale]/page.tsx        single page (IT/EN), SSG + ISR 1h
 src/app/[locale]/embed/[kind]    /it|en/embed/map and /embed/database
 src/app/api/players              public sanitised dataset
-src/app/api/contact-request      gated contact flow (lead)
-src/app/api/download             filtered CSV/JSON (light email gate)
-src/app/api/suggest              "Suggest an update" (moderation sink)
+src/app/api/contact-request      contact request (lead; never returns contact details)
+src/app/api/download             complete / filtered database, CSV and XLSX in the master structure (light email gate)
+src/app/api/suggest              "Suggest an update" → Supabase database_update_requests (moderation)
+src/app/api/signup               one-time sign-up + gated events → Supabase
+src/lib/supabase/                server-only Supabase client and form → table mapping
+supabase/sql/                    SQL for the Supabase tables (run in the SQL Editor)
 src/lib/data/                    schema, taxonomy, normalisation, READ-ONLY providers
 src/lib/filters.ts               shared query state (URL ⇄ filters)
 src/lib/i18n/                    dictionaries IT/EN
@@ -64,8 +68,8 @@ docs/                            audit, data schema, performance, final audit
 Positions come from the database addresses, geocoded with OpenStreetMap Nominatim. An address is used only when its province agrees with the REGION column; otherwise the city (or, failing that, the region) is used and the profile says the position is approximate. Players without a region are listed but not on the map. See [docs/data-quality.md](docs/data-quality.md).
 
 ## Leads & analytics
-- **Pay-per-data:** browsing and filtering are free; the first download (CSV, JSON, PDF, map PNG/PDF) or embed code asks once for name, surname and email. The profile stays in the browser (`localStorage`), so later visits don't ask again; the sign-up goes to the Airtable approval queue and/or `LEAD_WEBHOOK_URL`.
-- Other forms (suggestions, contact requests) go to `LEAD_WEBHOOK_URL`.
+- **Pay-per-data:** browsing and filtering are free; the first download (CSV, Excel, map PNG/PDF) or embed code asks once for name, surname and email. The profile stays in the browser (`localStorage`), so later visits don't ask again.
+- **Form submissions → Supabase** (system of record, server-side only, `src/lib/supabase/`): sign-ups and every later download / embed copy (`download_registrations`, `sharing_is_caring_registrations`, REGISTRATION vs EVENT), "Suggest an update" (`database_update_requests`), explicit newsletter consent (`newsletter_subscribers`). Nothing is answered as a success unless the record is stored. Needs `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `PRIVACY_POLICY_VERSION` (server env only, see `.env.example`); SQL in [`supabase/sql/`](supabase/sql). `LEAD_WEBHOOK_URL` stays an optional extra destination; contact requests (`/api/contact-request`) are not connected.
 - Rate limiting is in-memory per instance (best effort on serverless). For strict limits plug a shared store (e.g. Upstash Redis) into `rateLimited()` in `src/lib/leads.ts`.
 - Analytics: `NEXT_PUBLIC_ANALYTICS_PROVIDER=plausible|umami|gtm|none`. Events are listed in `src/lib/analytics.ts`; no PII is ever sent.
 

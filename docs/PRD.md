@@ -2,8 +2,13 @@
 
 The product requirements ("Italian Rainforest 2.0", see `docs/audit.md`) are kept by
 Rainmakers. This file holds the requirements that are permanent rules of the codebase.
-In case of conflict with earlier implementations or instructions, "Consolidated public
-data rules" (update 5/6) prevails, then the sections below.
+It consolidates the six P0 updates on public data and downloads (1/6 two download modes,
+2/6 master column structure, 3/6 export pipeline, 4/6 formats and dialog, 5/6 consolidated
+rules, 6/6 validation). In case of conflict with earlier implementations or instructions,
+"Consolidated public data rules" prevails, then the sections below; every earlier,
+incompatible requirement (per-user column choice, JSON / PDF database files, contact
+details returned after a request, SECONDARY TYPE in public aggregations) is superseded.
+Any exposure of a startup or of reserved information is a blocking error for deploy.
 
 ## Consolidated public data rules — P0 (update 5/6, prevailing)
 
@@ -75,8 +80,9 @@ SECONDARY TYPE or description.
 
 ### 3. SECONDARY TYPE is hidden
 Not shown in tables, cards, popups, tooltips, tags, filters, legends, infographic, ring
-chart, search, public APIs or downloads; never used for classification or counts. It stays
-in the master database for internal use.
+chart, search or public APIs; never used for classification, filters, counts or exports.
+In the CSV / XLSX files only its header is present, with completely empty cells (the
+structural exception). It stays in the master database for internal use.
 
 ### 4. MAIN TYPE is the only public classification
 The UI label may read "Player type", but the value comes only from MAIN TYPE. Each player
@@ -128,7 +134,7 @@ automatically.
 ## Public database download — P0 (updates 1/6, 2/6 and 4/6)
 
 Prevails over earlier implementations. Applies to every download entry point (map and
-database, CSV / JSON / PDF and any future format).
+database) and to both data formats, CSV and XLSX, and any future one.
 
 ### 1. Two modes
 - **Complete database** ("Scarica database completo"): every publishable player — the
@@ -187,7 +193,10 @@ JSON and the database PDF table, offered earlier, are replaced by these two form
 map keeps its image exports (PNG, map + list PDF), which are renderings, not data files.
 
 ### 8. "Scarica database" (update 4/6)
-The database section has one "Scarica database" button. It opens a dialog where the user
+The database section has one "Scarica database" button (label from the dictionaries:
+"Scarica database" in Italian, "Download database" in English — the explorer of the home
+pages is shown in English on both locales by an earlier decision, the embeds follow the
+page language). It opens a dialog where the user
 chooses: complete database or filtered results, each showing the number of exportable
 players; CSV or Excel. With active filters the filtered download is the default; with no
 results it is disabled and an informative message is shown. The dialog uses the existing
@@ -249,3 +258,113 @@ The master database is never transmitted to the browser.
 - `tests/export-pipeline.test.ts` — exact STARTUP match, SECONDARY TYPE without effect,
   dedupe, filters, structure, schema validation, importer never writing the master, one
   dataset builder for every consumer.
+
+## Validation — P0 (update 6/6)
+
+Overall validation of updates 1–5. Build, lint, typecheck, unit, integration and end-to-end
+tests must all pass before a push; any exposure of a startup or of reserved information is
+a blocking error for deploy.
+
+| Requirement | Guarded by |
+|---|---|
+| Complete and filtered download working | `download-scope`, `api-integration`, e2e §2–3 |
+| All filters applied at once | `download-scope`, `api-integration` (9 combinations), e2e §2–3 |
+| Filtered results = exported records | `download-scope`, `api-integration`, e2e §2 (HTTP) and §3 (dialog count = file rows) |
+| Export independent of pagination | `download-scope`, `api-integration` and e2e (page / pageSize ignored) |
+| Master schema = exported schema | `export-pipeline`, `api-integration`, e2e (CSV and XLSX headers) |
+| Reserved columns present, cells completely empty | `public-rules`, `download-formats`, `api-integration`, e2e |
+| No reserved information in files and metadata | `public-rules`, `api-integration` (XLSX parts, no docProps, fixed zip dates), e2e |
+| STARTUP excluded | `public-data`, `export-pipeline`, `api-integration` (live update), e2e (no master startup on any surface) |
+| Publishable VENTURE BUILDER/STARTUP STUDIO included | `public-data`, `api-integration`, e2e |
+| No duplicates | `export-pipeline`, `api-integration`, e2e |
+| MAIN TYPE the only public classification | `public-data`, `api-integration`, e2e |
+| No reserved field in the public APIs | `public-rules`, `api-integration` (`/api/players`, `/api/download`, `/api/contact-request`), e2e (pages, RSC payload, JS chunks) |
+| CSV ↔ XLSX consistency | `download-formats`, `api-integration`, e2e (cell by cell) |
+| New columns handled safely | `public-rules`, `api-integration` (live source with new columns) |
+| CSV / formula injection | `public-rules`, `api-integration` (live record `=HYPERLINK(…)`) |
+| Rules persist after Rainmakers OS updates | `api-integration` (simulated Airtable update: new startups, columns, reserved values, duplicates, INACTIVE) |
+| Master integrity | `public-rules`, `export-pipeline`, e2e (`data/source` byte-identical) |
+| Same public dataset for every component | `single-dataset` (`getDataset()` = `buildPublicDataset()`, every surface, no component filtering, infographic build) |
+
+**Commands.** `npm run lint`, `npm run typecheck`, `npm test` (unit + integration, vitest),
+`npm run build` then `npm run test:e2e` (`scripts/e2e.mts`: production server, real HTTP,
+headless Chrome, real downloads through the "Scarica database" dialog with the
+production default of email-gated downloads; test leads are never sent anywhere).
+
+## Form submissions → Supabase — P0 (approved 2026-11-26)
+
+Supabase (project `qwdajoztlpisrzieziup`) is the system of record of every public form.
+Airtable and Brevo integrations are out of scope for now (the `airtable_*` / `brevo_*`
+columns stay unused).
+
+### 1. Mapping
+
+| Form / action (IT + EN, every place it appears) | Endpoint | Table | Row |
+|---|---|---|---|
+| One-time sign-up before the first download (explorer map and database on `/it` and `/en`, embed pages) | `/api/signup`, download reason | `download_registrations` | `REGISTRATION` |
+| Every download of a signed-up visitor: CSV, Excel, complete database, map PDF list | `/api/download` (POST) | `download_registrations` | `EVENT` |
+| Map PNG (drawn in the browser) | `/api/signup`, `entry: "event"` | `download_registrations` | `EVENT` |
+| One-time sign-up before the first embed code ("Sharing is caring", map / database) | `/api/signup`, reason `embed` | `sharing_is_caring_registrations` | `REGISTRATION` |
+| Every embed code copy of a signed-up visitor | `/api/signup`, `entry: "event"` | `sharing_is_caring_registrations` | `EVENT` |
+| "Segnala un aggiornamento / Suggest an update" (home `#update`, opened also from the Contact section) | `/api/suggest` | `database_update_requests` | `review_status PENDING` |
+| Newsletter checkbox ticked in one of the forms above (explicit, optional, separate) | same endpoints | `newsletter_subscribers` | `source_form` = `DOWNLOAD_REGISTRATION` / `EMBED_REQUEST` / `DATABASE_UPDATE_REQUEST` |
+
+Not connected: `/api/contact-request` (no form uses it). No newsletter form exists (the
+footer "Scrivici / Write to us" is a mailto link). `embed_requests` is dropped (replaced by
+`sharing_is_caring_registrations`, verified empty and without dependencies).
+
+### 2. Provenance
+
+Every row stores the real provenance: `page_path` (the page, e.g. `/it`, `/en/embed/map`),
+`page_section` (`map`, `database`, `share_map`, `share_database`, `update`), `cta` (the
+button or menu item, e.g. `dialog_all_csv`, `toolbar_filtered_map_png`, `copy_button`,
+`contact_correction`), `locale` = the language of the page (not of the explorer, which is in
+English on both home pages), `utm` (first-touch UTM of the session), the request type
+(`request_type` / `embed_kind`) and, for update requests, the change type (`change_type`
+`NEW` / `CORRECTION` / `OTHER`).
+
+### 3. Registrations, events, no duplicates
+
+- The sign-up is a `REGISTRATION`; each later gated action is an `EVENT` carrying
+  `registration_id` = the `request_id` of the sign-up (kept in the visitor's browser
+  profile). The first gated action therefore produces one REGISTRATION and one EVENT.
+- Every row has a browser-generated `request_id` (UUID, unique): a retry or a double
+  submission of the same action is ignored by the database (`ON CONFLICT DO NOTHING`).
+  Embed copies are serialised in the browser (one in flight).
+- Later events never imply a newsletter consent (`newsletter_consent = false`).
+
+### 4. Privacy and security
+
+- Privacy consent is mandatory and stored with `privacy_policy_version`
+  (`PRIVACY_POLICY_VERSION`; `draft-2026-11` is for tests and preview only, until the
+  notice is legally validated — no version is hardcoded). The newsletter consent is
+  separate and optional (`NEWSLETTER_CONSENT_VERSION`, defaults to the privacy version).
+- Newsletter: a new email → `PENDING` (double opt-in happens later, outside the site); an
+  existing `PENDING` / `SUBSCRIBED` contact → consent refreshed, status untouched; an
+  `UNSUBSCRIBED` / `BLOCKED` contact → nothing changes, never reactivated.
+- Server-side validation (zod: email normalised, names, lengths, enums, UUIDs, provenance
+  slugs and path), same-origin JSON only, honeypot + time-to-submit (bots get a fake
+  success and nothing is stored), per-client rate limits (sign-up 5 / 10 min, events 30,
+  downloads 20, suggestions 5).
+- **No success without the record.** The mandatory write (registration, event, update
+  request) happens before the answer; if it fails — or Supabase is not configured in
+  production — the API answers 503 (no file for downloads, the copy is not done for
+  embeds, the form shows its error). Only the optional newsletter write may fail without
+  failing the submission (logged).
+- RLS stays on with no policy on every table: `anon` / `authenticated` have no
+  privilege; only `service_role` (server) writes. The key lives in server env only
+  (`SUPABASE_SERVICE_ROLE_KEY`, never `NEXT_PUBLIC_`), the client module is `server-only`;
+  logs carry the table and the Postgres code only — never a key or a submitted value.
+
+### 5. Implementation (codebase)
+
+- `supabase/sql/01–05` — the schema (run in the Supabase SQL Editor; the MCP connection is
+  read-only).
+- `src/lib/supabase/server.ts` (client), `src/lib/supabase/store.ts` (mapping, idempotent
+  inserts, newsletter rules, `storeOrFail` / `storeOptional`), `src/lib/leads.ts`
+  (validation), `src/lib/submission.ts` (browser: request id, page language, provenance,
+  events).
+- Guarded by `tests/forms-supabase.test.ts` (route handlers on a simulated Supabase that
+  enforces the SQL schema) and e2e §2b–3 (production server + headless Chrome against a
+  local Supabase mock: sign-up, events, update form, newsletter, failures, no secret in
+  pages / chunks / logs).

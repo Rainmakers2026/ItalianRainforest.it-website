@@ -11,6 +11,7 @@ import {
   rateLimited,
   sinkConfigured,
 } from '@/lib/leads';
+import { recordDownload, storeOrFail } from '@/lib/supabase/store';
 import { toXlsx, XLSX_MIME } from '@/lib/xlsx';
 
 /**
@@ -52,11 +53,15 @@ export async function POST(req: Request) {
   const parsed = DownloadRequestSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return json({ error: 'invalid', fields: parsed.error.issues.map((i) => i.path.join('.')) }, 400);
   const data = parsed.data;
-  if (!looksAutomated(data) && sinkConfigured()) {
-    // Recording the lead must not block access to open data.
-    await deliverLead({ kind: 'download', ...data }).catch((err) => console.error('[download] lead', (err as Error).message));
-  }
-  return buildFile(data.query, data.format);
+  const file = await buildFile(data.query, data.format);
+  // Bots get the open data but are not recorded.
+  if (looksAutomated(data) || !file.ok) return file;
+  // Every download of a signed-up visitor is recorded (download_registrations, EVENT)
+  // before the file is handed over: no file when the record could not be saved.
+  const failed = await storeOrFail('download', () => recordDownload(data, Number(file.headers.get('x-row-count'))));
+  if (failed) return failed;
+  if (sinkConfigured()) await deliverLead({ kind: 'download', ...data }).catch((err) => console.error('[download] extra sink', (err as Error).message));
+  return file;
 }
 
 export async function GET(req: Request) {

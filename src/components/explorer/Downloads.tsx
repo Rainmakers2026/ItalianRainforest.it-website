@@ -8,6 +8,7 @@ import { formatDate, formatNumber } from '@/lib/i18n/config';
 import { fmt } from '@/lib/i18n';
 import type { LeadProfile } from '@/lib/lead-profile';
 import { SITE } from '@/lib/site';
+import { newRequestId, originOf, pageLocale, recordGatedEvent, type Origin } from '@/lib/submission';
 import { Dialog } from '../ui/Dialog';
 import { Icon, type IconName } from '../ui/Icon';
 import { useExplorer, type LeadReason } from './ExplorerProvider';
@@ -38,7 +39,7 @@ const today = () => new Date().toISOString().slice(0, 10);
  * dataset with the column structure of the Rainmakers OS master (CLAUDE.md "Downloads").
  * Browsing is free; the first download asks for the one-time sign-up.
  */
-export function useDownloads() {
+export function useDownloads(section: 'map' | 'database') {
   const { t, filters, results, locale, downloadRequiresEmail, requireLead, mapRef, updatedAt } = useExplorer();
   const [status, setStatus] = useState<Status>('idle');
 
@@ -49,14 +50,17 @@ export function useDownloads() {
     return sp;
   };
 
-  type Run = (p: LeadProfile | null) => Promise<void>;
-  /** Sign-up (when required) → download. */
-  const gate = (reason: LeadReason, run: Run) => {
+  /** One user action: its reason, provenance and idempotency key (shared by sign-up → event). */
+  type Action = { reason: LeadReason; origin: Origin; requestId: string };
+  type Run = (p: LeadProfile | null, a: Action) => Promise<void>;
+  /** Sign-up (when required) → download. Each download of a signed-up visitor is recorded. */
+  const gate = (reason: LeadReason, cta: string, run: Run) => {
     track('database_download_click', { reason, rows: results.length });
+    const action: Action = { reason, origin: originOf(section, cta), requestId: newRequestId() };
     const go = async (p: LeadProfile | null) => {
       setStatus('busy');
       try {
-        await run(p);
+        await run(p, action);
         setStatus('done');
         setTimeout(() => setStatus('idle'), 3500);
       } catch {
@@ -64,11 +68,11 @@ export function useDownloads() {
       }
     };
     if (!downloadRequiresEmail) return void go(null);
-    requireLead(reason, (p) => void go(p));
+    requireLead(reason, (p) => void go(p), { origin: action.origin });
   };
 
   /** The file (CSV / XLSX) or, for "table", its rows in the master structure, from the server. */
-  const request = async (format: Format, all: boolean, p: LeadProfile | null) => {
+  const request = async (format: Format, all: boolean, p: LeadProfile | null, a: Action) => {
     const sp = query(all);
     const res = p
       ? await fetch('/api/download', {
@@ -78,12 +82,17 @@ export function useDownloads() {
             email: p.email,
             firstName: p.firstName,
             lastName: p.lastName,
-            referent: p.referent,
-            company: p.company,
+            ...(p.referent ? { referent: p.referent } : {}),
+            ...(p.registrationId ? { registrationId: p.registrationId } : {}),
+            company: p.company ?? '',
             consent: true,
             format,
             query: sp.toString(),
-            locale,
+            reason: a.reason === 'embed' ? undefined : a.reason,
+            requestId: a.requestId,
+            origin: a.origin,
+            // The real page language (the explorer is in English on both home pages).
+            locale: pageLocale(),
             utm: getUtm(),
             company_url: '',
             elapsed: Math.round(performance.now()),
@@ -94,9 +103,9 @@ export function useDownloads() {
     return res;
   };
 
-  const data = (format: FileFormat, all = false, reason: LeadReason = format === 'csv' ? 'download_csv' : 'download_xlsx') =>
-    gate(all ? 'download_bulk' : reason, async (p) => {
-      const res = await request(format, all, p);
+  const data = (format: FileFormat, { all = false, reason, cta }: { all?: boolean; reason?: LeadReason; cta: string }) =>
+    gate(all ? 'download_bulk' : (reason ?? (format === 'csv' ? 'download_csv' : 'download_xlsx')), cta, async (p, a) => {
+      const res = await request(format, all, p, a);
       const name = /filename="([^"]+)"/.exec(res.headers.get('content-disposition') ?? '')?.[1] ?? `Italian_Rainforest_Database.${format}`;
       saveBlob(await res.blob(), name);
       track('database_download_success', { format, all, rows: Number(res.headers.get('x-row-count') ?? 0) });
@@ -136,18 +145,22 @@ export function useDownloads() {
     });
   };
 
-  const mapPng = () =>
-    gate('map_png', async () => {
-      saveBlob(await renderMap(), `italian-rainforest-map-${today()}.png`);
+  const mapPng = (cta: string) =>
+    gate('map_png', cta, async (p, a) => {
+      const png = await renderMap();
+      // Drawn in the browser: the download is recorded before the file is handed over.
+      if (p) await recordGatedEvent(p, { reason: 'map_png', origin: a.origin, requestId: a.requestId });
+      saveBlob(png, `italian-rainforest-map-${today()}.png`);
       track('database_download_success', { format: 'png', rows: results.length });
     });
 
-  const mapPdf = () =>
-    gate('map_pdf', async (p) => {
+  const mapPdf = (cta: string) =>
+    gate('map_pdf', cta, async (p, a) => {
       const [png, { exportMapPdf }, rows] = await Promise.all([
         renderMap(),
         import('./pdfExport'),
-        request('table', false, p).then((r) => r.json() as Promise<PdfTable>),
+        // Recorded by /api/download (EVENT, MAP_PDF) when it returns the list.
+        request('table', false, p, a).then((r) => r.json() as Promise<PdfTable>),
       ]);
       const meta: PdfMeta = {
         title: `Italian Rainforest — ${fmt(t.explorer.results, { n: formatNumber(rows.rows.length, locale) })}`,
@@ -261,18 +274,20 @@ function DownloadMenu({
 /** Map: the filtered results (CSV, Excel, the map itself as PNG / PDF) and the complete database. */
 export function MapDownloads({ compact = false }: { compact?: boolean }) {
   const { t, results, players, state, locale } = useExplorer();
-  const d = useDownloads();
+  const d = useDownloads('map');
   const busy = state !== 'ready' || d.status === 'busy';
   const f = t.database.formats;
+  // CTA = which menu (compact toolbar or panel) and which item.
+  const at = compact ? 'toolbar_' : 'panel_';
   const filtered: MenuItem[] = [
-    { key: 'csv', label: f.csv, hint: f.csvHint, icon: 'download', run: () => d.data('csv', false, 'map_csv') },
-    { key: 'xlsx', label: f.xlsx, hint: f.xlsxHint, icon: 'download', run: () => d.data('xlsx') },
-    { key: 'map-png', label: f.mapPng, hint: f.mapPngHint, icon: 'map', run: d.mapPng },
-    { key: 'map-pdf', label: f.mapPdf, hint: f.mapPdfHint, icon: 'map', run: d.mapPdf },
+    { key: 'csv', label: f.csv, hint: f.csvHint, icon: 'download', run: () => d.data('csv', { reason: 'map_csv', cta: `${at}filtered_csv` }) },
+    { key: 'xlsx', label: f.xlsx, hint: f.xlsxHint, icon: 'download', run: () => d.data('xlsx', { cta: `${at}filtered_xlsx` }) },
+    { key: 'map-png', label: f.mapPng, hint: f.mapPngHint, icon: 'map', run: () => d.mapPng(`${at}filtered_map_png`) },
+    { key: 'map-pdf', label: f.mapPdf, hint: f.mapPdfHint, icon: 'map', run: () => d.mapPdf(`${at}filtered_map_pdf`) },
   ];
   const full: MenuItem[] = [
-    { key: 'csv', label: f.csv, hint: f.csvHint, icon: 'download', run: () => d.data('csv', true) },
-    { key: 'xlsx', label: f.xlsx, hint: f.xlsxHint, icon: 'download', run: () => d.data('xlsx', true) },
+    { key: 'csv', label: f.csv, hint: f.csvHint, icon: 'download', run: () => d.data('csv', { all: true, cta: `${at}full_csv` }) },
+    { key: 'xlsx', label: f.xlsx, hint: f.xlsxHint, icon: 'download', run: () => d.data('xlsx', { all: true, cta: `${at}full_xlsx` }) },
   ];
   return (
     <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label={t.database.download}>
@@ -344,7 +359,7 @@ function Choice({
  */
 export function DatabaseDownload() {
   const { t, filters, results, players, state, locale } = useExplorer();
-  const d = useDownloads();
+  const d = useDownloads('database');
   const c = t.database.downloadDialog;
   const [open, setOpen] = useState(false);
   const [scope, setScope] = useState<Scope>('all');
@@ -441,7 +456,7 @@ export function DatabaseDownload() {
             disabled={busy || count === 0}
             onClick={() => {
               setOpen(false);
-              d.data(format, chosen === 'all');
+              d.data(format, { all: chosen === 'all', cta: `dialog_${chosen}_${format}` });
             }}
           >
             <Icon name="download" size={16} />

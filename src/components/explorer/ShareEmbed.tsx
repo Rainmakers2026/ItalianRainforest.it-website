@@ -2,7 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
-import { useLeadProfile } from '@/lib/lead-profile';
+import { useLeadProfile, type LeadProfile } from '@/lib/lead-profile';
+import { newRequestId, originOf, recordGatedEvent, type Origin } from '@/lib/submission';
 import { LOCALES, type Locale } from '@/lib/i18n/config';
 import { SITE } from '@/lib/site';
 import { Icon } from '../ui/Icon';
@@ -18,6 +19,8 @@ export function ShareEmbed({ kind }: { kind: 'map' | 'database' }) {
   const unlocked = !!profile;
   const [lang, setLang] = useState<Locale>(locale);
   const [copied, setCopied] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const inFlight = useRef(false);
   const ref = useRef<HTMLDivElement>(null);
   const codeId = useId();
   const path = `/${lang}/embed/${kind}`;
@@ -47,8 +50,24 @@ export function ShareEmbed({ kind }: { kind: 'map' | 'database' }) {
     return () => io.disconnect();
   }, [kind]);
 
-  const copy = () => requireLead('embed', () => void doCopy());
-  const doCopy = async () => {
+  /** Sign-up (first time) → copy. Each copy is recorded (sharing_is_caring_registrations, EVENT). */
+  const copy = (cta: string) => {
+    const ctx = { origin: originOf(`share_${kind}`, cta), embedKind: kind, embedLocale: lang };
+    requireLead('embed', (p) => void doCopy(p, ctx), ctx);
+  };
+  const doCopy = async (p: LeadProfile, ctx: { origin: Origin; embedKind: 'map' | 'database'; embedLocale: Locale }) => {
+    // One copy at a time: a double click never records two events.
+    if (inFlight.current) return;
+    inFlight.current = true;
+    setFailed(false);
+    try {
+      await recordGatedEvent(p, { reason: 'embed', requestId: newRequestId(), ...ctx });
+    } catch {
+      setFailed(true);
+      return;
+    } finally {
+      inFlight.current = false;
+    }
     try {
       await navigator.clipboard.writeText(code);
     } catch {
@@ -97,7 +116,7 @@ export function ShareEmbed({ kind }: { kind: 'map' | 'database' }) {
           readOnly
           value={unlocked ? code : code.replace(/src="[^"]+"/, 'src="https://…"')}
           rows={3}
-          onFocus={(e) => (unlocked ? e.currentTarget.select() : copy())}
+          onFocus={(e) => (unlocked ? e.currentTarget.select() : copy('code_focus'))}
           aria-describedby={unlocked ? undefined : `${codeId}-locked`}
           className={`w-full resize-none rounded-xl bg-deep/70 p-3 font-mono text-[0.75rem] leading-relaxed text-sky ring-1 ring-white/15 ${unlocked ? '' : 'blur-[3px] select-none'}`}
         />
@@ -107,8 +126,13 @@ export function ShareEmbed({ kind }: { kind: 'map' | 'database' }) {
             {t.share.locked}
           </p>
         )}
+        {failed && (
+          <p role="alert" className="mt-2 text-xs font-semibold text-white">
+            {t.share.copyError}
+          </p>
+        )}
         <div className="mt-3 flex flex-wrap gap-2">
-          <button type="button" onClick={copy} className="btn btn-light btn-sm">
+          <button type="button" onClick={() => copy(unlocked ? 'copy_button' : 'unlock_button')} className="btn btn-light btn-sm">
             <Icon name={copied ? 'check' : 'copy'} size={16} />
             <span aria-live="polite">{copied ? t.share.copied : unlocked ? t.share.copy : t.share.unlock}</span>
           </button>

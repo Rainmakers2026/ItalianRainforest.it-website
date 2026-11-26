@@ -7,21 +7,15 @@ import type { CategoryKey } from '@/lib/data/taxonomy';
 import { applyFilters, DEFAULT_FILTERS, parseFilters, serializeFilters, type Filters } from '@/lib/filters';
 import type { Locale } from '@/lib/i18n/config';
 import { clearLeadProfile, getLeadProfile, type LeadProfile } from '@/lib/lead-profile';
+import type { Origin } from '@/lib/submission';
 import type { Map as MLMap } from 'maplibre-gl';
 import type { Dictionary } from '@/lib/i18n';
 
 export type ExplorerStrings = Pick<Dictionary, 'explorer' | 'map' | 'database' | 'download' | 'lead' | 'share' | 'a11y'>;
 type Source = 'map' | 'database';
-export type LeadReason =
-  | 'download_csv'
-  | 'download_xlsx'
-  | 'download_json'
-  | 'download_pdf'
-  | 'download_bulk'
-  | 'map_png'
-  | 'map_pdf'
-  | 'map_csv'
-  | 'embed';
+export type LeadReason = 'download_csv' | 'download_xlsx' | 'download_bulk' | 'map_png' | 'map_pdf' | 'map_csv' | 'embed';
+/** Provenance of a gated action, sent with the sign-up (and the event that follows). */
+export type GateContext = { origin: Origin; embedKind?: 'map' | 'database'; embedLocale?: Locale };
 type LoadState = 'idle' | 'loading' | 'ready' | 'error';
 
 type Ctx = {
@@ -54,9 +48,11 @@ type Ctx = {
   embed: boolean;
   downloadRequiresEmail: boolean;
   /** Runs `action` right away for a signed-up visitor, otherwise after the one-time sign-up. */
-  requireLead: (reason: LeadReason, action: (profile: LeadProfile) => void) => void;
+  requireLead: (reason: LeadReason, action: (profile: LeadProfile) => void, context: GateContext) => void;
   /** Open sign-up gate (null = closed). */
   leadGate: LeadReason | null;
+  /** Provenance of the action that opened the gate. */
+  leadContext: GateContext | null;
   completeLead: (profile: LeadProfile | null) => void;
   /** The MapLibre instance, registered by MapCanvas (used for the PNG export). */
   mapRef: React.RefObject<MLMap | null>;
@@ -111,6 +107,7 @@ export function ExplorerProvider({
   const [openId, setOpenId] = useState<string | null>(null);
   const [openInPanel, setOpenInPanel] = useState(false);
   const [leadGate, setLeadGate] = useState<LeadReason | null>(null);
+  const [leadContext, setLeadContext] = useState<GateContext | null>(null);
   const pendingLead = useRef<((p: LeadProfile) => void) | null>(null);
   const mapRef = useRef<MLMap | null>(null);
   const loading = useRef(false);
@@ -230,10 +227,11 @@ export function ExplorerProvider({
     writeUrl(filtersRef.current, { push: false, player: null });
   }, [writeUrl]);
 
-  const requireLead = useCallback((reason: LeadReason, action: (p: LeadProfile) => void) => {
+  const requireLead = useCallback((reason: LeadReason, action: (p: LeadProfile) => void, context: GateContext) => {
     const profile = getLeadProfile();
     if (profile) return action(profile);
     pendingLead.current = action;
+    setLeadContext(context);
     setLeadGate(reason);
   }, []);
   const completeLead = useCallback((profile: LeadProfile | null) => {
@@ -269,6 +267,7 @@ export function ExplorerProvider({
     embed,
     downloadRequiresEmail,
     requireLead,
+    leadContext,
     leadGate,
     completeLead,
     mapRef,

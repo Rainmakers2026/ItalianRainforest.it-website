@@ -72,7 +72,8 @@ function Tile({ p, visit, color }: { p: Item; visit: string; color: string }) {
  */
 export function Infographic({ players, locale, t, families }: { players: PublicPlayer[]; locale: Locale; t: Dictionary['infographic']; families: Dictionary['what']['families'] }) {
   const nf = new Intl.NumberFormat(HTML_LANG[locale]);
-  const listed = [...players].filter((p) => p.status !== 'inactive').sort((a, b) => a.name.localeCompare(b.name, 'it', { sensitivity: 'base' }));
+  // The public dataset is already the publishable perimeter: no filtering here.
+  const listed = [...players].sort((a, b) => a.name.localeCompare(b.name, 'it', { sensitivity: 'base' }));
   const byType = new Map<CategoryKey, Item[]>();
   for (const p of listed) {
     const k = p.categories[0]!;

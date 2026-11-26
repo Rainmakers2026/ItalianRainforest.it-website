@@ -2,6 +2,12 @@
 
 # Italian Rainforest — permanent project rules
 
+The six P0 updates on public data and downloads (1/6–6/6) are consolidated below and in
+`docs/PRD.md`; they supersede every earlier, incompatible requirement (per-user column
+choice, JSON / PDF database files, contact details returned after a request, SECONDARY
+TYPE in public aggregations). **Any exposure of a startup or of reserved information is a
+blocking error for deploy.**
+
 ## Consolidated rules (P0 — update 5/6, prevail over every earlier incompatible instruction)
 
 Full text: `docs/PRD.md` § "Consolidated public data rules".
@@ -59,11 +65,9 @@ Full text: `docs/PRD.md` § "Public data visibility & player type classification
    and never hide data with CSS.
 6. **No hardcoded numbers.** KPIs come from `computeStats()` on the public dataset; the
    per-type counts always add up to the total.
-7. **Tests guard it.** `tests/public-data.test.ts`, `tests/download-scope.test.ts`,
-   `tests/export-pipeline.test.ts` and `tests/public-rules.test.ts` read the real master
-   export and the
-   snapshot. After every database update run `npm run data:import`, `npm run
-   infographic:build` and `npm test`; never ship with a failing test.
+7. **Tests guard it** (see "Validation" below). After every database update run
+   `npm run data:import`, `npm run infographic:build` and `npm test`; never ship with a
+   failing test.
 
 ## Downloads (P0 — updates 1–4/6, full text: `docs/PRD.md` § "Public database download")
 
@@ -100,7 +104,8 @@ Full text: `docs/PRD.md` § "Public data visibility & player type classification
 8. **File names**, date = generation date (Europe/Rome), not the database date:
    `Italian_Rainforest_Database_YYYY-MM-DD.{csv,xlsx}` (complete) and
    `Italian_Rainforest_Database_Filtered_YYYY-MM-DD.{csv,xlsx}` (filtered) — `exportFilename()`.
-9. **Database section UI.** One "Scarica database" button opens a dialog: complete database
+9. **Database section UI.** One "Scarica database" button ("Download database" in the
+   English explorer, which the home pages show on both locales) opens a dialog: complete database
    or filtered results, each with its number of exportable players; CSV or Excel. With
    active filters the filtered download is preselected; with zero results it is disabled
    and a message explains why. Same design system (`Dialog`, `btn`), no change to other
@@ -121,6 +126,45 @@ Guarded by `tests/download-scope.test.ts`, `tests/download-formats.test.ts`,
   the authorised schema metadata (column names).
 - MAIN TYPE is the only public classification; SECONDARY TYPE affects no classification,
   filter or export. The master never reaches the browser.
+
+## Validation (P0 — update 6/6, full text: `docs/PRD.md` § "Validation")
+
+Before every push, all of these pass (fix the cause, never weaken a test):
+`npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, `npm run test:e2e`.
+- Unit: `public-data`, `download-scope`, `download-formats`, `export-pipeline`,
+  `public-rules` (real master export and snapshot), `leads`, `forms-supabase` (form → table
+  mapping on a simulated Supabase).
+- Integration: `tests/api-integration.test.ts` — the real route handlers (`/api/players`,
+  `/api/download` GET / POST / table, `/api/contact-request`) on the snapshot, and on a
+  simulated Airtable update (new startups, new columns, reserved values, duplicates,
+  INACTIVE, formula payloads); `tests/single-dataset.test.ts` — one public dataset for every
+  surface, no filtering in components.
+- End-to-end: `scripts/e2e.mts` — production server, every public page, RSC payload and JS
+  chunk scanned for startups and reserved names / values; CSV and XLSX downloads (complete,
+  filtered, combined filters, zero results) compared with the filtered results; the
+  dialog in headless Chrome with real downloads; master byte-identical. Test leads are never
+  sent anywhere.
+
+## Form submissions → Supabase (P0, full text: `docs/PRD.md` § "Form submissions → Supabase")
+
+- **Mapping.** `/api/signup` reason `embed` → `sharing_is_caring_registrations`; `/api/signup`
+  download reasons and `/api/download` (POST) → `download_registrations`; `/api/suggest` →
+  `database_update_requests`; explicit newsletter checkbox → `newsletter_subscribers`.
+  `/api/contact-request` is not connected; no newsletter form. Airtable / Brevo: not yet.
+- **REGISTRATION vs EVENT.** The one-time sign-up is a REGISTRATION; every later download /
+  embed copy is an EVENT with `registration_id`. Each row has a browser `request_id`
+  (unique): retries never duplicate.
+- **Provenance** on every row: `page_path`, `page_section`, `cta`, real page `locale` (not the
+  explorer's), `utm`, request type, change type.
+- **No success without the record**: mandatory writes happen before the answer, failure or
+  missing config in production → 503. Only the optional newsletter write may fail silently.
+- **Newsletter**: separate, optional; UNSUBSCRIBED / BLOCKED contacts are never reactivated.
+- **Secrets**: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `PRIVACY_POLICY_VERSION` in server
+  env only (never `NEXT_PUBLIC_`, never committed); `src/lib/supabase/*` is `server-only`;
+  logs carry table + error code only. RLS on, no policy, only `service_role` writes.
+- **Schema changes** go in `supabase/sql/` and in `tests/support/supabase-mock.ts` (the mock
+  enforces the schema). Tests and e2e use the mock only — never the real project.
+- `draft-2026-11` is the privacy version for tests / preview only, until legal validation.
 
 ## Working rules
 

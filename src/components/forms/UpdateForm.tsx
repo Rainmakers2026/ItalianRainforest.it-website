@@ -5,6 +5,7 @@ import { getUtm, track } from '@/lib/analytics';
 import type { Locale } from '@/lib/i18n/config';
 import { fmt, type Dictionary } from '@/lib/i18n';
 import { SITE } from '@/lib/site';
+import { newRequestId, originOf } from '@/lib/submission';
 import { Icon } from '../ui/Icon';
 import {
   ConsentFields,
@@ -19,7 +20,8 @@ import {
 } from './FormBits';
 
 type Kind = 'new' | 'correction' | 'other';
-export type SuggestDetail = { type?: Kind; organization?: string };
+/** `cta`: what opened the form (recorded as provenance), e.g. "contact_new". */
+export type SuggestDetail = { type?: Kind; organization?: string; cta?: string };
 
 /** Opens/prefills the update form from anywhere on the page. */
 export function openSuggest(detail: SuggestDetail) {
@@ -27,8 +29,9 @@ export function openSuggest(detail: SuggestDetail) {
 }
 
 /**
- * "Segnala un aggiornamento / Suggest an update". Submissions go to the moderation
- * sink (/api/suggest) and are reviewed before publication. Nothing is written to Airtable.
+ * "Segnala un aggiornamento / Suggest an update". Submissions go to Supabase
+ * (/api/suggest → database_update_requests, review_status PENDING) and are reviewed before
+ * publication. Nothing is written to Airtable.
  */
 export function UpdateForm({ t, lead, locale }: { t: Dictionary['update']; lead: Dictionary['lead']; locale: Locale }) {
   const [kind, setKind] = useState<Kind>('new');
@@ -38,6 +41,9 @@ export function UpdateForm({ t, lead, locale }: { t: Dictionary['update']; lead:
   const [done, setDone] = useState(false);
   const elapsed = useElapsed();
   const formRef = useRef<HTMLFormElement>(null);
+  // One submission = one id: a retry after an error never creates a second request.
+  const requestId = useRef('');
+  const cta = useRef('update_form');
   const ids = { org: useId(), web: useId(), det: useId(), type: useId() };
 
   useEffect(() => {
@@ -46,6 +52,7 @@ export function UpdateForm({ t, lead, locale }: { t: Dictionary['update']; lead:
       const d = (e as CustomEvent<SuggestDetail>).detail ?? {};
       if (d.type) setKind(d.type);
       if (d.organization !== undefined) setOrg(d.organization);
+      if (d.cta) cta.current = d.cta;
       setDone(false);
       setTimeout(
         () =>
@@ -74,6 +81,7 @@ export function UpdateForm({ t, lead, locale }: { t: Dictionary['update']; lead:
     }
     setSending(true);
     track('update_form_submit', { type: kind });
+    requestId.current ||= newRequestId();
     const res = await postJson('/api/suggest', {
       type: kind,
       organization: org.trim(),
@@ -83,6 +91,8 @@ export function UpdateForm({ t, lead, locale }: { t: Dictionary['update']; lead:
       consent: true,
       marketing,
       locale,
+      requestId: requestId.current,
+      origin: originOf('update', cta.current),
       utm: getUtm(),
       company_url,
       elapsed: elapsed.get(),
@@ -90,6 +100,8 @@ export function UpdateForm({ t, lead, locale }: { t: Dictionary['update']; lead:
     setSending(false);
     if (!res.ok) return setErrors({ form: errorMessage(res.status, lead) });
     track('update_form_success', { type: kind });
+    requestId.current = '';
+    cta.current = 'update_form';
     setDone(true);
     setOrg('');
     formRef.current?.reset();
@@ -194,7 +206,7 @@ export function UpdateForm({ t, lead, locale }: { t: Dictionary['update']; lead:
 /** Link that scrolls to the form and preselects a type. */
 export function SuggestLink({ type, className, children }: { type: Kind; className?: string; children: React.ReactNode }) {
   return (
-    <a href="#update" className={className} onClick={() => openSuggest({ type, organization: '' })}>
+    <a href="#update" className={className} onClick={() => openSuggest({ type, organization: '', cta: `contact_${type}` })}>
       {children}
     </a>
   );

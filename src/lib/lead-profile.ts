@@ -5,9 +5,10 @@ import { useSyncExternalStore } from 'react';
 /**
  * The visitor's one-time sign-up (pay-per-data): stored in this browser only, so
  * downloads and embed codes don't ask twice, in this and later sessions. The server receives it once at
- * sign-up and alongside each download / contact request.
+ * sign-up and alongside each later download / embed copy (recorded as events).
+ * `registrationId` = request id of the sign-up row in Supabase (absent for older profiles).
  */
-export type LeadProfile = { firstName: string; lastName: string; email: string; referent?: string; company: string; at: string };
+export type LeadProfile = { firstName: string; lastName: string; email: string; referent?: string; company: string; registrationId?: string; at: string };
 
 const KEY = 'irf-lead-v1';
 const listeners = new Set<() => void>();
