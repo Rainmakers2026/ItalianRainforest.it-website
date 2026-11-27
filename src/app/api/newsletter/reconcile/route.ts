@@ -3,6 +3,7 @@ import { cronSecret } from '@/lib/newsletter/config';
 import { reconcile } from '@/lib/newsletter/service';
 import { bearerMatches } from '@/lib/newsletter/token';
 import { storeConfigured } from '@/lib/supabase/store';
+import { reconcileUserRequests } from '@/lib/supabase/user-requests-sync';
 
 /**
  * RAINFOREST RADAR reconciliation: double opt-in retries, confirmations seen late, missing
@@ -13,7 +14,9 @@ async function run(req: Request) {
   if (!bearerMatches(req.headers.get('authorization'), cronSecret())) return json({ error: 'unauthorized' }, 401);
   if (!storeConfigured()) return json({ error: 'unavailable' }, 503);
   try {
-    return json({ ok: true, report: await reconcile() });
+    // Newsletter (Brevo + Airtable newsletter tables) and the user requests (IRF - USERS REQUESTS).
+    const [newsletter, userRequests] = await Promise.all([reconcile(), reconcileUserRequests()]);
+    return json({ ok: true, report: { ...newsletter, ...userRequests } });
   } catch (err) {
     console.error('[newsletter:reconcile]', (err as Error).message);
     return json({ error: 'failed' }, 500);

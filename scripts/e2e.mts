@@ -157,11 +157,12 @@ const RADAR = {
   baseId: 'appE2ESYNCBASE001',
   subs: 'tblE2ESUBSCRIBE01',
   unsubs: 'tblE2EUNSUBSCRB01',
+  ur: 'tblE2EUSERREQUE01',
   webhook: `e2e-webhook-${randomUUID()}`,
   cron: `e2e-cron-${randomUUID()}`,
   token: `e2e-token-secret-${randomUUID()}`,
 };
-const ext = createIntegrationsMock({ brevoKey: RADAR.brevoKey, listId: RADAR.listId, attributes: ['FIRSTNAME', 'LASTNAME', 'LANGUAGE', 'SUPABASE_ID', 'SOURCE', 'SOURCE_FORM'], airtablePat: RADAR.pat, baseId: RADAR.baseId, subscribersTable: RADAR.subs, unsubscribersTable: RADAR.unsubs });
+const ext = createIntegrationsMock({ brevoKey: RADAR.brevoKey, listId: RADAR.listId, attributes: ['FIRSTNAME', 'LASTNAME', 'LANGUAGE', 'SUPABASE_ID', 'SOURCE', 'SOURCE_FORM'], airtablePat: RADAR.pat, baseId: RADAR.baseId, subscribersTable: RADAR.subs, unsubscribersTable: RADAR.unsubs, userRequestsTable: RADAR.ur });
 const mockServer = createServer(async (req, res) => {
   try {
     const chunks: Buffer[] = [];
@@ -208,6 +209,7 @@ const env = {
   AIRTABLE_SYNC_BASE_ID: RADAR.baseId,
   AIRTABLE_NEWSLETTER_SUBSCRIBERS_TABLE_ID: RADAR.subs,
   AIRTABLE_NEWSLETTER_UNSUBSCRIBERS_TABLE_ID: RADAR.unsubs,
+  AIRTABLE_USER_REQUESTS_TABLE_ID: RADAR.ur,
   AIRTABLE_API_BASE: `${MOCK_URL}/airtable`,
   NEWSLETTER_TOKEN_SECRET: RADAR.token,
   NEWSLETTER_CRON_SECRET: RADAR.cron,
@@ -376,7 +378,10 @@ try {
   check(failS.status === 503 && failU.status === 503 && failD.status === 503 && !failD.headers.get('content-disposition'), 'database unavailable: 503 everywhere, no fake success, no file');
   supa.state.failOn = null;
   check(supa.calls.every((c) => c.status !== 401 && c.status !== 404), 'every Supabase call authenticated with the server key, on known tables');
-  const contactCalls = supa.calls.length;
+  const urRecs = ext.airtable.records[RADAR.ur]!;
+  check(urRecs.length === 3 && urRecs.map((r) => r.fields.SOURCE).sort().join() === ['DATABASE UPDATE REQUEST', 'EMBED MAP', 'MAP DOWNLOAD'].sort().join(), `IRF - USERS REQUESTS: download + embed registrations and the update request synced, the copy event not (${urRecs.map((r) => r.fields.SOURCE).join(', ')})`);
+  check(urRecs.every((r) => !('REVIEW STATUS' in r.fields) && !('STATUS' in r.fields) && !('INTERNAL NOTES' in r.fields)) && urRecs.find((r) => r.fields.SOURCE === 'DATABASE UPDATE REQUEST')?.fields['REQUEST TYPE (DATABASE UPDATE ONLY)'] === 'NEW', 'IRF - USERS REQUESTS: operative fields never written; request type only on update requests');
+  check(tbl('sharing_is_caring_registrations').find((r) => r.entry_type === 'EVENT')?.airtable_sync_status === 'SKIPPED' && tbl('database_update_requests')[0]?.airtable_sync_status === 'SYNCED', 'sync state in Supabase: registrations SYNCED, events SKIPPED');  const contactCalls = supa.calls.length;
   await postForm('/api/contact-request', { ...person, locale: 'it', playerId: players[0]!.id });
   check(supa.calls.length === contactCalls, '/api/contact-request is not connected to Supabase');
 

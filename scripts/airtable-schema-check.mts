@@ -18,8 +18,11 @@ const { checkSchema } = await import('../src/lib/newsletter/airtable.ts');
 const cfg = airtableSyncConfig();
 if (!cfg) {
   console.error('Missing AIRTABLE_SYNC_PAT / AIRTABLE_SYNC_BASE_ID / AIRTABLE_NEWSLETTER_SUBSCRIBERS_TABLE_ID / AIRTABLE_NEWSLETTER_UNSUBSCRIBERS_TABLE_ID in .env.local');
+  console.error('(run `npm run integrations:discover -- --apply` first: it finds the table ids by name)');
   process.exit(2);
 }
+// IRF - USERS REQUESTS is checked too (by id, or by exact name when the id is not set).
+if (!cfg.userRequestsTableId) cfg.userRequestsTableId = null;
 const { tables, rows } = await checkSchema(cfg);
 console.log('Tables in the base:');
 for (const t of tables) console.log(`  ${t.id}  ${t.name}`);

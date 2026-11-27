@@ -93,6 +93,23 @@ export function airtableSyncConfig(): AirtableSyncConfig | null {
   };
 }
 
+export type AirtableUserRequestsConfig = { pat: string; baseUrl: string; baseId: string; tableId: string };
+
+/**
+ * IRF - USERS REQUESTS on the same sync base (AIRTABLE_SYNC_*), independent of the
+ * newsletter tables. Never the read-only data base.
+ */
+export function airtableUserRequestsConfig(): AirtableUserRequestsConfig | null {
+  const pat = env('AIRTABLE_SYNC_PAT');
+  const baseId = env('AIRTABLE_SYNC_BASE_ID');
+  const tableId = env('AIRTABLE_USER_REQUESTS_TABLE_ID');
+  if (!pat || !baseId || !tableId) return null;
+  if (!BASE_ID.test(baseId) || !TABLE_ID.test(tableId)) throw new Error('Airtable sync ids are not valid ids (app… / tbl…)');
+  if (baseId === process.env.AIRTABLE_BASE_ID) throw new Error('AIRTABLE_SYNC_BASE_ID must not be the read-only Rainmakers OS data base');
+  if (pat === process.env.AIRTABLE_TOKEN) throw new Error('AIRTABLE_SYNC_PAT must not be the read-only data token');
+  return { pat, baseUrl: airtableApiBase(), baseId, tableId };
+}
+
 /** HMAC secret of the confirmation links (≥ 32 characters). */
 export function tokenSecret(): string | null {
   const s = env('NEWSLETTER_TOKEN_SECRET');

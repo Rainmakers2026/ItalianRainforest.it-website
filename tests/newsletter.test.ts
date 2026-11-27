@@ -258,7 +258,29 @@ describe('confirmation → SUBSCRIBED → welcome (once) → Airtable ISCRITTI',
     expect(sub().subscription_status).toBe('PENDING');
   });
 
-  it('a failed welcome is retried by the reconciliation, never sent twice', async () => {
+  it('Brevo sends the welcome but the response is lost: no retry, exactly one welcome (at most once per cycle)', async () => {
+    ext.brevo.fail.smtpLost = 1;
+    await subscribeAndConfirm();
+    expect(ext.brevo.emails).toHaveLength(1);
+    expect(sub().welcome_claimed_at).toBeTruthy(); // kept claimed: never resent automatically
+    const failed = db.tables.newsletter_consent_events.find((e) => e.event_type === 'WELCOME_FAILED')!;
+    expect(failed.details).toMatchObject({ ambiguous: true, retry: false });
+    const auth = { headers: { authorization: `Bearer ${CRON}` } };
+    await reconcileRoute.GET(new Request(`${ORIGIN}/api/newsletter/reconcile`, auth));
+    await reconcileRoute.GET(new Request(`${ORIGIN}/api/newsletter/reconcile`, auth));
+    expect(ext.brevo.emails).toHaveLength(1);
+  });
+
+  it('a 5xx on the welcome is also treated as possibly sent (no automatic resend)', async () => {
+    ext.brevo.fail.smtp = 1;
+    ext.brevo.fail.smtpStatus = 503;
+    await subscribeAndConfirm();
+    await reconcileRoute.GET(new Request(`${ORIGIN}/api/newsletter/reconcile`, { headers: { authorization: `Bearer ${CRON}` } }));
+    expect(ext.brevo.emails).toHaveLength(0);
+    expect(sub().welcome_claimed_at).toBeTruthy();
+  });
+
+  it('a refused welcome (429) is retried by the reconciliation, never sent twice', async () => {
     ext.brevo.fail.smtp = 3;
     await subscribeAndConfirm();
     expect(sub().subscription_status).toBe('SUBSCRIBED');

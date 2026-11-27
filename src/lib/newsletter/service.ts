@@ -322,8 +322,11 @@ export async function sendWelcome(sub: Sub): Promise<'sent' | 'skipped'> {
     await event({ subscriber_id: sub.id, event_type: 'WELCOME_SENT', details: { cycle: sub.doi_cycle_id, template: templateId } });
     return 'sent';
   } catch (err) {
-    await patch(sub.id, { welcome_claimed_at: null });
-    await event({ subscriber_id: sub.id, event_type: 'WELCOME_FAILED', details: { code: err instanceof BrevoError ? `${err.status} ${err.code}` : 'error' } });
+    // Definitely refused (4xx, incl. 429): released for a retry. No answer / 5xx: Brevo may
+    // have sent it — kept claimed (at most ONE welcome per cycle), flagged for a manual check.
+    const definite = err instanceof BrevoError && err.status >= 400 && err.status < 500;
+    if (definite) await patch(sub.id, { welcome_claimed_at: null });
+    await event({ subscriber_id: sub.id, event_type: 'WELCOME_FAILED', details: { code: err instanceof BrevoError ? `${err.status} ${err.code}` : 'error', retry: definite, ambiguous: !definite } });
     throw err;
   }
 }

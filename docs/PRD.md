@@ -408,8 +408,20 @@ Full specification and operations: `docs/newsletter.md`.
   ignored. Answers never reveal whether an address is known.
 - **Airtable (one-way).** ISCRITTI ALLA NEWSLETTER only for confirmed subscribers (17 fields,
   upsert on SUPABASE ID, no typecast); DISISCRITTI DALLA NEWSLETTER on unsubscription, verified
-  before the removal from ISCRITTI. IRF - USERS REQUESTS stays a separate flow (not synced yet).
+  before the removal from ISCRITTI. IRF - USERS REQUESTS is a separate flow (see the section below).
   Sync credentials `AIRTABLE_SYNC_*`, never the read-only data base.
 - **Activation gate.** Off until migration 06, Brevo / Airtable ids and secrets are set and
   the Brevo list-level unsubscription (GOCCE isolation) is verified.
 - Guarded by `tests/newsletter.test.ts` and e2e §3g / §5 (simulated Supabase, Brevo, Airtable).
+
+## Supabase → Airtable IRF - USERS REQUESTS — P0 (2026-11-27)
+
+Full text: `docs/newsletter.md` §5b. The initial registrations (map / database download, map /
+database embed) and every database update request are synced one-way to the Airtable table
+IRF - USERS REQUESTS (base `appUNDILcUVMhC31V`), after the record is safe in Supabase; later
+events stay in Supabase (SKIPPED). Key `<table>:<id>`; operative fields (REVIEW STATUS, STATUS,
+INTERNAL NOTES) are never written; nothing is invented. A row is SYNCED only when Airtable
+confirms the record; errors are retried with backoff by the reconciliation. Migration
+`supabase/sql/07_airtable_user_requests_sync.sql` (additive). Guarded by
+`tests/user-requests-sync.test.ts` and e2e §2b. Brevo POSTs are at-most-once (a lost welcome
+response is never resent). Production: `docs/production-release.md`.

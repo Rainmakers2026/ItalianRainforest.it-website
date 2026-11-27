@@ -33,14 +33,17 @@ async function call<T>(cfg: BrevoConfig, method: 'GET' | 'POST', path: string, b
         signal: AbortSignal.timeout(10_000),
       });
     } catch {
-      if (attempt < 2) {
+      // No answer: for a POST Brevo may have processed it (e.g. the email was sent and the
+      // response was lost) — never resend blindly. GETs are safe to retry.
+      if (method === 'GET' && attempt < 2) {
         await wait(400 * 2 ** attempt);
         continue;
       }
-      throw new BrevoError(0, 'network');
+      throw new BrevoError(0, 'no_response');
     }
-    // Rate limit / transient errors: short backoff, then the reconciliation job retries.
-    if ((res.status === 429 || res.status >= 500) && attempt < 2) {
+    // 429 = refused, safe to retry for any method; 5xx only for GETs (a POST may have
+    // been processed). The reconciliation job handles the rest.
+    if ((res.status === 429 || (method === 'GET' && res.status >= 500)) && attempt < 2) {
       const after = Number(res.headers.get('retry-after'));
       await wait(Number.isFinite(after) && after > 0 ? Math.min(after * 1000, 3000) : 400 * 2 ** attempt);
       continue;

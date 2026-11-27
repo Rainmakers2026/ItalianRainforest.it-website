@@ -199,3 +199,10 @@ Before every push, all of these pass (fix the cause, never weaken a test):
   writes or emails need explicit authorization each time.
 - Airtable field types cannot be changed through the API: `npm run airtable:schema-check`
   reports them; fixes are manual (never delete / rename / duplicate fields).
+- **IRF - USERS REQUESTS** (`src/lib/supabase/user-requests-sync.ts`, migration 07): only the
+  initial REGISTRATIONS (download / embed) and every update request; EVENT rows are SKIPPED;
+  key `<table>:<id>`; REVIEW STATUS / STATUS / INTERNAL NOTES are never written.
+- **Brevo POSTs are at-most-once**: retried in-request only on 429; no answer / 5xx on the
+  welcome = possibly sent → never resent automatically.
+- Sync base id `appUNDILcUVMhC31V`; setup with `npm run integrations:discover` (read-only).
+  Production release: `docs/production-release.md` (approval required).

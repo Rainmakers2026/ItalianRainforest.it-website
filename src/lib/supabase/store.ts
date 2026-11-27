@@ -67,6 +67,8 @@ export async function recordSignup(s: Signup): Promise<void> {
   const common = {
     request_id: s.requestId,
     entry_type: event ? 'EVENT' : 'REGISTRATION',
+    // Later events are analytics only: never synced to Airtable (IRF - USERS REQUESTS).
+    ...(event ? { airtable_sync_status: 'SKIPPED' } : {}),
     registration_id: event ? (s.registrationId ?? null) : null,
     first_name: s.firstName,
     last_name: s.lastName,
@@ -106,6 +108,7 @@ export async function recordDownload(d: Download, rowCount: number): Promise<voi
   await insertOnce(TABLES.downloads, {
     request_id: d.requestId,
     entry_type: 'EVENT',
+    airtable_sync_status: 'SKIPPED',
     registration_id: d.registrationId ?? null,
     first_name: d.firstName,
     last_name: d.lastName,

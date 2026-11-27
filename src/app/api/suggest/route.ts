@@ -1,5 +1,6 @@
 import { clientKey, deliverLead, isSameOrigin, json, looksAutomated, rateLimited, sinkConfigured, SuggestionSchema } from '@/lib/leads';
 import { recordNewsletter, recordSuggestion, storeOptional, storeOrFail } from '@/lib/supabase/store';
+import { syncUserRequestByRequestId } from '@/lib/supabase/user-requests-sync';
 
 /**
  * "Segnala un aggiornamento / Suggest an update" → Supabase database_update_requests
@@ -17,6 +18,8 @@ export async function POST(req: Request) {
 
   const failed = await storeOrFail('suggest', () => recordSuggestion(data));
   if (failed) return failed;
+  // IRF - USERS REQUESTS (Airtable), after the record is safe in Supabase; best effort.
+  await syncUserRequestByRequestId('database_update_requests', data.requestId);
 
   if (data.marketing) {
     await storeOptional('suggest:newsletter', () =>

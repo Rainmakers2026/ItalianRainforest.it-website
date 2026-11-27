@@ -26,7 +26,10 @@ export class AirtableError extends Error {
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-async function call<T>(cfg: AirtableSyncConfig, method: 'GET' | 'PATCH' | 'DELETE', path: string, body?: unknown): Promise<T> {
+/** A connection to the sync base (token + base): shared by the newsletter and the user-request syncs. */
+export type AirtableConn = Pick<AirtableSyncConfig, 'pat' | 'baseUrl' | 'baseId'>;
+
+async function call<T>(cfg: AirtableConn, method: 'GET' | 'PATCH' | 'DELETE', path: string, body?: unknown): Promise<T> {
   // Guard: never the read-only data base.
   if (cfg.baseId === process.env.AIRTABLE_BASE_ID) throw new AirtableError(0, 'forbidden_base');
   for (let attempt = 0; ; attempt++) {
@@ -145,10 +148,67 @@ export function unsubscriberFields(s: SubscriberRow, originalConsentAt: string |
   };
 }
 
+// ---------------------------------------------------------------------------------------
+// IRF - USERS REQUESTS — the initial registrations (download / embed) and the database
+// update requests. Operative fields edited by the team in Airtable (REVIEW STATUS, STATUS,
+// INTERNAL NOTES) are NEVER written: the upsert (PATCH) leaves fields it does not send.
+// ---------------------------------------------------------------------------------------
+export type UserRequestTable = 'download_registrations' | 'sharing_is_caring_registrations' | 'database_update_requests';
+export type UserRequestRow = {
+  id: string | number;
+  created_at: string;
+  email: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  page_section?: string | null;
+  embed_kind?: 'MAP' | 'DATABASE' | null;
+  change_type?: 'NEW' | 'CORRECTION' | 'OTHER' | null;
+  organization_name?: string | null;
+  website?: string | null;
+  details?: string | null;
+  privacy_consent: boolean;
+  newsletter_consent: boolean;
+};
+
+/** The fields the sync writes (the operative ones are left to the team). */
+export const USER_REQUEST_FIELDS = [
+  'SUPABASE ID', 'REQUEST DATE', 'SOURCE', 'REQUEST TYPE (DATABASE UPDATE ONLY)', 'FIRST NAME', 'LAST NAME', 'EMAIL',
+  'ORGANIZATION CONCERNED', 'WEBSITE', 'UPDATE DETAILS', 'PRIVACY ACKNOWLEDGMENT', 'NEWSLETTER CONSENT',
+] as const;
+export const USER_REQUEST_OPERATIVE_FIELDS = ['REVIEW STATUS', 'STATUS', 'INTERNAL NOTES'] as const;
+
+/** Unique key across the three source tables, e.g. "database_update_requests:12". */
+export const userRequestKey = (table: UserRequestTable, id: string | number) => `${table}:${id}`;
+
+export function userRequestSource(table: UserRequestTable, r: UserRequestRow): string {
+  if (table === 'database_update_requests') return 'DATABASE UPDATE REQUEST';
+  if (table === 'sharing_is_caring_registrations') return r.embed_kind === 'DATABASE' ? 'EMBED DATABASE' : 'EMBED MAP';
+  // Downloads: started from the map section (map files, map menus) or from the database section.
+  return r.page_section === 'map' ? 'MAP DOWNLOAD' : 'DATABASE DOWNLOAD';
+}
+
+export function userRequestFields(table: UserRequestTable, r: UserRequestRow): Record<(typeof USER_REQUEST_FIELDS)[number], string | boolean | null> {
+  const update = table === 'database_update_requests';
+  return {
+    'SUPABASE ID': userRequestKey(table, r.id),
+    'REQUEST DATE': iso(r.created_at),
+    SOURCE: userRequestSource(table, r),
+    'REQUEST TYPE (DATABASE UPDATE ONLY)': update ? (r.change_type ?? null) : null,
+    'FIRST NAME': text(r.first_name),
+    'LAST NAME': text(r.last_name),
+    EMAIL: r.email,
+    'ORGANIZATION CONCERNED': update ? text(r.organization_name) : null,
+    WEBSITE: update ? text(r.website) : null,
+    'UPDATE DETAILS': update ? text(r.details) : null,
+    'PRIVACY ACKNOWLEDGMENT': !!r.privacy_consent,
+    'NEWSLETTER CONSENT': !!r.newsletter_consent,
+  };
+}
+
 type UpsertResponse = { records?: { id: string; fields?: Record<string, unknown> }[] };
 
 /** Idempotent upsert on SUPABASE ID. Returns the Airtable record id (verified in the response). */
-export async function upsertBySupabaseId(cfg: AirtableSyncConfig, tableId: string, fields: Record<string, unknown>): Promise<string> {
+export async function upsertBySupabaseId(cfg: AirtableConn, tableId: string, fields: Record<string, unknown>): Promise<string> {
   const data = await call<UpsertResponse>(cfg, 'PATCH', `/v0/${cfg.baseId}/${tableId}`, {
     performUpsert: { fieldsToMergeOn: ['SUPABASE ID'] },
     records: [{ fields }],
@@ -160,14 +220,14 @@ export async function upsertBySupabaseId(cfg: AirtableSyncConfig, tableId: strin
 }
 
 /** Record id of a Supabase id in a table, or null. */
-export async function findBySupabaseId(cfg: AirtableSyncConfig, tableId: string, supabaseId: string): Promise<string | null> {
+export async function findBySupabaseId(cfg: AirtableConn, tableId: string, supabaseId: string): Promise<string | null> {
   if (!/^[0-9a-f-]{36}$/i.test(supabaseId)) return null;
   const formula = encodeURIComponent(`{SUPABASE ID}='${supabaseId}'`);
   const data = await call<{ records?: { id: string }[] }>(cfg, 'GET', `/v0/${cfg.baseId}/${tableId}?filterByFormula=${formula}&maxRecords=2&fields%5B%5D=SUPABASE%20ID`);
   return data.records?.[0]?.id ?? null;
 }
 
-export async function deleteRecord(cfg: AirtableSyncConfig, tableId: string, recordId: string): Promise<void> {
+export async function deleteRecord(cfg: AirtableConn, tableId: string, recordId: string): Promise<void> {
   if (!/^rec[A-Za-z0-9]{14}$/.test(recordId)) throw new AirtableError(0, 'invalid_record_id');
   try {
     await call(cfg, 'DELETE', `/v0/${cfg.baseId}/${tableId}?records%5B%5D=${recordId}`);
@@ -182,12 +242,33 @@ export async function deleteRecord(cfg: AirtableSyncConfig, tableId: string, rec
 // Schema check (requires schema.bases:read). Read-only: it never changes the schema —
 // the Web API cannot change a field type anyway (Update field: name / description only).
 // ---------------------------------------------------------------------------------------
-type Expected = { type: string; options?: string[]; primary?: boolean };
+/**
+ * `type`: the expected type (or the accepted alternatives). `operative`: a field managed by
+ * the team, never written by the sync — only its presence is checked.
+ */
+type Expected = { type: string | string[]; options?: string[]; primary?: boolean; operative?: boolean };
 const DATE_TIME: Expected = { type: 'dateTime' };
 const SELECT = (options: string[]): Expected => ({ type: 'singleSelect', options });
 const SOURCE_FORMS = ['NEWSLETTER_SIGNUP', 'DOWNLOAD_REGISTRATION', 'EMBED_REQUEST', 'DATABASE_UPDATE_REQUEST'];
 
-export const EXPECTED_SCHEMA: Record<'subscribers' | 'unsubscribers', Record<string, Expected>> = {
+export const EXPECTED_SCHEMA: Record<'subscribers' | 'unsubscribers' | 'userRequests', Record<string, Expected>> = {
+  userRequests: {
+    'SUPABASE ID': { type: 'singleLineText', primary: true },
+    'REQUEST DATE': DATE_TIME,
+    SOURCE: SELECT(['MAP DOWNLOAD', 'DATABASE DOWNLOAD', 'EMBED MAP', 'EMBED DATABASE', 'DATABASE UPDATE REQUEST']),
+    'REQUEST TYPE (DATABASE UPDATE ONLY)': SELECT(['NEW', 'CORRECTION', 'OTHER']),
+    'FIRST NAME': { type: 'singleLineText' },
+    'LAST NAME': { type: 'singleLineText' },
+    EMAIL: { type: 'email' },
+    'ORGANIZATION CONCERNED': { type: 'singleLineText' },
+    WEBSITE: { type: ['url', 'singleLineText'] },
+    'REVIEW STATUS': { type: 'singleSelect', operative: true },
+    'UPDATE DETAILS': { type: 'multilineText' },
+    'PRIVACY ACKNOWLEDGMENT': { type: 'checkbox' },
+    'NEWSLETTER CONSENT': { type: 'checkbox' },
+    STATUS: { type: 'singleSelect', operative: true },
+    'INTERNAL NOTES': { type: ['multilineText', 'richText'], operative: true },
+  },
   subscribers: {
     'SUPABASE ID': { type: 'singleLineText', primary: true },
     'FIRST NAME': { type: 'singleLineText' },
@@ -233,32 +314,42 @@ type MetaTable = { id: string; name: string; primaryFieldId: string; fields: Met
 
 export type SchemaRow = { table: string; field: string; fieldId: string | null; current: string; expected: string; action: string };
 
-export async function checkSchema(cfg: AirtableSyncConfig): Promise<{ tables: { id: string; name: string }[]; rows: SchemaRow[] }> {
-  const { tables } = await call<{ tables: MetaTable[] }>(cfg, 'GET', `/v0/meta/bases/${cfg.baseId}/tables`);
+/** The exact table names in the sync base (they are never renamed). */
+export const TABLE_NAMES = { userRequests: 'IRF - USERS REQUESTS', subscribers: 'ISCRITTI ALLA NEWSLETTER', unsubscribers: 'DISISCRITTI DALLA NEWSLETTER' } as const;
+
+export async function listTables(cfg: AirtableConn): Promise<MetaTable[]> {
+  return (await call<{ tables: MetaTable[] }>(cfg, 'GET', `/v0/meta/bases/${cfg.baseId}/tables`)).tables;
+}
+
+/** `cfg` table ids may be unknown: then the tables are found by their exact name. */
+export async function checkSchema(cfg: AirtableConn & Partial<Pick<AirtableSyncConfig, 'subscribersTableId' | 'unsubscribersTableId' | 'userRequestsTableId'>>): Promise<{ tables: { id: string; name: string }[]; rows: SchemaRow[] }> {
+  const tables = await listTables(cfg);
   const rows: SchemaRow[] = [];
-  for (const [kind, tableId] of [['subscribers', cfg.subscribersTableId], ['unsubscribers', cfg.unsubscribersTableId]] as const) {
-    const t = tables.find((x) => x.id === tableId);
+  const byIdOrName = (id: string | null | undefined, name: string) => tables.find((x) => (id && x.id === id) || (!id && x.name === name));
+  for (const [kind, tableId] of [['userRequests', cfg.userRequestsTableId], ['subscribers', cfg.subscribersTableId], ['unsubscribers', cfg.unsubscribersTableId]] as const) {
+    const t = byIdOrName(tableId, TABLE_NAMES[kind]);
     if (!t) {
-      rows.push({ table: tableId, field: '—', fieldId: null, current: 'table not found', expected: 'table', action: 'check the table id' });
+      rows.push({ table: tableId || TABLE_NAMES[kind], field: '—', fieldId: null, current: 'table not found', expected: 'table', action: 'check the table id / exact name' });
       continue;
     }
     const expected = EXPECTED_SCHEMA[kind];
     for (const [name, exp] of Object.entries(expected)) {
       const f = t.fields.find((x) => x.name === name);
-      const expText = `${exp.type}${exp.options ? ` [${exp.options.join(', ')}]` : ''}${exp.primary ? ' (primary)' : ''}${exp.type === 'dateTime' ? ' D/M/YYYY 24h Europe/Rome' : ''}`;
+      const types = Array.isArray(exp.type) ? exp.type : [exp.type];
+      const expText = `${types.join(' | ')}${exp.options ? ` [${exp.options.join(', ')}]` : ''}${exp.primary ? ' (primary)' : ''}${types[0] === 'dateTime' ? ' D/M/YYYY 24h Europe/Rome' : ''}${exp.operative ? ' (operative: not written)' : ''}`;
       if (!f) {
         rows.push({ table: t.name, field: name, fieldId: null, current: 'missing', expected: expText, action: 'create the field by hand (exact name) — not done automatically' });
         continue;
       }
       const issues: string[] = [];
-      if (f.type !== exp.type) issues.push(`change type ${f.type} → ${exp.type}`);
+      if (!types.includes(f.type)) issues.push(`change type ${f.type} → ${types[0]}`);
       if (exp.primary && t.primaryFieldId !== f.id) issues.push('must be the primary field');
-      if (exp.options && f.type === exp.type) {
+      if (exp.options && types.includes(f.type)) {
         const have = (f.options?.choices ?? []).map((c) => c.name);
         const missing = exp.options.filter((o) => !have.includes(o));
         if (missing.length) issues.push(`add options: ${missing.join(', ')}`);
       }
-      if (exp.type === 'dateTime' && f.type === 'dateTime') {
+      if (types[0] === 'dateTime' && f.type === 'dateTime') {
         if (f.options?.dateFormat?.name !== 'european') issues.push('date format: European (D/M/YYYY)');
         if (f.options?.timeFormat?.name !== '24hour') issues.push('time format: 24 hour');
         if (f.options?.timeZone && f.options.timeZone !== 'Europe/Rome') issues.push(`time zone ${f.options.timeZone} → Europe/Rome`);

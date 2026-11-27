@@ -1,5 +1,6 @@
 import { clientKey, deliverLead, isSameOrigin, json, looksAutomated, rateLimited, SignupSchema, sinkConfigured } from '@/lib/leads';
 import { recordNewsletter, recordSignup, storeOptional, storeOrFail } from '@/lib/supabase/store';
+import { syncUserRequestByRequestId } from '@/lib/supabase/user-requests-sync';
 
 /**
  * One-time sign-up before the first download or embed code (`entry: "registration"`), and
@@ -24,6 +25,8 @@ export async function POST(req: Request) {
   if (failed) return failed;
 
   if (data.entry === 'registration') {
+    // IRF - USERS REQUESTS (Airtable), after the record is safe in Supabase; best effort.
+    await syncUserRequestByRequestId(data.reason === 'embed' ? 'sharing_is_caring_registrations' : 'download_registrations', data.requestId);
     if (data.marketing) {
       await storeOptional('signup:newsletter', () =>
         recordNewsletter({

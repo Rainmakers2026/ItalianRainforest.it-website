@@ -19,6 +19,9 @@ const uuid = () => crypto.randomUUID();
 const req: Col = { required: true };
 const LOCALE = ['it', 'en'] as const;
 const SYNC = ['PENDING', 'SYNCED', 'ERROR'] as const;
+/** 07_airtable_user_requests_sync.sql: the user-request tables also accept SKIPPED. */
+const AT_SYNC = ['PENDING', 'SYNCED', 'ERROR', 'SKIPPED'] as const;
+const atSync: Table = { airtable_record_id: {}, airtable_sync_status: { default: () => 'PENDING', values: AT_SYNC }, airtable_synced_at: {}, airtable_sync_error: {}, airtable_sync_attempts: { default: () => 0 }, airtable_next_attempt_at: {} };
 const ENTRY = ['REGISTRATION', 'EVENT'] as const;
 
 const provenance: Table = { page_path: req, page_section: req, cta: req, utm: {} };
@@ -44,6 +47,7 @@ export const SCHEMA = {
     ...provenance,
     ...consents,
     review_status: { default: () => 'PENDING', values: ['PENDING', 'IN_REVIEW', 'APPROVED', 'REJECTED', 'PUBLISHED'] },
+    ...atSync,
   },
   sharing_is_caring_registrations: {
     id: { default: uuid },
@@ -54,10 +58,7 @@ export const SCHEMA = {
     source: { default: () => 'SHARING IS CARING' },
     locale: { required: true, values: LOCALE },
     ...consents,
-    airtable_record_id: {},
-    airtable_sync_status: { default: () => 'PENDING', values: SYNC },
-    airtable_synced_at: {},
-    airtable_sync_error: {},
+    ...atSync,
     request_id: req,
     entry_type: { required: true, values: ENTRY },
     registration_id: {},
@@ -83,10 +84,7 @@ export const SCHEMA = {
     locale: { required: true, values: LOCALE },
     ...provenance,
     ...consents,
-    airtable_record_id: {},
-    airtable_sync_status: { default: () => 'PENDING', values: SYNC },
-    airtable_synced_at: {},
-    airtable_sync_error: {},
+    ...atSync,
   },
   newsletter_subscribers: {
     id: { default: uuid },

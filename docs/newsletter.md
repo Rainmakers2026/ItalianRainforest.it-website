@@ -127,7 +127,7 @@ Base "IRF push da Supabase" (verify the current name; use the `app…` id), sepa
 read-only Rainmakers OS data base. Variables: `AIRTABLE_SYNC_PAT`, `AIRTABLE_SYNC_BASE_ID`,
 `AIRTABLE_NEWSLETTER_SUBSCRIBERS_TABLE_ID` → ISCRITTI ALLA NEWSLETTER,
 `AIRTABLE_NEWSLETTER_UNSUBSCRIBERS_TABLE_ID` → DISISCRITTI DALLA NEWSLETTER,
-`AIRTABLE_USER_REQUESTS_TABLE_ID` → IRF - USERS REQUESTS (reserved, not synced yet).
+`AIRTABLE_USER_REQUESTS_TABLE_ID` → IRF - USERS REQUESTS (§5b).
 The PRD's `AIRTABLE_PAT` / `AIRTABLE_BASE_ID` names are NOT used: `AIRTABLE_BASE_ID` is
 already the read-only master base.
 
@@ -170,6 +170,56 @@ D/M/YYYY, 24 hour, time zone Europe/Rome; Single select: add the exact options) 
 Converting text to a date / checkbox / select converts the existing cell values; check
 them afterwards. Never delete and recreate fields, never rename, never add duplicates.
 
+## 5b. Airtable — IRF - USERS REQUESTS (operational requests)
+
+Migration `supabase/sql/07_airtable_user_requests_sync.sql` (additive). Module
+`src/lib/supabase/user-requests-sync.ts`. Same base and PAT (`AIRTABLE_SYNC_*`), table
+`AIRTABLE_USER_REQUESTS_TABLE_ID`. Separate from the newsletter: a RADAR-only sign-up never
+creates a user request.
+
+| Supabase source | Synced rows | SOURCE |
+|---|---|---|
+| `download_registrations` | REGISTRATION only (the sign-up) | `MAP DOWNLOAD` (started in the map section) / `DATABASE DOWNLOAD` |
+| `sharing_is_caring_registrations` | REGISTRATION only | `EMBED MAP` / `EMBED DATABASE` |
+| `database_update_requests` | every request | `DATABASE UPDATE REQUEST` |
+
+Later EVENT rows (each download, map file, embed copy) are analytics: `airtable_sync_status =
+SKIPPED` at insert, never synced. The QA test records are marked SKIPPED by migration 07.
+
+Fields written: SUPABASE ID (`<table>:<id>`, unique across the three tables), REQUEST DATE,
+SOURCE, REQUEST TYPE (DATABASE UPDATE ONLY) — NEW / CORRECTION / OTHER, update requests only —,
+FIRST NAME, LAST NAME, EMAIL, ORGANIZATION CONCERNED, WEBSITE, UPDATE DETAILS (update requests
+only), PRIVACY ACKNOWLEDGMENT, NEWSLETTER CONSENT. **Never written**: REVIEW STATUS, STATUS,
+INTERNAL NOTES (operative, edited by the team: the PATCH upsert leaves them untouched; they are
+not initialised either, so no value is invented). Missing data (e.g. no name on an update
+request) stays empty.
+
+Mechanism: right after the record is stored in Supabase the route syncs it (best effort,
+never blocking the visitor); a row is SYNCED only when Airtable returned the record
+(`airtable_record_id`). Failures → ERROR, `airtable_sync_attempts`, `airtable_next_attempt_at`
+(5, 20, 80 min … 24 h, max 10 attempts); the reconciliation retries due rows. Supabase stays the
+source when Airtable is down. Airtable allows 5 requests / second per base: one request per
+submission, the reconciliation processes at most 25 rows per table per run.
+
+## 5c. Brevo responses lost (at most once)
+
+POSTs to Brevo (double opt-in, welcome) are retried in-request only after a 429 (refused for
+sure). No answer / 5xx = possibly processed: the welcome stays claimed and is NOT resent
+automatically (WELCOME_FAILED with `ambiguous: true` — check in Brevo's transactional logs and
+release `welcome_claimed_at` by hand only if it was not delivered). A refused welcome (4xx) is
+retried by the reconciliation. A lost double opt-in answer → retried by the reconciliation: at
+worst the visitor receives a second confirmation email for the same cycle (same valid link).
+
+## 5d. Setup commands
+
+- `npm run integrations:discover` — read-only: Brevo lists, senders (checks
+  italianrainforest@rainmakers.it), templates (sender, reply-to, `{{ params.DOIurl }}`),
+  attributes, webhooks; Airtable tables, their ids by exact name, field-type check of the three
+  tables. `-- --apply` writes the MISSING Airtable table ids to `.env.local` (never overwrites).
+- `npm run airtable:schema-check` — the field table of the three tables (exit 1 if fixes needed).
+- Sync base: **`appUNDILcUVMhC31V`** ("IRF push da Supabase"), already in `.env.local` and Vercel
+  Preview as `AIRTABLE_SYNC_BASE_ID`.
+
 ## 6. Reconciliation and error handling
 
 `GET|POST /api/newsletter/reconcile` with `Authorization: Bearer <NEWSLETTER_CRON_SECRET>`:
@@ -177,8 +227,10 @@ them afterwards. Never delete and recreate fields, never rename, never add dupli
 2. clicked links whose Brevo membership appeared later → confirm;
 3. confirmed without welcome → send it (once);
 4. SUBSCRIBED contacts no longer active in the Brevo list (missed webhook) → UNSUBSCRIBED;
-5. Airtable PENDING / ERROR and due → sync.
-Returns counts only. Vercel Cron runs on Production deployments only (Hobby: once a day):
+5. Airtable PENDING / ERROR and due → sync (newsletter tables);
+6. IRF - USERS REQUESTS: PENDING / ERROR registrations and update requests, due → sync.
+Returns counts only. Manual run on Preview (no Vercel Cron there):
+`curl -H "Authorization: Bearer $NEWSLETTER_CRON_SECRET" https://<preview>/api/newsletter/reconcile`. Vercel Cron runs on Production deployments only (Hobby: once a day):
 schedule it at Production time; on Preview call it manually.
 
 ## 7. Before Production (checklist)

@@ -14,7 +14,7 @@
 
 type Contact = { id: number; email: string; listIds: number[]; listUnsubscribed: number[]; emailBlacklisted: boolean; attributes: Record<string, unknown> };
 type Rec = { id: string; createdTime: string; fields: Record<string, unknown> };
-type FieldType = 'singleLineText' | 'email' | 'dateTime' | 'singleSelect' | 'checkbox' | 'multilineText';
+type FieldType = 'singleLineText' | 'email' | 'dateTime' | 'singleSelect' | 'checkbox' | 'multilineText' | 'url';
 type FieldDef = { type: FieldType; options?: string[] };
 
 const SOURCE_FORMS = ['NEWSLETTER_SIGNUP', 'DOWNLOAD_REGISTRATION', 'EMBED_REQUEST', 'DATABASE_UPDATE_REQUEST'];
@@ -26,6 +26,14 @@ const T: Record<string, FieldDef> = {
   long: { type: 'multilineText' },
 };
 export const AIRTABLE_TABLES = {
+  userRequests: {
+    'SUPABASE ID': T.text!, 'REQUEST DATE': T.date!,
+    SOURCE: { type: 'singleSelect', options: ['MAP DOWNLOAD', 'DATABASE DOWNLOAD', 'EMBED MAP', 'EMBED DATABASE', 'DATABASE UPDATE REQUEST'] },
+    'REQUEST TYPE (DATABASE UPDATE ONLY)': { type: 'singleSelect', options: ['NEW', 'CORRECTION', 'OTHER'] },
+    'FIRST NAME': T.text!, 'LAST NAME': T.text!, EMAIL: T.email!, 'ORGANIZATION CONCERNED': T.text!, WEBSITE: { type: 'url' },
+    'REVIEW STATUS': { type: 'singleSelect', options: ['TO REVIEW', 'APPROVED', 'REJECTED'] }, 'UPDATE DETAILS': T.long!,
+    'PRIVACY ACKNOWLEDGMENT': T.check!, 'NEWSLETTER CONSENT': T.check!, STATUS: { type: 'singleSelect', options: ['OPEN', 'DONE'] }, 'INTERNAL NOTES': T.long!,
+  } as Record<string, FieldDef>,
   subscribers: {
     'SUPABASE ID': T.text!, 'FIRST NAME': T.text!, 'LAST NAME': T.text!, EMAIL: T.email!, 'REGISTRATION DATE': T.date!, SOURCE: T.text!,
     'SOURCE FORM': { type: 'singleSelect', options: SOURCE_FORMS }, LANGUAGE: { type: 'singleSelect', options: ['it', 'en'] }, 'NEWSLETTER CONSENT': T.check!,
@@ -42,19 +50,21 @@ export const AIRTABLE_TABLES = {
 
 const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
 
-export function createIntegrationsMock(o: { brevoKey: string; listId: number; attributes: string[]; airtablePat: string; baseId: string; subscribersTable: string; unsubscribersTable: string }) {
+export function createIntegrationsMock(o: { brevoKey: string; listId: number; attributes: string[]; airtablePat: string; baseId: string; subscribersTable: string; unsubscribersTable: string; userRequestsTable?: string }) {
+  const ur = o.userRequestsTable ?? 'tblNOUSERREQUEST1';
   let nextContactId = 1000;
   let nextRec = 0;
   const brevo = {
     contacts: new Map<string, Contact>(),
     doiRequests: [] as { email: string; includeListIds: number[]; templateId: number; redirectionUrl: string; attributes: Record<string, unknown> }[],
     emails: [] as { templateId: number; to: string; params: Record<string, unknown> }[],
-    fail: { doi: 0, smtp: 0 },
+    /** smtp: refusals (status smtpStatus, default 429 = refused); smtpLost: sent, then the response is lost. */
+    fail: { doi: 0, smtp: 0, smtpStatus: 429, smtpLost: 0 },
   };
   const airtable = {
-    records: { [o.subscribersTable]: [] as Rec[], [o.unsubscribersTable]: [] as Rec[] } as Record<string, Rec[]>,
+    records: { [o.subscribersTable]: [] as Rec[], [o.unsubscribersTable]: [] as Rec[], [ur]: [] as Rec[] } as Record<string, Rec[]>,
     /** Field definitions per table id (tests can degrade a type to simulate the current base). */
-    schema: { [o.subscribersTable]: { ...AIRTABLE_TABLES.subscribers }, [o.unsubscribersTable]: { ...AIRTABLE_TABLES.unsubscribers } } as Record<string, Record<string, FieldDef>>,
+    schema: { [o.subscribersTable]: { ...AIRTABLE_TABLES.subscribers }, [o.unsubscribersTable]: { ...AIRTABLE_TABLES.unsubscribers }, [ur]: { ...AIRTABLE_TABLES.userRequests } } as Record<string, Record<string, FieldDef>>,
     fail: 0,
     requests: [] as string[],
   };
@@ -108,10 +118,15 @@ export function createIntegrationsMock(o: { brevoKey: string; listId: number; at
       return c ? Response.json({ ...c, createdAt: new Date().toISOString(), modifiedAt: new Date().toISOString(), statistics: {} }) : brevoErr(404, 'document_not_found');
     }
     if (req.method === 'POST' && path === '/v3/smtp/email') {
-      if (brevo.fail.smtp > 0) return brevo.fail.smtp--, brevoErr(503, 'service_unavailable');
+      if (brevo.fail.smtp > 0) return brevo.fail.smtp--, brevoErr(brevo.fail.smtpStatus, brevo.fail.smtpStatus === 429 ? 'too_many_requests' : 'service_unavailable');
       const b = (await req.json()) as { templateId?: number; to?: { email: string }[]; params?: Record<string, unknown> };
       if (typeof b.templateId !== 'number' || !b.to?.[0]?.email) return brevoErr(400, 'missing_parameter');
       brevo.emails.push({ templateId: b.templateId, to: b.to[0].email, params: b.params ?? {} });
+      // Accepted and sent, but the answer never reaches the caller.
+      if (brevo.fail.smtpLost > 0) {
+        brevo.fail.smtpLost--;
+        throw new TypeError('fetch failed');
+      }
       return Response.json({ messageId: `<mock-${brevo.emails.length}@relay.mock>` }, { status: 201 });
     }
     return brevoErr(404, 'not_found');
@@ -124,7 +139,7 @@ export function createIntegrationsMock(o: { brevoKey: string; listId: number; at
       return Response.json({
         tables: Object.entries(airtable.schema).map(([id, fields]) => ({
           id,
-          name: id === o.subscribersTable ? 'ISCRITTI ALLA NEWSLETTER' : 'DISISCRITTI DALLA NEWSLETTER',
+          name: id === o.subscribersTable ? 'ISCRITTI ALLA NEWSLETTER' : id === ur ? 'IRF - USERS REQUESTS' : 'DISISCRITTI DALLA NEWSLETTER',
           primaryFieldId: 'fld0',
           fields: Object.entries(fields).map(([name, d], i) => ({
             id: `fld${i}`,
@@ -192,9 +207,10 @@ export function createIntegrationsMock(o: { brevoKey: string; listId: number; at
     brevo.contacts.clear();
     brevo.doiRequests.length = 0;
     brevo.emails.length = 0;
-    brevo.fail.doi = brevo.fail.smtp = 0;
+    brevo.fail.doi = brevo.fail.smtp = brevo.fail.smtpLost = 0;
+    brevo.fail.smtpStatus = 429;
     for (const k of Object.keys(airtable.records)) airtable.records[k] = [];
-    airtable.schema = { [o.subscribersTable]: { ...AIRTABLE_TABLES.subscribers }, [o.unsubscribersTable]: { ...AIRTABLE_TABLES.unsubscribers } };
+    airtable.schema = { [o.subscribersTable]: { ...AIRTABLE_TABLES.subscribers }, [o.unsubscribersTable]: { ...AIRTABLE_TABLES.unsubscribers }, [ur]: { ...AIRTABLE_TABLES.userRequests } };
     airtable.fail = 0;
     airtable.requests.length = 0;
   };
