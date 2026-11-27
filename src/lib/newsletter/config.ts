@@ -66,6 +66,9 @@ export type AirtableSyncConfig = {
 const BASE_ID = /^app[A-Za-z0-9]{14}$/;
 const TABLE_ID = /^tbl[A-Za-z0-9]{14}$/;
 
+/** Airtable API origin for the sync base (fixed host; a local mock only in tests). */
+export const airtableApiBase = () => apiBase('AIRTABLE_API_BASE', 'https://api.airtable.com');
+
 /**
  * Sync base ("IRF push da Supabase"), identified by id — never the read-only Rainmakers OS
  * data base (AIRTABLE_BASE_ID) nor its credentials.
@@ -82,7 +85,7 @@ export function airtableSyncConfig(): AirtableSyncConfig | null {
   const userRequests = env('AIRTABLE_USER_REQUESTS_TABLE_ID');
   return {
     pat,
-    baseUrl: apiBase('AIRTABLE_API_BASE', 'https://api.airtable.com'),
+    baseUrl: airtableApiBase(),
     baseId,
     subscribersTableId,
     unsubscribersTableId,
